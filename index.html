@@ -6,21 +6,20 @@
   <meta name="theme-color" content="#26070c">
   <meta name="color-scheme" content="dark">
   <meta name="referrer" content="no-referrer">
-  <title>Le Sommelier Lars — Le Service des Vins</title>
+  <title>Sommelier Lars — De Wijnshift</title>
 
-  <!-- Retro Fonts -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      /* Bordeaux & Franse kleuren */
       --wine-950: #170306;
       --wine-900: #26070c;
       --wine-800: #421019;
       --wine-700: #6d1725;
       --wine-600: #92283a;
-      --france-blue: #0055A4;
-      --france-red: #EF4135;
       --cream: #fff9ea;
       --cream-2: #f1e5ca;
       --ink: #2a201c;
@@ -30,11 +29,9 @@
       --amber: #d97904;
       --red: #c72c41;
       --blue: #3e6fa8;
-      
-      /* Retro Fonts */
-      --pixel: 'Press Start 2P', ui-monospace, monospace;
-      --body: 'VT323', "Courier New", monospace;
-      
+      --shadow: rgba(10, 0, 2, 0.58);
+      --pixel: "Press Start 2P", "Courier New", monospace;
+      --body: "VT323", "Courier New", monospace;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-right: env(safe-area-inset-right, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -57,15 +54,23 @@
       overflow: hidden;
       color: var(--ink);
       font-family: var(--body);
-      font-size: 22px; /* VT323 valt klein uit, dus basisgrootte omhoog */
-      background: 
-        repeating-linear-gradient(45deg, #26070c 25%, transparent 25%, transparent 75%, #26070c 75%, #26070c),
-        repeating-linear-gradient(45deg, #26070c 25%, #170306 25%, #170306 75%, #26070c 75%, #26070c);
-      background-position: 0 0, 10px 10px;
-      background-size: 20px 20px;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(146, 40, 58, 0.75), transparent 44%),
+        linear-gradient(145deg, #310a11, #0f0204 72%);
     }
 
     button, input { font: inherit; }
+
+    /* Consequente retro 8-bit typografie in de volledige interface. */
+    body, button, input, .option-button, .feedback-card, .question-card {
+      font-family: var(--body);
+      letter-spacing: 0.015em;
+    }
+
+    h1, h2, h3, .pixel-title, .eyebrow, .button-primary, .button-secondary,
+    .mode-card strong, .stat-label, .feedback-badge, .level-badge {
+      font-family: var(--pixel);
+    }
     button { touch-action: manipulation; }
     button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 
@@ -76,20 +81,25 @@
       margin: 0 auto;
       position: relative;
       overflow: hidden;
-      background: rgba(22, 3, 7, 0.95);
-      box-shadow: 0 0 55px rgba(0, 0, 0, 0.9);
+      background: rgba(22, 3, 7, 0.88);
+      box-shadow: 0 0 55px rgba(0, 0, 0, 0.75);
       isolation: isolate;
     }
 
-    /* CRT Scanline Overlay */
     .app::after {
       content: "";
       position: absolute;
       inset: 0;
       z-index: 100;
       pointer-events: none;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-      background-size: 100% 4px, 3px 100%;
+      opacity: 0.24;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 3px,
+        rgba(0, 0, 0, 0.18) 4px
+      );
+      mix-blend-mode: multiply;
     }
 
     .screen {
@@ -111,30 +121,30 @@
 
     .pixel-title {
       margin: 0;
-      color: var(--gold);
+      color: var(--wine-700);
       font-family: var(--pixel);
       line-height: 1.45;
       text-wrap: balance;
-      text-shadow: 4px 4px 0 var(--wine-800);
+      text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12);
     }
 
     .eyebrow {
       margin: 0 0 8px;
-      color: var(--cream);
+      color: var(--wine-700);
       font-family: var(--pixel);
       font-size: clamp(9px, 2vw, 11px);
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      text-shadow: 2px 2px 0 var(--wine-900);
     }
 
     .panel {
       width: min(100%, 760px);
       margin: auto;
       padding: clamp(20px, 4vw, 36px);
-      border: 4px solid var(--gold);
-      background: var(--cream);
-      box-shadow: 8px 8px 0 var(--wine-800);
+      border: 4px solid var(--wine-600);
+      border-radius: 20px;
+      background: linear-gradient(160deg, rgba(255, 249, 234, 0.99), rgba(241, 229, 202, 0.98));
+      box-shadow: 0 18px 45px var(--shadow), inset 0 0 0 3px rgba(255, 255, 255, 0.45);
       text-align: center;
     }
 
@@ -151,9 +161,10 @@
       aspect-ratio: 1;
       margin: 18px auto;
       overflow: hidden;
-      border: 4px solid var(--ink);
+      border: 5px solid var(--wine-700);
+      border-radius: 18px;
       background: #d9c49a;
-      box-shadow: 6px 6px 0 var(--wine-800);
+      box-shadow: 0 12px 25px rgba(55, 10, 15, 0.35);
     }
 
     .portrait-frame img,
@@ -163,7 +174,6 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      image-rendering: pixelated; /* Retro feel for images if possible */
     }
 
     .image-fallback {
@@ -171,7 +181,7 @@
       inset: 0;
       display: none;
       place-items: center;
-      background: var(--wine-800);
+      background: linear-gradient(145deg, #c9ad79, #8b2637);
       color: #fff;
       font-size: clamp(52px, 14vw, 90px);
     }
@@ -181,7 +191,7 @@
     .subtitle {
       margin: 0;
       color: var(--muted);
-      font-size: clamp(24px, 5vw, 32px);
+      font-size: clamp(22px, 5vw, 30px);
       line-height: 1.2;
     }
 
@@ -195,14 +205,14 @@
     .rule {
       min-width: 0;
       padding: 12px 8px;
-      border: 4px solid var(--ink);
-      background: #fff;
-      font-size: clamp(18px, 3.8vw, 24px);
+      border: 2px solid rgba(109, 23, 37, 0.2);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.55);
+      font-size: clamp(17px, 3.8vw, 21px);
       line-height: 1.1;
-      box-shadow: 4px 4px 0 var(--muted);
     }
 
-    .rule strong { display: block; color: var(--wine-700); font-family: var(--pixel); font-size: 10px; margin-bottom: 4px; }
+    .rule strong { display: block; color: var(--wine-700); }
 
     .difficulty-group {
       margin-top: 18px;
@@ -213,15 +223,15 @@
 
     .difficulty-group legend {
       margin-bottom: 10px;
-      color: var(--ink);
+      color: var(--wine-700);
       font-family: var(--pixel);
-      font-size: 12px;
+      font-size: 10px;
     }
 
     .difficulty-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 8px;
     }
 
     .difficulty-option { position: relative; }
@@ -236,15 +246,15 @@
       min-height: 92px;
       flex-direction: column;
       justify-content: center;
-      gap: 6px;
+      gap: 4px;
       padding: 10px 8px;
-      border: 4px solid var(--muted);
-      background: var(--cream-2);
+      border: 3px solid #9c8a80;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.62);
       color: var(--ink);
       cursor: pointer;
       text-align: center;
-      box-shadow: 4px 4px 0 var(--muted);
-      transition: transform 0.1s;
+      transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
     }
 
     .difficulty-card strong {
@@ -254,50 +264,62 @@
     }
 
     .difficulty-card span {
-      color: var(--ink);
-      font-size: clamp(18px, 3vw, 22px);
+      color: var(--muted);
+      font-size: clamp(16px, 3vw, 19px);
       line-height: 1;
     }
 
     .difficulty-option input:checked + .difficulty-card {
-      border-color: var(--wine-700);
-      background: var(--gold);
-      transform: translate(2px, 2px);
-      box-shadow: 2px 2px 0 var(--wine-900);
+      border-color: var(--wine-600);
+      background: #f7dfaa;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 0 #b98c35;
+    }
+
+    .difficulty-option input:focus-visible + .difficulty-card {
+      outline: 4px solid var(--gold);
+      outline-offset: 3px;
     }
 
     .button {
       min-height: 52px;
-      border: 4px solid var(--ink);
+      border: 3px solid #4e0c16;
+      border-radius: 11px;
       padding: 14px 18px;
-      background: var(--wine-600);
+      background: linear-gradient(#9f3043, #7f1e2f);
       color: #fff;
       font-family: var(--pixel);
       font-size: clamp(10px, 2.2vw, 14px);
       line-height: 1.45;
       cursor: pointer;
-      box-shadow: inset -4px -4px 0px rgba(0,0,0,0.4), inset 4px 4px 0px rgba(255,255,255,0.2), 4px 4px 0 var(--ink);
-      transition: transform 0.1s, box-shadow 0.1s;
-      text-shadow: 2px 2px 0 var(--ink);
+      box-shadow: 0 6px 0 #4e0c16;
+      transition: transform 90ms ease, box-shadow 90ms ease, filter 120ms ease;
     }
 
     .button:active {
-      transform: translate(4px, 4px);
-      box-shadow: inset -2px -2px 0px rgba(0,0,0,0.4), inset 2px 2px 0px rgba(255,255,255,0.2), 0px 0px 0 var(--ink);
+      transform: translateY(6px);
+      box-shadow: 0 0 0 #4e0c16;
+    }
+
+    .button:focus-visible,
+    .icon-button:focus-visible,
+    .option-button:focus-visible {
+      outline: 4px solid var(--gold);
+      outline-offset: 3px;
     }
 
     .button.secondary {
-      background: var(--muted);
-      color: var(--cream);
+      border-color: #77695f;
+      background: linear-gradient(#fffaf0, #e5d8bd);
+      color: var(--ink);
+      box-shadow: 0 6px 0 #77695f;
     }
 
     .button[disabled],
     .icon-button[disabled] {
       cursor: not-allowed;
-      filter: grayscale(1);
-      opacity: 0.6;
-      box-shadow: none;
-      transform: translate(4px, 4px);
+      filter: grayscale(0.8);
+      opacity: 0.55;
     }
 
     .start-button { width: 100%; margin-top: 18px; padding-block: 18px; }
@@ -318,11 +340,9 @@
         calc(10px + var(--safe-right))
         8px
         calc(10px + var(--safe-left));
-      border-bottom: 6px solid;
-      /* Franse Tricolore rand */
-      border-image: linear-gradient(to right, var(--france-blue) 33.3%, #ffffff 33.3%, #ffffff 66.6%, var(--france-red) 66.6%) 1;
-      background: var(--cream);
-      box-shadow: 0 8px 0 rgba(0, 0, 0, 0.5);
+      border-bottom: 4px solid var(--wine-600);
+      background: rgba(255, 249, 234, 0.98);
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.35);
     }
 
     .topbar-row {
@@ -337,31 +357,31 @@
     .icon-button {
       min-width: 42px;
       min-height: 42px;
-      border: 4px solid var(--ink);
-      background: var(--cream-2);
+      border: 2px solid #6d4d44;
+      border-radius: 9px;
+      background: #fff7e7;
       color: var(--ink);
       font-size: 21px;
       cursor: pointer;
-      box-shadow: 4px 4px 0 var(--ink);
+      box-shadow: 0 3px 0 #6d4d44;
     }
 
-    .icon-button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+    .icon-button:active { transform: translateY(3px); box-shadow: none; }
 
     .main-stats {
       display: flex;
       min-width: 0;
       justify-content: center;
       gap: clamp(8px, 3vw, 22px);
-      font-size: clamp(22px, 4vw, 28px);
+      font-size: clamp(19px, 4vw, 26px);
       font-weight: 700;
       white-space: nowrap;
-      font-family: var(--pixel);
     }
 
     .round-stat {
       color: var(--wine-700);
-      font-size: clamp(10px, 1.8vw, 14px);
-      align-self: center;
+      font-family: var(--pixel);
+      font-size: clamp(8px, 1.8vw, 11px);
     }
 
     .lives {
@@ -375,30 +395,32 @@
 
     .meter-line {
       display: grid;
-      grid-template-columns: 90px 1fr auto;
+      grid-template-columns: 74px 1fr auto;
       gap: 7px;
       align-items: center;
-      color: var(--ink);
-      font-family: var(--pixel);
-      font-size: 10px;
+      color: var(--muted);
+      font-size: 16px;
       line-height: 1;
     }
 
     .meter {
-      height: 14px;
-      border: 4px solid var(--ink);
-      background: var(--wine-900);
+      height: 10px;
+      overflow: hidden;
+      border: 1px solid #9a8378;
+      border-radius: 999px;
+      background: #d7c8b3;
     }
 
     .meter > span {
       display: block;
       width: 0;
       height: 100%;
+      border-radius: inherit;
       transition: width 350ms cubic-bezier(.2,.8,.2,1);
     }
 
     #round-progress-fill { background: var(--blue); }
-    #reputation-fill { background: var(--france-red); }
+    #reputation-fill { background: linear-gradient(90deg, var(--red), var(--amber), var(--green)); }
 
     .timer-wrap {
       display: none;
@@ -406,12 +428,11 @@
       align-items: center;
       gap: 8px;
       color: var(--wine-700);
-      font-family: var(--pixel);
-      font-size: 12px;
+      font-size: 18px;
     }
 
     .timer-wrap.visible { display: flex; }
-    .timer-wrap .meter { flex: 1; height: 14px; }
+    .timer-wrap .meter { flex: 1; height: 8px; }
     #timer-fill { width: 100%; background: var(--green); transition: width 1s linear, background 180ms ease; }
 
     .game-scroll {
@@ -443,15 +464,18 @@
       aspect-ratio: 1;
       margin: 0 auto;
       overflow: hidden;
-      border: 6px solid var(--ink);
-      background: var(--wine-900);
-      box-shadow: 8px 8px 0 #000;
+      border: 5px solid var(--wine-600);
+      border-radius: 18px;
+      background: #281014;
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.55);
       transform-origin: center bottom;
     }
 
-    .lars-photo.happy { border-color: var(--green); animation: happyPop 430ms ease both; }
-    .lars-photo.fail { border-color: var(--red); animation: shake 420ms ease both; }
+    .lars-photo.idle { animation: breathe 2.4s ease-in-out infinite; }
+    .lars-photo.happy { border-color: var(--green); animation: happyPop 430ms ease both; box-shadow: 0 0 35px rgba(46, 139, 87, 0.78); }
+    .lars-photo.fail { border-color: var(--red); animation: shake 420ms ease both; box-shadow: 0 0 35px rgba(199, 44, 65, 0.78); }
 
+    @keyframes breathe { 50% { transform: translateY(-4px) scale(1.012); } }
     @keyframes happyPop { 45% { transform: scale(1.07) rotate(-1deg); } }
     @keyframes shake { 20%, 60% { transform: translateX(-7px) rotate(-1deg); } 40%, 80% { transform: translateX(7px) rotate(1deg); } }
 
@@ -460,13 +484,14 @@
       width: fit-content;
       margin: 10px auto 0;
       padding: 6px 11px;
-      border: 4px solid var(--ink);
+      border: 2px solid #ad7511;
+      border-radius: 999px;
       background: var(--gold);
-      color: var(--ink);
+      color: #4d2c00;
       font-family: var(--pixel);
-      font-size: 10px;
+      font-size: 9px;
       line-height: 1.4;
-      box-shadow: 4px 4px 0 #000;
+      box-shadow: 0 3px 0 #835500;
     }
 
     .combo-pill.visible { display: block; animation: happyPop 350ms ease; }
@@ -480,33 +505,33 @@
 
     .customer-card {
       position: relative;
-      padding: 26px 17px 17px;
-      border: 4px solid var(--ink);
+      padding: 22px 17px 17px;
+      border: 3px solid var(--wine-600);
+      border-radius: 15px;
       background: var(--cream);
-      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.7);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.36);
     }
 
     .customer-label {
       position: absolute;
-      top: -14px;
+      top: -11px;
       left: 14px;
       max-width: calc(100% - 28px);
       overflow: hidden;
-      padding: 6px 10px;
-      border: 4px solid var(--ink);
-      background: var(--france-blue);
+      padding: 4px 9px;
+      border-radius: 6px;
+      background: var(--wine-700);
       color: #fff;
       font-family: var(--pixel);
       font-size: clamp(8px, 1.8vw, 10px);
       line-height: 1.35;
       text-overflow: ellipsis;
       white-space: nowrap;
-      text-shadow: 2px 2px 0 var(--ink);
     }
 
     .customer-quote {
       margin: 0;
-      font-size: clamp(26px, 5vw, 34px);
+      font-size: clamp(23px, 5vw, 30px);
       line-height: 1.15;
       text-align: center;
       text-wrap: balance;
@@ -522,38 +547,39 @@
 
     .tag {
       padding: 4px 8px;
-      border: 2px solid var(--ink);
+      border: 1px solid rgba(109, 23, 37, 0.28);
+      border-radius: 999px;
       background: var(--cream-2);
-      color: var(--ink);
-      font-size: 20px;
+      color: var(--muted);
+      font-size: 16px;
       line-height: 1;
-      font-weight: bold;
     }
 
-    .options-grid { display: grid; gap: 12px; }
+    .options-grid { display: grid; gap: 10px; }
 
     .option-button {
       position: relative;
       display: grid;
-      grid-template-columns: 42px 1fr;
-      gap: 12px;
+      grid-template-columns: 38px 1fr;
+      gap: 8px;
       align-items: center;
       width: 100%;
       min-height: 62px;
       padding: 10px 12px;
-      border: 4px solid var(--ink);
-      background: var(--cream);
+      border: 3px solid #8f8179;
+      border-radius: 12px;
+      background: linear-gradient(#fffdf7, #eee1c8);
       color: var(--ink);
       cursor: pointer;
-      box-shadow: inset -4px -4px 0px rgba(0,0,0,0.1), 4px 4px 0 var(--ink);
+      box-shadow: 0 5px 0 #71635c;
       text-align: left;
-      transition: transform 0.1s, filter 0.1s;
+      transition: border-color 120ms ease, transform 90ms ease, filter 120ms ease;
     }
 
-    .option-button:active { transform: translate(4px, 4px); box-shadow: none; }
+    .option-button:active { transform: translateY(5px); box-shadow: none; }
     .option-button[disabled] { cursor: default; opacity: 0.72; }
     .option-button.eliminated { animation: fadeOut 260ms ease forwards; pointer-events: none; }
-    .option-button.selected { border-color: var(--wine-700); background: var(--gold); }
+    .option-button.selected { border-color: var(--wine-600); background: #f8dfa9; }
     .option-button.reveal-perfect { border-color: var(--green); background: #dff2e6; }
     .option-button.reveal-bad { border-color: var(--red); background: #f7d8dc; }
 
@@ -561,20 +587,20 @@
 
     .option-key {
       display: grid;
-      width: 36px;
-      height: 36px;
+      width: 30px;
+      height: 30px;
       place-items: center;
-      border: 4px solid var(--ink);
+      border: 2px solid #9b8276;
+      border-radius: 8px;
       background: #fff;
-      color: var(--ink);
+      color: var(--wine-700);
       font-family: var(--pixel);
-      font-size: 12px;
-      box-shadow: 2px 2px 0 var(--ink);
+      font-size: 10px;
     }
 
     .option-copy strong {
       display: block;
-      font-size: clamp(24px, 4.5vw, 30px);
+      font-size: clamp(21px, 4.5vw, 27px);
       line-height: 1.05;
     }
 
@@ -582,7 +608,7 @@
       display: block;
       margin-top: 3px;
       color: var(--muted);
-      font-size: clamp(18px, 3vw, 22px);
+      font-size: clamp(15px, 3vw, 18px);
       line-height: 1;
     }
 
@@ -599,7 +625,7 @@
       display: flex;
       align-items: center;
       color: rgba(255, 255, 255, 0.78);
-      font-size: 20px;
+      font-size: 17px;
       line-height: 1;
       text-align: right;
     }
@@ -612,7 +638,7 @@
       display: grid;
       place-items: end center;
       padding-top: var(--safe-top);
-      background: rgba(10, 1, 3, 0.85);
+      background: rgba(10, 1, 3, 0.72);
       opacity: 0;
       pointer-events: none;
       transition: opacity 180ms ease;
@@ -625,10 +651,11 @@
       max-height: calc(100dvh - var(--safe-top) - 12px);
       overflow: auto;
       padding: 24px 20px calc(24px + var(--safe-bottom));
-      border: 6px solid var(--ink);
+      border: 4px solid var(--wine-600);
       border-bottom: 0;
+      border-radius: 22px 22px 0 0;
       background: var(--cream);
-      box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.55);
       transform: translateY(105%);
       transition: transform 280ms cubic-bezier(.2,.9,.25,1.1);
       text-align: center;
@@ -638,14 +665,12 @@
 
     .feedback-badge {
       display: inline-block;
-      padding: 10px 14px;
-      border: 4px solid var(--ink);
+      padding: 7px 12px;
+      border-radius: 7px;
       color: #fff;
       font-family: var(--pixel);
-      font-size: clamp(10px, 2vw, 14px);
+      font-size: clamp(9px, 2vw, 12px);
       line-height: 1.4;
-      text-shadow: 2px 2px 0 var(--ink);
-      box-shadow: 4px 4px 0 var(--ink);
     }
 
     .feedback-badge.perfect { background: var(--green); }
@@ -653,9 +678,9 @@
     .feedback-badge.bad { background: var(--red); }
 
     .reaction-line {
-      margin: 20px 0 12px;
-      color: var(--ink);
-      font-size: clamp(28px, 5vw, 36px);
+      margin: 15px 0 8px;
+      color: var(--wine-700);
+      font-size: clamp(24px, 5vw, 31px);
       font-weight: 700;
       line-height: 1.05;
     }
@@ -663,27 +688,28 @@
     .knowledge-card {
       margin: 10px 0 16px;
       padding: 14px 15px;
-      border: 4px solid var(--ink);
+      border-left: 5px solid var(--wine-600);
+      border-radius: 9px;
       background: var(--cream-2);
-      font-size: clamp(22px, 4vw, 26px);
+      font-size: clamp(19px, 4vw, 23px);
       line-height: 1.25;
       text-align: left;
-      box-shadow: inset 4px 4px 0 rgba(255,255,255,0.5);
     }
 
     .knowledge-card strong { color: var(--wine-700); }
-    .feedback-score { margin: 0 0 12px; color: var(--muted); font-size: 22px; }
+    .feedback-score { margin: 0 0 12px; color: var(--muted); font-size: 19px; }
     .dialog .button { width: 100%; }
 
     .pause-dialog {
       align-self: center;
       width: min(calc(100% - 28px), 480px);
-      border-bottom: 6px solid var(--ink);
+      border-bottom: 4px solid var(--wine-600);
+      border-radius: 18px;
       transform: scale(0.92);
     }
 
     .overlay.show .pause-dialog { transform: scale(1); }
-    .pause-actions { display: grid; gap: 12px; margin-top: 18px; }
+    .pause-actions { display: grid; gap: 10px; margin-top: 18px; }
 
     /* Results */
     #result-screen { padding: 0; overflow: hidden; }
@@ -694,7 +720,7 @@
       background: var(--wine-900);
     }
 
-    .result-background img { filter: brightness(0.3) saturate(0.9); image-rendering: pixelated; }
+    .result-background img { filter: brightness(0.3) saturate(0.9); }
     .result-background.has-image-error .image-fallback { display: grid; filter: brightness(0.35); }
 
     .result-content {
@@ -715,64 +741,64 @@
       text-align: center;
     }
 
-    .result-inner { width: min(100%, 680px); margin: 0 auto; background: rgba(0,0,0,0.7); padding: 20px; border: 4px solid var(--gold); }
+    .result-inner { width: min(100%, 680px); margin: 0 auto; }
 
     .result-title {
       margin: 0;
       color: #fff;
       font-family: var(--pixel);
-      font-size: clamp(24px, 8vw, 42px);
+      font-size: clamp(27px, 8vw, 48px);
       line-height: 1.25;
       text-shadow: 4px 4px 0 var(--red);
     }
 
     .level-badge {
       display: inline-block;
-      margin: 16px 0;
+      margin: 12px 0;
       padding: 8px 12px;
-      border: 4px solid var(--ink);
+      border-radius: 8px;
       background: var(--wine-600);
       color: #fff;
       font-family: var(--pixel);
       font-size: clamp(10px, 2.5vw, 14px);
       line-height: 1.4;
-      box-shadow: 4px 4px 0 var(--ink);
     }
 
-    .score-line { margin: 0; font-size: clamp(26px, 5vw, 34px); font-family: var(--pixel); }
-    .score-line strong { display: block; color: var(--gold); font-size: clamp(36px, 9vw, 58px); margin-top: 10px; text-shadow: 4px 4px 0 var(--ink); }
+    .score-line { margin: 0; font-size: clamp(24px, 5vw, 31px); }
+    .score-line strong { display: block; color: var(--gold); font-size: clamp(36px, 9vw, 58px); }
 
     .result-stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin: 20px 0;
+      gap: 8px;
+      margin: 14px 0;
     }
 
     .result-stat {
       padding: 10px 6px;
-      border: 4px solid var(--ink);
-      background: rgba(255, 255, 255, 0.1);
-      font-size: clamp(20px, 3.5vw, 24px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.55);
+      font-size: clamp(17px, 3.5vw, 21px);
       line-height: 1.05;
-      box-shadow: inset 4px 4px 0 rgba(255,255,255,0.1);
     }
 
-    .result-stat strong { display: block; color: var(--gold); font-size: 1.35em; font-family: var(--pixel); margin-bottom: 5px; }
+    .result-stat strong { display: block; color: var(--gold); font-size: 1.35em; }
 
     .result-message,
     .learning-summary {
       margin: 10px 0;
       padding: 13px 15px;
-      border: 4px solid var(--gold);
-      background: rgba(0, 0, 0, 0.8);
-      font-size: clamp(22px, 4vw, 28px);
+      border-left: 5px solid var(--gold);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.67);
+      font-size: clamp(20px, 4vw, 25px);
       line-height: 1.2;
       text-align: left;
     }
 
-    .learning-summary { border-color: var(--france-blue); }
-    .result-actions { display: grid; gap: 12px; margin-top: 16px; }
+    .learning-summary { border-left-color: var(--blue); }
+    .result-actions { display: grid; gap: 9px; margin-top: 12px; }
 
     .sr-only {
       position: absolute;
@@ -793,14 +819,14 @@
       bottom: calc(14px + var(--safe-bottom));
       width: max-content;
       max-width: calc(100% - 28px);
-      padding: 12px 16px;
-      border: 4px solid var(--ink);
+      padding: 9px 13px;
+      border: 2px solid #4f3604;
+      border-radius: 9px;
       background: var(--gold);
-      color: var(--ink);
-      font-family: var(--pixel);
-      font-size: 12px;
-      line-height: 1.4;
-      box-shadow: 6px 6px 0 var(--ink);
+      color: #3f2800;
+      font-size: 19px;
+      line-height: 1.1;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
       transform: translate(-50%, 30px);
       opacity: 0;
       pointer-events: none;
@@ -821,7 +847,7 @@
 
     @media (max-width: 520px) {
       .screen { padding-inline: calc(10px + var(--safe-right)) calc(10px + var(--safe-left)); }
-      .panel { padding: 19px 14px; border-width: 4px; }
+      .panel { padding: 19px 14px; border-width: 3px; }
       .rules { grid-template-columns: 1fr; }
       .rule { display: grid; grid-template-columns: 38px 1fr; align-items: center; text-align: left; }
       .difficulty-grid { grid-template-columns: 1fr; }
@@ -829,24 +855,50 @@
       .topbar-row { grid-template-columns: auto 1fr auto; gap: 5px; }
       .topbar-actions { gap: 4px; }
       .icon-button { min-width: 37px; min-height: 37px; font-size: 18px; }
-      .main-stats { gap: 7px; font-size: 16px; }
+      .main-stats { gap: 7px; }
       .lives { min-width: 52px; }
-      .meter-line { grid-template-columns: 62px 1fr auto; font-size: 8px; }
+      .meter-line { grid-template-columns: 62px 1fr auto; font-size: 14px; }
       .game-scroll { padding: 11px 10px calc(18px + var(--safe-bottom)); }
       .lars-photo { width: min(62vw, 250px); }
       .helper-row { grid-template-columns: 1fr; }
       .keyboard-tip { display: none; }
       .result-stats { gap: 5px; }
     }
+
+    @media (max-height: 690px) and (orientation: landscape) {
+      .topbar { padding-top: calc(5px + var(--safe-top)); padding-bottom: 5px; }
+      .meter-stack { margin-top: 4px; }
+      .game-layout { grid-template-columns: minmax(220px, 0.72fr) minmax(420px, 1.28fr); gap: 18px; }
+      .lars-photo { width: min(42vh, 280px); }
+      .customer-card { padding-top: 18px; }
+      .option-button { min-height: 52px; }
+      .option-copy strong { font-size: 22px; }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .button:hover, .icon-button:hover { filter: brightness(1.08); }
+      .option-button:hover:not([disabled]) { border-color: var(--wine-600); filter: brightness(1.03); }
+      .difficulty-card:hover { border-color: var(--wine-600); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
+  <audio id="background-music" src="audio/backgroundmusic.mp3" autoplay loop preload="auto" playsinline></audio>
   <main class="app" id="app">
     <section class="screen active" id="start-screen" aria-labelledby="game-title">
       <div class="panel">
         <div class="start-layout">
           <div class="start-copy">
-            <p class="eyebrow">Le bar ferme quand Laurent est satisfait</p>
+            <p class="eyebrow">De wijnbar sluit pas als Lars tevreden is</p>
             <h1 class="pixel-title" id="game-title">SOMMELIER<br>LARS</h1>
             <div class="portrait-frame image-shell">
               <img src="images/Lars_idle.jpg" alt="Lars, de sommelier" data-fallback-image>
@@ -857,21 +909,21 @@
 
           <div>
             <div class="rules" aria-label="Puntentelling">
-              <div class="rule">⭐ <span><strong>PARFAIT</strong>100 + combo</span></div>
-              <div class="rule">👌 <span><strong>TRÈS BIEN</strong>60 punten</span></div>
-              <div class="rule">💀 <span><strong>ZUT!</strong>-25 en leven weg</span></div>
+              <div class="rule">⭐ <span><strong>Perfect</strong>100 + combo</span></div>
+              <div class="rule">👌 <span><strong>Goed</strong>60 punten</span></div>
+              <div class="rule">💀 <span><strong>Mis</strong>-25 en leven weg</span></div>
             </div>
 
             <fieldset class="difficulty-group">
-              <legend>CHOISISSEZ VOTRE SHIFT</legend>
+              <legend>KIES JE SHIFT</legend>
               <div class="difficulty-grid">
                 <label class="difficulty-option">
                   <input type="radio" name="difficulty" value="relaxed">
-                  <span class="difficulty-card"><strong>DÉGUSTATION</strong><span>8 klanten · 5 levens · 2 tips</span></span>
+                  <span class="difficulty-card"><strong>PROEVERIJ</strong><span>8 klanten · 5 levens · 2 tips</span></span>
                 </label>
                 <label class="difficulty-option">
                   <input type="radio" name="difficulty" value="normal" checked>
-                  <span class="difficulty-card"><strong>SOIRÉE</strong><span>12 klanten · 3 levens · 25 sec.</span></span>
+                  <span class="difficulty-card"><strong>AVONDSHIFT</strong><span>12 klanten · 3 levens · 25 sec.</span></span>
                 </label>
                 <label class="difficulty-option">
                   <input type="radio" name="difficulty" value="expert">
@@ -880,8 +932,8 @@
               </div>
             </fieldset>
 
-            <button class="button start-button" id="start-button" type="button">🍾 COMMENCER LE SERVICE</button>
-            <p id="high-score-line" class="subtitle" style="font-family: var(--pixel); font-size:10px; margin-top:20px;">Record personnel: 0</p>
+            <button class="button start-button" id="start-button" type="button">🍾 START DE SHIFT</button>
+            <p id="high-score-line" class="subtitle" style="font-size:20px;margin-top:14px;">Persoonlijk record: 0</p>
           </div>
         </div>
       </div>
@@ -906,12 +958,12 @@
 
         <div class="meter-stack">
           <div class="meter-line">
-            <span>SERVICE</span>
+            <span>SHIFT</span>
             <div class="meter" aria-hidden="true"><span id="round-progress-fill"></span></div>
             <span id="round-progress-label">0%</span>
           </div>
           <div class="meter-line">
-            <span>RÉPUTATION</span>
+            <span>REPUTATIE</span>
             <div class="meter" aria-hidden="true"><span id="reputation-fill"></span></div>
             <span id="reputation-label">—</span>
           </div>
@@ -935,7 +987,7 @@
 
           <div class="interaction-column">
             <article class="customer-card">
-              <div class="customer-label" id="customer-label">CLIENT 1 · TABLE 4</div>
+              <div class="customer-label" id="customer-label">KLANT 1 · TAFEL 4</div>
               <blockquote class="customer-quote" id="customer-quote"></blockquote>
               <div class="category-row" id="category-row"></div>
             </article>
@@ -943,8 +995,8 @@
             <div class="options-grid" id="options-box" aria-label="Wijnkeuzes"></div>
 
             <div class="helper-row">
-              <button class="button secondary hint-button" id="hint-button" type="button">💡 ASTUCE (<span id="hint-count">1</span>)</button>
-              <span class="keyboard-tip">1–3 · H = astuce · Esc = pauze</span>
+              <button class="button secondary hint-button" id="hint-button" type="button">💡 LARS-TIP (<span id="hint-count">1</span>)</button>
+              <span class="keyboard-tip">Toets 1–3 · H = tip · Esc = pauze</span>
             </div>
           </div>
         </div>
@@ -958,22 +1010,22 @@
       </div>
       <div class="result-content">
         <div class="result-inner">
-          <h2 class="result-title" id="result-title">FIN DE SERVICE</h2>
-          <div class="level-badge" id="level-badge">AMATEUR DE VIN</div>
-          <p class="score-line">Score final<strong id="final-score">0</strong></p>
+          <h2 class="result-title" id="result-title">SHIFT KLAAR</h2>
+          <div class="level-badge" id="level-badge">WIJNLIEFHEBBER</div>
+          <p class="score-line">Behaalde score<strong id="final-score">0</strong></p>
 
           <div class="result-stats">
-            <div class="result-stat"><strong id="result-perfect">0</strong>parfait</div>
-            <div class="result-stat"><strong id="result-accuracy">0%</strong>réputation</div>
-            <div class="result-stat"><strong id="result-best-streak">0</strong>combo max</div>
+            <div class="result-stat"><strong id="result-perfect">0</strong>perfect</div>
+            <div class="result-stat"><strong id="result-accuracy">0%</strong>reputatie</div>
+            <div class="result-stat"><strong id="result-best-streak">0</strong>beste combo</div>
           </div>
 
           <p class="result-message" id="result-message"></p>
           <p class="learning-summary" id="learning-summary"></p>
 
           <div class="result-actions">
-            <button class="button" id="replay-button" type="button">🔁 NOUVEAU SERVICE</button>
-            <button class="button secondary" id="menu-button" type="button">🍷 RETOUR AU MENU</button>
+            <button class="button" id="replay-button" type="button">🔁 NOG EEN SHIFT</button>
+            <button class="button secondary" id="menu-button" type="button">🍷 TERUG NAAR MENU</button>
           </div>
         </div>
       </div>
@@ -981,22 +1033,22 @@
 
     <div class="overlay" id="feedback-overlay" role="dialog" aria-modal="true" aria-labelledby="feedback-reaction" aria-describedby="feedback-knowledge">
       <div class="dialog" id="feedback-dialog">
-        <span class="feedback-badge perfect" id="feedback-badge">PARFAIT</span>
+        <span class="feedback-badge perfect" id="feedback-badge">PERFECT</span>
         <p class="reaction-line" id="feedback-reaction"></p>
         <div class="knowledge-card" id="feedback-knowledge"></div>
         <p class="feedback-score" id="feedback-score"></p>
-        <button class="button" id="feedback-next-button" type="button">CLIENT SUIVANT</button>
+        <button class="button" id="feedback-next-button" type="button">VOLGENDE KLANT</button>
       </div>
     </div>
 
     <div class="overlay" id="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title">
       <div class="dialog pause-dialog">
-        <p class="eyebrow">Le bouchon est remis</p>
-        <h2 class="pixel-title" id="pause-title" style="font-size:clamp(18px,5vw,27px);">PAUSE</h2>
-        <p class="subtitle" style="margin-top:10px;">Lars observe votre table attentivement.</p>
+        <p class="eyebrow">De kurk zit er even op</p>
+        <h2 class="pixel-title" id="pause-title" style="font-size:clamp(18px,5vw,27px);">PAUZE</h2>
+        <p class="subtitle" style="margin-top:10px;">Lars houdt je tafel angstvallig in de gaten.</p>
         <div class="pause-actions">
-          <button class="button" id="resume-button" type="button">▶️ CONTINUER</button>
-          <button class="button secondary" id="quit-button" type="button">🚪 QUITTER</button>
+          <button class="button" id="resume-button" type="button">▶️ VERDER SERVEREN</button>
+          <button class="button secondary" id="quit-button" type="button">🚪 SHIFT VERLATEN</button>
         </div>
       </div>
     </div>
@@ -1022,118 +1074,476 @@
       expert: { rounds: 15, lives: 2, seconds: 15, hints: 0, maxQuestionDifficulty: 3 }
     };
 
-    // French translated customer types
     const CUSTOMER_TYPES = [
-      "Le Gastronome", "Le Premier Rendez-vous", "Le Déjeuner d'Affaires", "Le Voisin Affamé",
-      "Le Critique Silencieux", "La Tante Dramatique", "Le Chef en Congé", "Le Client Confiant",
-      "L'Apprenti Sommelier", "La Table 'Quelque chose de bon'"
+      "De zelfverklaarde fijnproever", "De eerste date", "De zakenlunch", "De hongerige buurman",
+      "De stille recensent", "De dramatische tante", "De chef die vrijaf heeft", "De klant met veel vertrouwen",
+      "De wijnsnob-in-opleiding", "De tafel die ‘iets lekkers’ wil"
     ];
 
     const TABLES = [2, 4, 6, 7, 9, 11, 14, 17];
 
-    // French-touch reactions
     const REACTIONS = {
       perfect: [
-        "Parfait. Zelfs de Franse president zou knikken.",
-        "Dat is geen keuze, dat is pure kelderpoëzie. Magnifique.",
-        "Zelfs de druiven in de Bourgogne zouden applaudisseren.",
-        "C'est magnifique. Lars overweegt bijna een compliment.",
-        "Parfait. De klant is blij en Lars is tien seconden draaglijk.",
-        "Kijk eens aan: smaakpapillen én gezond verstand. Très bien.",
+        "Lars knikt. Zeldzaam. Noteer de datum.",
+        "Dat is geen keuze, dat is pure kelderpoëzie.",
+        "Zelfs de druiven zouden applaudisseren.",
+        "Magnifique. Lars overweegt bijna een compliment zonder bijbedoeling.",
+        "Perfect. De klant is blij en Lars is tien seconden draaglijk.",
+        "Kijk eens aan: smaakpapillen én gezond verstand.",
         "Dit klopt zo goed dat Lars zijn wenkbrauw één millimeter optrekt.",
-        "Je serveert alsof je huur afhangt van de afdronk. Excellent."
+        "Je serveert alsof je huur afhangt van de afdronk. Uitstekend."
       ],
       good: [
         "Dat kan ermee door. De kelderdeur blijft voorlopig open.",
-        "Pas mal. Niet briljant, wel drinkbaar.",
+        "Niet briljant, wel drinkbaar. Zoals de meeste familiefeesten.",
         "Een veilige keuze. Lars gaapt, maar hij gooit niets.",
-        "C'est bien. Niemand zal er een documentaire over maken.",
+        "Prima. Niemand zal er een documentaire over maken.",
         "Je hebt de ramp vermeden. Dat is vandaag al heel wat.",
-        "Correct genoeg om geen boze recensie in Le Figaro te krijgen.",
+        "Correct genoeg om geen boze review te krijgen.",
         "Lars zegt niets. In zijn taal is dat bijna lof.",
-        "D'accord. Een beetje braaf, maar tenminste niet strafbaar."
+        "Goed. Een beetje braaf, maar tenminste niet strafbaar."
       ],
       bad: [
-        "Sacré bleu! Dat was geen pairing, dat was een vloeibare familieruzie.",
+        "Dat was geen pairing, dat was een vloeibare familieruzie.",
         "Lars heeft net spontaan een kurkentrekker gebroken.",
-        "Mon Dieu. Mijn goudvis kiest beter, en die drinkt kraanwater.",
+        "Mijn goudvis kiest beter, en die drinkt kraanwater.",
         "Je hebt wijn en eten aan elkaar voorgesteld zodat ze ruzie konden maken.",
-        "Zelfs de goedkoopste tafelwijn kijkt hierop neer.",
-        "Dat glas verdient getuigenbescherming. Zut alors!",
-        "Je smaakpapillen zijn blijkbaar naar Parijs gevlucht.",
+        "Zelfs de azijn kijkt hierop neer.",
+        "Dat glas verdient getuigenbescherming.",
+        "Je smaakpapillen zijn blijkbaar op onbetaald verlof.",
         "De druiven zijn voor minder vroegtijdig van de stok gevallen.",
         "Dit is waarom Lars de dure flessen achter slot bewaart.",
         "Knap. Je hebt twee lekkere dingen tegelijk verpest.",
         "De klant vroeg wijn, geen persoonlijk experiment.",
-        "Lars noteert je naam onder ‘nooit in de cave laten’.",
-        "Dat botst harder dan een stokbrood tegen een stenen muur.",
+        "Lars noteert je naam onder ‘nooit alleen in de kelder laten’.",
+        "Dat botst harder dan twee winkelkarren in een smalle Aldi-gang.",
         "Je hebt de afdronk veranderd in een nooduitgang.",
         "Dit is culinair vandalisme met een steelglas."
       ],
       timeout: [
-        "De klant is intussen zelf druiven gaan plukken in Bordeaux.",
-        "Te laat. Zelfs een oude grand cru opent sneller dan jij beslist.",
+        "De klant is intussen zelf druiven gaan plukken.",
+        "Te laat. Zelfs een oude Bordeaux opent sneller dan jij beslist.",
         "Lars heeft in de tussentijd een volledige wijnkelder geïnventariseerd.",
         "De tafel dacht dat je de fles nog moest uitvinden.",
-        "Besluiteloosheid is geen druivenras, mon ami."
+        "Besluiteloosheid is geen druivenras."
       ]
     };
 
     const END_REACTIONS = {
       fail: [
-        "C'est un désastre. Je hebt zoveel combinaties laten botsen dat de glazen therapie nodig hebben.",
-        "Lars heeft je schort symbolisch in een emmer goedkope sangria gedoopt.",
-        "Je shift eindigt vroeger dan gepland. Au revoir."
+        "Je hebt zoveel combinaties laten botsen dat de glazen relatietherapie nodig hebben. Eruit — en blijf uit de buurt van mijn Grand Crus.",
+        "Lars heeft je schort symbolisch in een emmer goedkope sangria gedoopt. Dat is geen onderscheiding.",
+        "Je shift eindigt vroeger dan gepland. De verzekering noemt dat ‘preventieve schadebeperking’."
       ],
       average: [
-        "Pas mal. Je weet dat rood en wit geen moeilijkheidsgraden zijn. Lars laat je terugkomen.",
-        "Je hebt talent, ergens diep onder een paar twijfelachtige flessen. À la prochaine.",
+        "Niet slecht. Je weet dat rood en wit geen moeilijkheidsgraden zijn. Lars laat je terugkomen, onder streng toezicht.",
+        "Je hebt talent, ergens diep onder een paar twijfelachtige flessen. Nog één shift en misschien krijg je een echte kurkentrekker.",
         "Degelijk werk. Lars heeft slechts drie keer met zijn ogen gerold — een persoonlijk laagterecord."
       ],
       great: [
-        "Magnifique! Je hebt balans, lef en een neus die niet enkel voor decoratie dient.",
-        "Lars verklaart je officieel gevaarlijk goed. Vanaf nu mag je de etiketten aanraken.",
-        "Un service exceptionnel. De klanten glimlachen, de flessen zijn leeg en Lars is stil."
+        "Magnifique! Je hebt balans, lef en een neus die niet enkel voor decoratie dient. De kelder vertrouwt je.",
+        "Lars verklaart je officieel gevaarlijk goed. Vanaf nu mag je de etiketten aanraken zonder handschoenen.",
+        "Een grootse shift. De klanten glimlachen, de flessen zijn leeg en Lars heeft geen ontslagbrief geschreven."
       ]
     };
 
     const wineDatabase = [
-      { id: "ribeye-bordeaux", difficulty: 1, category: "Vlees", style: "Krachtig", customer: "Ik neem een zwaar gegrilde ribeye met pepersaus. Wat schenk je erbij?", options: [ { wine: "Médoc / Cabernet-blend", note: "gestructureerd rood", verdict: "perfect", why: "Rijpe tannines en voldoende body sluiten aan bij het vet, de korst en de intense vleessmaak.", principle: "Bij rijk rood vlees werkt een krachtige rode wijn met stevige, rijpe tannines." }, { wine: "Noord-Rhône Syrah", note: "peperig en stevig", verdict: "good", why: "De peperige aroma’s passen mooi bij de saus en de wijn heeft genoeg structuur, al is het minder klassiek.", principle: "Kruidigheid kan spiegelen, zolang de wijn voldoende kracht en frisse zuren behoudt." }, { wine: "Moscato d’Asti", note: "licht en zoet", verdict: "bad", why: "De lichte zoetheid en lage structuur verdwijnen volledig naast het gegrilde vlees en de pepersaus.", principle: "Een delicate zoete wijn wordt door een krachtig hartig gerecht overspoeld." } ] },
-      { id: "oysters-chablis", difficulty: 1, category: "Schaaldieren", style: "Fris", customer: "We delen verse, zilte oesters. Geef ons iets dat echt klopt.", options: [ { wine: "Chablis", note: "droog, strak en mineraal", verdict: "perfect", why: "De hoge zuren, frisse stijl en zilte indruk sluiten naadloos aan bij rauwe oesters.", principle: "Frisse, droge witte wijn zonder zwaar hout is ideaal bij pure schaal- en schelpdieren." }, { wine: "Champagne Brut", note: "droog en bruisend", verdict: "good", why: "De zuren en bubbels reinigen het gehemelte en passen uitstekend bij de zilte textuur.", principle: "Droge mousserende wijn is een sterke partner voor zout en delicate zee-smaken." }, { wine: "Amarone", note: "zwaar, warm en alcoholrijk", verdict: "bad", why: "De krachtige alcohol, gedroogde fruitsmaak en tannines verpletteren de subtiele oester.", principle: "Bij delicate rauwe zeevruchten vermijd je zware, tanninerijke rode wijn." } ] },
-      { id: "thai-curry-riesling", difficulty: 1, category: "Pittig", style: "Aromatisch", customer: "Mijn Thaise groene curry is behoorlijk pittig. Ik wil verkoeling, geen extra brandalarm.", options: [ { wine: "Halfdroge Riesling", note: "fris met een beetje restzoet", verdict: "perfect", why: "De frisse zuren houden het levendig, terwijl een beetje restzoet de chilihitte verzacht.", principle: "Bij chili werken lage alcohol, frisse zuren en een tikje zoet doorgaans beter dan kracht en hout." }, { wine: "Gewürztraminer", note: "aromatisch en zacht", verdict: "good", why: "De exotische aroma’s sluiten aan bij de curry en een licht zoete stijl kan de hitte temperen.", principle: "Aromatische wijnen kunnen de specerijen spiegelen, zeker wanneer ze niet te alcoholrijk zijn." }, { wine: "Houtgerijpte Zinfandel", note: "warm en alcoholrijk", verdict: "bad", why: "Veel alcohol versterkt de indruk van chili en het hout maakt de combinatie nog zwaarder.", principle: "Hoge alcohol kan pikant eten heter laten aanvoelen." } ] },
-      { id: "truffle-risotto-barolo", difficulty: 2, category: "Risotto", style: "Aards", customer: "Voor mij de romige risotto met verse zwarte truffel.", options: [ { wine: "Gerijpte Barolo", note: "aards, complex en fris", verdict: "perfect", why: "Nebbiolo heeft aardse, roosachtige en hartige tonen die prachtig aansluiten bij truffel, met zuren voor de romigheid.", principle: "Aardse aroma’s harmoniëren; zuren houden romige gerechten in balans." }, { wine: "Volle witte Bourgogne", note: "romig met frisse zuren", verdict: "good", why: "De rijke textuur past bij de risotto en voldoende zuren voorkomen dat het geheel log wordt.", principle: "Een wijn mag de textuur van een gerecht spiegelen, zolang er genoeg frisheid blijft." }, { wine: "Lichte Provence-rosé", note: "subtiel en zomers", verdict: "bad", why: "De wijn is te licht en verdwijnt naast de romigheid en uitgesproken truffelaroma’s.", principle: "De intensiteit van wijn en gerecht moet ongeveer gelijk zijn." } ] },
-      { id: "roquefort-sauternes", difficulty: 1, category: "Kaas", style: "Zoet-zout", customer: "Ik wil Roquefort. Sterk, zout en zonder compromissen.", options: [ { wine: "Sauternes", note: "rijk, zoet en fris", verdict: "perfect", why: "De zoetheid contrasteert met het zout, terwijl de zuren en rijkdom de krachtige kaas aankunnen.", principle: "Zoet en zout versterken elkaar; de wijn moet minstens even intens zijn als de kaas." }, { wine: "LBV Port", note: "zoet, donker fruit", verdict: "good", why: "De rijke zoetheid en concentratie staan stevig naast blauwe kaas, al is het zwaarder dan Sauternes.", principle: "Versterkte zoete wijn kan krachtige blauwe kaas goed dragen." }, { wine: "Muscadet", note: "licht en kurkdroog", verdict: "bad", why: "De wijn is veel te slank; de zoute, romige kaas maakt hem dun en scherp.", principle: "Een lichte droge wijn wordt door zeer krachtige kaas overspoeld." } ] },
-      // I kept the sample size short here for readability, you can re-insert all database elements here as in original code.
-      // (The rest of the database objects follow exactly the same structure).
+      {
+        id: "ribeye-bordeaux", difficulty: 1, category: "Vlees", style: "Krachtig",
+        customer: "Ik neem een zwaar gegrilde ribeye met pepersaus. Wat schenk je erbij?",
+        options: [
+          { wine: "Médoc / Cabernet-blend", note: "gestructureerd rood", verdict: "perfect", why: "Rijpe tannines en voldoende body sluiten aan bij het vet, de korst en de intense vleessmaak.", principle: "Bij rijk rood vlees werkt een krachtige rode wijn met stevige, rijpe tannines." },
+          { wine: "Noord-Rhône Syrah", note: "peperig en stevig", verdict: "good", why: "De peperige aroma’s passen mooi bij de saus en de wijn heeft genoeg structuur, al is het minder klassiek.", principle: "Kruidigheid kan spiegelen, zolang de wijn voldoende kracht en frisse zuren behoudt." },
+          { wine: "Moscato d’Asti", note: "licht en zoet", verdict: "bad", why: "De lichte zoetheid en lage structuur verdwijnen volledig naast het gegrilde vlees en de pepersaus.", principle: "Een delicate zoete wijn wordt door een krachtig hartig gerecht overspoeld." }
+        ]
+      },
+      {
+        id: "oysters-chablis", difficulty: 1, category: "Schaaldieren", style: "Fris",
+        customer: "We delen verse, zilte oesters. Geef ons iets dat echt klopt.",
+        options: [
+          { wine: "Chablis", note: "droog, strak en mineraal", verdict: "perfect", why: "De hoge zuren, frisse stijl en zilte indruk sluiten naadloos aan bij rauwe oesters.", principle: "Frisse, droge witte wijn zonder zwaar hout is ideaal bij pure schaal- en schelpdieren." },
+          { wine: "Champagne Brut", note: "droog en bruisend", verdict: "good", why: "De zuren en bubbels reinigen het gehemelte en passen uitstekend bij de zilte textuur.", principle: "Droge mousserende wijn is een sterke partner voor zout en delicate zee-smaken." },
+          { wine: "Amarone", note: "zwaar, warm en alcoholrijk", verdict: "bad", why: "De krachtige alcohol, gedroogde fruitsmaak en tannines verpletteren de subtiele oester.", principle: "Bij delicate rauwe zeevruchten vermijd je zware, tanninerijke rode wijn." }
+        ]
+      },
+      {
+        id: "thai-curry-riesling", difficulty: 1, category: "Pittig", style: "Aromatisch",
+        customer: "Mijn Thaise groene curry is behoorlijk pittig. Ik wil verkoeling, geen extra brandalarm.",
+        options: [
+          { wine: "Halfdroge Riesling", note: "fris met een beetje restzoet", verdict: "perfect", why: "De frisse zuren houden het levendig, terwijl een beetje restzoet de chilihitte verzacht.", principle: "Bij chili werken lage alcohol, frisse zuren en een tikje zoet doorgaans beter dan kracht en hout." },
+          { wine: "Gewürztraminer", note: "aromatisch en zacht", verdict: "good", why: "De exotische aroma’s sluiten aan bij de curry en een licht zoete stijl kan de hitte temperen.", principle: "Aromatische wijnen kunnen de specerijen spiegelen, zeker wanneer ze niet te alcoholrijk zijn." },
+          { wine: "Houtgerijpte Zinfandel", note: "warm en alcoholrijk", verdict: "bad", why: "Veel alcohol versterkt de indruk van chili en het hout maakt de combinatie nog zwaarder.", principle: "Hoge alcohol kan pikant eten heter laten aanvoelen." }
+        ]
+      },
+      {
+        id: "truffle-risotto-barolo", difficulty: 2, category: "Risotto", style: "Aards",
+        customer: "Voor mij de romige risotto met verse zwarte truffel.",
+        options: [
+          { wine: "Gerijpte Barolo", note: "aards, complex en fris", verdict: "perfect", why: "Nebbiolo heeft aardse, roosachtige en hartige tonen die prachtig aansluiten bij truffel, met zuren voor de romigheid.", principle: "Aardse aroma’s harmoniëren; zuren houden romige gerechten in balans." },
+          { wine: "Volle witte Bourgogne", note: "romig met frisse zuren", verdict: "good", why: "De rijke textuur past bij de risotto en voldoende zuren voorkomen dat het geheel log wordt.", principle: "Een wijn mag de textuur van een gerecht spiegelen, zolang er genoeg frisheid blijft." },
+          { wine: "Lichte Provence-rosé", note: "subtiel en zomers", verdict: "bad", why: "De wijn is te licht en verdwijnt naast de romigheid en uitgesproken truffelaroma’s.", principle: "De intensiteit van wijn en gerecht moet ongeveer gelijk zijn." }
+        ]
+      },
+      {
+        id: "roquefort-sauternes", difficulty: 1, category: "Kaas", style: "Zoet-zout",
+        customer: "Ik wil Roquefort. Sterk, zout en zonder compromissen.",
+        options: [
+          { wine: "Sauternes", note: "rijk, zoet en fris", verdict: "perfect", why: "De zoetheid contrasteert met het zout, terwijl de zuren en rijkdom de krachtige kaas aankunnen.", principle: "Zoet en zout versterken elkaar; de wijn moet minstens even intens zijn als de kaas." },
+          { wine: "LBV Port", note: "zoet, donker fruit", verdict: "good", why: "De rijke zoetheid en concentratie staan stevig naast blauwe kaas, al is het zwaarder dan Sauternes.", principle: "Versterkte zoete wijn kan krachtige blauwe kaas goed dragen." },
+          { wine: "Muscadet", note: "licht en kurkdroog", verdict: "bad", why: "De wijn is veel te slank; de zoute, romige kaas maakt hem dun en scherp.", principle: "Een lichte droge wijn wordt door zeer krachtige kaas overspoeld." }
+        ]
+      },
+      {
+        id: "carbonara-soave", difficulty: 1, category: "Pasta", style: "Romig-zout",
+        customer: "Klassieke carbonara: ei, pecorino, guanciale. Geen room, wel veel smaak.",
+        options: [
+          { wine: "Soave Classico", note: "fris, subtiel amandelachtig", verdict: "perfect", why: "De zuren snijden door ei en vet, terwijl de zachte hartigheid mooi aansluit bij kaas en spek.", principle: "Bij romige, zoute pasta heb je frisheid nodig zonder agressieve tannines." },
+          { wine: "Franciacorta Brut", note: "droog en bruisend", verdict: "good", why: "Bubbels en zuren verfrissen uitstekend en maken de rijke hap telkens opnieuw licht.", principle: "Droge bubbels zijn sterk bij vet, zout en gefrituurde of romige texturen." },
+          { wine: "Jonge Cabernet Sauvignon", note: "tanninerijk en krachtig", verdict: "bad", why: "De stevige tannines botsen met ei en kaas en maken de combinatie stroef en bitter.", principle: "Eiergerechten en harde tannines zijn zelden goede vrienden." }
+        ]
+      },
+      {
+        id: "salmon-chardonnay", difficulty: 1, category: "Vis", style: "Rijk",
+        customer: "Gegrilde zalm met dilleboter. Hij is vettig en daar ben ik trots op.",
+        options: [
+          { wine: "Houtgerijpte Chardonnay", note: "vol, romig en fris", verdict: "perfect", why: "De body en romige tonen sluiten aan bij zalm en boter, terwijl de zuren het vet opfrissen.", principle: "Rijke vis kan een vollere witte wijn aan, zeker met boter of roomsaus." },
+          { wine: "Koele Pinot Noir", note: "licht rood, weinig tannine", verdict: "good", why: "Pinot Noir heeft genoeg frisheid en zachte tannines om de vlezige zalm niet te overheersen.", principle: "Bij vlezige vis kan licht rood werken wanneer de tannines laag blijven." },
+          { wine: "Jonge Barolo", note: "zeer tanninerijk", verdict: "bad", why: "De harde tannines reageren onaangenaam met het visvet en domineren de dilleboter.", principle: "Tanninerijke rode wijn is riskant bij vette vis." }
+        ]
+      },
+      {
+        id: "goat-cheese-sancerre", difficulty: 1, category: "Kaas", style: "Fris-groen",
+        customer: "Een frisse salade met geitenkaas, groene kruiden en citroendressing.",
+        options: [
+          { wine: "Sancerre", note: "Sauvignon Blanc, strak en kruidig", verdict: "perfect", why: "De hoge zuren passen bij de frisse kaas en citroen; groene aroma’s sluiten aan bij de kruiden.", principle: "Zuren verbinden frisse kaas en vinaigrette; aromatische overeenkomst zorgt voor harmonie." },
+          { wine: "Droge Riesling", note: "citrus en hoge zuren", verdict: "good", why: "De frisse zuren kunnen de geitenkaas en citroen goed aan, al mist hij de typische groene aansluiting.", principle: "Bij zure ingrediënten moet de wijn zelf ook voldoende zuur hebben." },
+          { wine: "Amarone", note: "rijk, zoetig en alcoholisch", verdict: "bad", why: "De wijn is te zwaar en warm voor de frisse kaas en maakt de salade log.", principle: "Lichte frisse gerechten vragen geen zware, alcoholrijke wijn." }
+        ]
+      },
+      {
+        id: "pizza-chianti", difficulty: 1, category: "Pizza", style: "Tomaat",
+        customer: "Pizza margherita: tomaat, mozzarella en basilicum. Hou het Italiaans.",
+        options: [
+          { wine: "Chianti Classico", note: "Sangiovese met frisse zuren", verdict: "perfect", why: "Sangiovese heeft de zuren voor tomaat en hartige kruiden die mooi aansluiten bij basilicum en gebakken korst.", principle: "Tomatensaus vraagt wijn met hoge zuren, anders smaakt de wijn vlak." },
+          { wine: "Barbera d’Asti", note: "sappig en fris rood", verdict: "good", why: "Barbera’s hoge zuren en bescheiden tannines passen uitstekend bij tomaat en gesmolten kaas.", principle: "Sappig rood met hoge zuren is veilig bij pizza en pasta met tomaat." },
+          { wine: "Zware hout-Chardonnay", note: "boterig en laag in frisheid", verdict: "bad", why: "De romige houttonen botsen met de zure tomaat en missen de hartige aansluiting.", principle: "Veel hout en boter passen minder goed bij scherpe tomatensaus." }
+        ]
+      },
+      {
+        id: "lamb-rioja", difficulty: 1, category: "Vlees", style: "Kruidig",
+        customer: "Lamsbout uit de oven met rozemarijn, look en geroosterde aardappelen.",
+        options: [
+          { wine: "Rioja Reserva", note: "Tempranillo, kruidig en gerijpt", verdict: "perfect", why: "Rijp fruit, zachte tannines en kruidige houttonen passen bij geroosterd lam, look en rozemarijn.", principle: "Gerijpt rood met voldoende structuur en kruidigheid past klassiek bij geroosterd lam." },
+          { wine: "Cabernet Sauvignon", note: "stevig en donker fruit", verdict: "good", why: "De structuur kan het vlees aan, al kan een jonge stijl wat hard zijn naast de kruiden.", principle: "Rood vlees verdraagt tannines, maar rijpheid en saus bepalen hoeveel." },
+          { wine: "Moscato d’Asti", note: "licht, zoet en bruisend", verdict: "bad", why: "Te licht en te zoet voor het geroosterde vlees en de hartige kruiden.", principle: "De intensiteit en smaakrichting van wijn en gerecht moeten elkaar respecteren." }
+        ]
+      },
+      {
+        id: "duck-pinot", difficulty: 2, category: "Gevogelte", style: "Fruitig-aards",
+        customer: "Eendenborst met kersensaus. Sappig vanbinnen, krokant vanbuiten.",
+        options: [
+          { wine: "Pinot Noir uit Bourgogne", note: "fris rood fruit, aards", verdict: "perfect", why: "Rode fruitaroma’s sluiten aan bij kers, terwijl frisse zuren het eendenvet balanceren.", principle: "Vet gevogelte vraagt frisheid; een fruitsaus kan je aromatisch spiegelen." },
+          { wine: "Noord-Rhône Syrah", note: "peperig en hartig", verdict: "good", why: "De hartige kant past bij eend en de wijn heeft voldoende frisheid, maar de kersensaus wordt minder mooi gespiegeld.", principle: "Hartige rode wijn werkt bij eend zolang tannines en alcohol beheerst blijven." },
+          { wine: "Sauvignon Blanc", note: "grasachtig en licht", verdict: "bad", why: "Te licht en te groen voor de vette eend en zoete kersensaus.", principle: "Een lichte aromatische witte wijn mist hier body en smaakaansluiting." }
+        ]
+      },
+      {
+        id: "mushroom-risotto-pinot", difficulty: 2, category: "Vegetarisch", style: "Umami",
+        customer: "Romige paddenstoelenrisotto met Parmezaan. Heel veel umami.",
+        options: [
+          { wine: "Pinot Noir", note: "licht rood en aards", verdict: "perfect", why: "Aardse aroma’s sluiten aan bij paddenstoelen en de frisse zuren houden de risotto levendig.", principle: "Bij aardse umami-gerechten kies je aroma-overeenkomst en vermijd je harde tannines." },
+          { wine: "Gerijpte Chardonnay", note: "vol en nootachtig", verdict: "good", why: "De textuur past bij de romigheid en rijping kan nootachtige tonen geven die mooi aansluiten.", principle: "Rijke witte wijn kan romige risotto dragen wanneer er genoeg zuur is." },
+          { wine: "Zoete Riesling", note: "duidelijk zoet", verdict: "bad", why: "De zoetheid contrasteert onnodig met de hartige paddenstoelen en maakt het gerecht log.", principle: "Zoet werkt niet automatisch bij umami; zonder pittigheid of zout contrast kan het plakkerig worden." }
+        ]
+      },
+      {
+        id: "sushi-riesling", difficulty: 2, category: "Sushi", style: "Delicaat",
+        customer: "Een assortiment sushi en sashimi, met soja en een beetje wasabi.",
+        options: [
+          { wine: "Droge Riesling", note: "licht, citrus en hoge zuren", verdict: "perfect", why: "De wijn blijft delicaat genoeg voor rauwe vis, heeft frisheid voor soja en kan een beetje wasabi aan.", principle: "Bij rauwe vis kies je lichte, frisse wijn met weinig tot geen tannine." },
+          { wine: "Champagne Extra Brut", note: "strak en bruisend", verdict: "good", why: "Bubbels en zuren passen goed bij rauwe vis en zoute soja, al kan zeer droog wat streng zijn bij wasabi.", principle: "Droge mousserende wijn is breed inzetbaar bij sushi en zeevruchten." },
+          { wine: "Cabernet Sauvignon", note: "donker en tanninerijk", verdict: "bad", why: "Tannines domineren de vis en kunnen samen met soja en wasabi bitter of metaalachtig overkomen.", principle: "Vermijd stevige tannines bij rauwe vis." }
+        ]
+      },
+      {
+        id: "fried-chicken-champagne", difficulty: 1, category: "Gefrituurd", style: "Krokant",
+        customer: "Krokante fried chicken met een zoute, licht pikante korst.",
+        options: [
+          { wine: "Champagne Brut", note: "droog, fris en bruisend", verdict: "perfect", why: "Zuren en bubbels snijden door het vet, terwijl de toastachtige stijl mooi bij de korst past.", principle: "Bubbels, zuren en zout zijn een sterke combinatie bij gefrituurd eten." },
+          { wine: "Droge Chenin Blanc", note: "fris en licht wasachtig", verdict: "good", why: "De hoge zuren verfrissen goed en de wijn heeft genoeg textuur voor de krokante kip.", principle: "Hoge zuren houden vetrijke bereidingen levendig." },
+          { wine: "Amarone", note: "zwaar en alcoholrijk", verdict: "bad", why: "Te warm, te zwaar en te geconcentreerd; de kip wordt log en de pikante korst heter.", principle: "Veel alcohol en gewicht werken slecht bij vettig én pikant eten." }
+        ]
+      },
+      {
+        id: "asparagus-gruner", difficulty: 3, category: "Groenten", style: "Groen",
+        customer: "Witte en groene asperges met een citroen-kruidensaus. Succes ermee.",
+        options: [
+          { wine: "Grüner Veltliner", note: "fris, kruidig en groen", verdict: "perfect", why: "De frisse zuren, peperige toets en groene aroma’s sluiten aan bij asperges en kruiden.", principle: "Groene groenten vragen vaak frisse, kruidige witte wijn zonder zwaar hout." },
+          { wine: "Sauvignon Blanc", note: "fris en grassig", verdict: "good", why: "De groene aroma’s en zuren passen goed, maar kunnen samen met citroen wat scherp worden.", principle: "Een aromatische groene stijl kan groenten spiegelen, mits de zuren in balans blijven." },
+          { wine: "Houtgerijpte Chardonnay", note: "boterig en geroosterd", verdict: "bad", why: "Zwaar hout en boter botsen met de groene, frisse smaken van asperges en citroen.", principle: "Bij delicate groene groenten vermijd je veel nieuw hout." }
+        ]
+      },
+      {
+        id: "blue-burger-malbec", difficulty: 2, category: "Burger", style: "Krachtig-zout",
+        customer: "Een burger met blauwe kaas, gekaramelliseerde ui en spek.",
+        options: [
+          { wine: "Malbec", note: "donker fruit en stevige body", verdict: "perfect", why: "De body past bij vlees en spek, terwijl rijp fruit en zachte tannines het zout van de kaas opvangen.", principle: "Een rijk gerecht vraagt body; rijp fruit verzacht zout en krachtige smaken." },
+          { wine: "Rioja Crianza", note: "kruidig en soepel", verdict: "good", why: "Genoeg structuur voor de burger en kruidigheid voor spek, maar iets minder kracht voor de blauwe kaas.", principle: "Soepel gerijpt rood werkt breed bij gegrild vlees en hartige toppings." },
+          { wine: "Pinot Grigio", note: "licht en neutraal", verdict: "bad", why: "De wijn wordt volledig weggeblazen door vlees, spek, ui en blauwe kaas.", principle: "Een wijn die veel lichter is dan het gerecht verdwijnt." }
+        ]
+      },
+      {
+        id: "foie-gras-sauternes", difficulty: 1, category: "Voorgerecht", style: "Rijk-zoet",
+        customer: "Foie gras met brioche en een klein beetje vijgenconfituur.",
+        options: [
+          { wine: "Sauternes", note: "weelderig zoet met frisse zuren", verdict: "perfect", why: "Zoetheid sluit aan bij vijg en brioche; zuren voorkomen dat de rijke foie gras te zwaar wordt.", principle: "Bij rijke paté werkt een zoete wijn met voldoende zuur als contrast en harmonie." },
+          { wine: "Tokaji Aszú", note: "zoet, fris en kruidig", verdict: "good", why: "Ook rijk genoeg en heerlijk fris, met aroma’s die goed bij vijg en brioche passen.", principle: "Meerdere edelzoete stijlen kunnen foie gras dragen." },
+          { wine: "Jonge Barolo", note: "droog en zeer tanninerijk", verdict: "bad", why: "Harde tannines en de droge stijl botsen met de zachte, vette textuur en zoete garnituur.", principle: "Zeer tanninerijk rood maakt rijke paté vaak stroef." }
+        ]
+      },
+      {
+        id: "chocolate-port", difficulty: 1, category: "Dessert", style: "Chocolade",
+        customer: "Donkere chocolademousse. Intens, bitterzoet en gevaarlijk lekker.",
+        options: [
+          { wine: "LBV Port", note: "zoet, krachtig en donker fruit", verdict: "perfect", why: "De wijn is minstens even zoet en intens als het dessert; donker fruit sluit aan bij chocolade.", principle: "Dessertwijn moet doorgaans zoeter zijn dan het dessert en qua intensiteit meekunnen." },
+          { wine: "Banyuls", note: "zoete versterkte rode wijn", verdict: "good", why: "Rijp rood fruit en cacao-achtige tonen vormen een natuurlijke combinatie met chocolade.", principle: "Zoete versterkte rode wijn is een klassieke partner voor cacao." },
+          { wine: "Chablis", note: "kurkdroog en strak", verdict: "bad", why: "De chocolademousse maakt de wijn zuur en dun; er is geen zoetheid of aromatische aansluiting.", principle: "Droge wijn smaakt hard naast een zoet dessert." }
+        ]
+      },
+      {
+        id: "apple-tart-moscato", difficulty: 2, category: "Dessert", style: "Fruitig",
+        customer: "Warme appeltaart met kaneel en een bolletje vanille-ijs.",
+        options: [
+          { wine: "Moscato d’Asti", note: "licht zoet, aromatisch en bruisend", verdict: "perfect", why: "De zachte zoetheid en fruitige aroma’s passen bij appel, terwijl lage alcohol en bubbels het dessert luchtig houden.", principle: "Een licht fruitdessert vraagt een frisse wijn die minstens even zoet is, maar niet zwaarder." },
+          { wine: "Demi-sec Champagne", note: "mousserend met zachte zoetheid", verdict: "good", why: "De zoetheid en bubbels passen bij appel en ijs, al is de aromatische aansluiting iets minder precies.", principle: "Mousserende wijn met dosage kan fruitdesserts verfrissen." },
+          { wine: "Cabernet Sauvignon", note: "droog en tanninerijk", verdict: "bad", why: "Het dessert maakt de wijn bitter, zuur en hard; tannines hebben hier niets te zoeken.", principle: "Droge tanninerijke rode wijn botst met zoet fruitdessert." }
+        ]
+      },
+      {
+        id: "ceviche-albarino", difficulty: 2, category: "Vis", style: "Citrus",
+        customer: "Ceviche van zeebaars met limoen, koriander en rode ui.",
+        options: [
+          { wine: "Albariño", note: "zilt, citrus en hoge zuren", verdict: "perfect", why: "De wijn heeft genoeg zuur voor limoen, blijft fris bij rauwe vis en sluit aromatisch aan bij zee en citrus.", principle: "Zure bereidingen vragen een wijn met minstens evenveel frisheid." },
+          { wine: "Sauvignon Blanc", note: "citrus en groene kruiden", verdict: "good", why: "Zuren en kruidige aroma’s passen goed bij limoen en koriander, al kan het geheel erg scherp worden.", principle: "Aromatische gelijkenis werkt, maar te veel zuur kan streng worden." },
+          { wine: "Houtgerijpte Shiraz", note: "donker, warm en tanninerijk", verdict: "bad", why: "De wijn overheerst rauwe vis en botst met limoen, koriander en ui.", principle: "Delicate zure visgerechten verdragen geen zware rode wijn." }
+        ]
+      },
+      {
+        id: "seafood-paella-albarino", difficulty: 2, category: "Rijst", style: "Zeevruchten",
+        customer: "Paella met mosselen, garnalen, saffraan en een partje citroen.",
+        options: [
+          { wine: "Albariño", note: "fris, zilt en citrusachtig", verdict: "perfect", why: "Zilte frisheid past bij zeevruchten; citrus en zuren sluiten aan bij citroen en houden de rijst levendig.", principle: "Bij zeevruchten en citroen kies je frisse witte wijn met weinig hout." },
+          { wine: "Droge Spaanse rosé", note: "fris en licht fruitig", verdict: "good", why: "Rosé heeft genoeg frisheid voor zeevruchten en wat fruit voor saffraan, zonder te zwaar te worden.", principle: "Droge rosé is veelzijdig bij mediterrane rijstgerechten." },
+          { wine: "Amarone", note: "rijk en alcoholisch", verdict: "bad", why: "Veel te zwaar voor zeevruchten; alcohol en gedroogd fruit domineren saffraan en citroen.", principle: "Zware rode wijn overschaduwt delicate zeevruchten." }
+        ]
+      },
+      {
+        id: "grilled-veg-rhone", difficulty: 2, category: "Vegetarisch", style: "Rokerig",
+        customer: "Gegrilde paprika, courgette, aubergine en halloumi met kruidenolie.",
+        options: [
+          { wine: "Côtes du Rhône", note: "Grenache-blend, kruidig en soepel", verdict: "perfect", why: "Rijp fruit en kruiden sluiten aan bij grillaroma’s en paprika; zachte tannines respecteren de groenten.", principle: "Bij gegrilde groenten werkt soepel, kruidig rood beter dan hard tanninerijk rood." },
+          { wine: "Droge rosé", note: "fris en mediterraan", verdict: "good", why: "Fris genoeg voor halloumi en kruiden, maar iets lichter voor de rokerige aubergine.", principle: "Droge rosé past breed bij mediterrane groenten en zoute kaas." },
+          { wine: "Sauternes", note: "rijk en zoet", verdict: "bad", why: "De zoetheid maakt de gegrilde groenten log en heeft geen goede aansluiting bij kruidenolie.", principle: "Zonder pittig of zout contrast is edelzoet hier onnodig zwaar." }
+        ]
+      },
+      {
+        id: "steak-tartare-gamay", difficulty: 3, category: "Rauw vlees", style: "Fris-rood",
+        customer: "Steak tartare met kappertjes, mosterd en cornichons.",
+        options: [
+          { wine: "Cru Beaujolais", note: "Gamay, sappig en weinig tannine", verdict: "perfect", why: "Fris rood fruit en lage tannines respecteren het rauwe vlees; zuren kunnen mosterd en pickles aan.", principle: "Rauw vlees vraagt doorgaans lichter rood met frisse zuren en zachte tannines." },
+          { wine: "Loire Cabernet Franc", note: "fris, kruidig en middellicht", verdict: "good", why: "De frisse zuren en kruidigheid passen, maar groene tonen kunnen de mosterd extra scherp maken.", principle: "Middellicht rood kan werken wanneer tannines beheerst zijn." },
+          { wine: "Australische Shiraz", note: "zwaar, rijp en houtgerijpt", verdict: "bad", why: "De krachtige alcohol, hout en tannines verpletteren de fijne textuur van rauw vlees.", principle: "Rauw vlees is subtieler dan gegrild vlees en vraagt minder kracht." }
+        ]
+      },
+      {
+        id: "bbq-ribs-zinfandel", difficulty: 2, category: "BBQ", style: "Zoet-rokerig",
+        customer: "Sticky spareribs met zoete barbecuesaus, rook en chili.",
+        options: [
+          { wine: "Zinfandel", note: "rijp fruit, kruidig en vol", verdict: "perfect", why: "Rijp fruit sluit aan bij zoete saus, kruidigheid bij rook en chili, en de body kan het vlees dragen.", principle: "Bij zoete barbecuesaus werkt rijp fruit; de wijn mag niet te droog of te licht zijn." },
+          { wine: "Shiraz", note: "donker fruit en peper", verdict: "good", why: "Kracht en peper passen bij rook en chili, maar hoge alcohol kan de pikantheid versterken.", principle: "Krachtig rood werkt bij BBQ, maar let op alcohol wanneer chili meespeelt." },
+          { wine: "Muscadet", note: "licht, zilt en strak", verdict: "bad", why: "Veel te licht en zuur tegenover zoete saus, rook en vet vlees.", principle: "Een slanke wijn verdwijnt naast krachtige zoet-rokerige smaken." }
+        ]
+      },
+      {
+        id: "chicken-mushroom-burgundy", difficulty: 2, category: "Gevogelte", style: "Romig",
+        customer: "Kip in romige champignonsaus met een beetje tijm.",
+        options: [
+          { wine: "Witte Bourgogne", note: "Chardonnay, vol en fris", verdict: "perfect", why: "De romige textuur en subtiele houttonen passen bij saus en champignons; zuren houden het geheel in balans.", principle: "Roomsaus vraagt body én zuur; paddenstoelen kunnen rijping en subtiel hout aan." },
+          { wine: "Pinot Noir", note: "licht rood en aards", verdict: "good", why: "Aardse aroma’s sluiten aan bij champignons en zachte tannines blijven vriendelijk voor kip.", principle: "Licht rood kan bij gevogelte en paddenstoelen wanneer de saus niet te zwaar is." },
+          { wine: "Muscadet", note: "zeer licht en zilt", verdict: "bad", why: "Te slank voor roomsaus en champignons; de wijn wordt dun en scherp.", principle: "Rijke saus vraagt meer textuur dan een zeer lichte kustwijn." }
+        ]
+      },
+      {
+        id: "spicy-pizza-lambrusco", difficulty: 2, category: "Pizza", style: "Pittig-vet",
+        customer: "Pizza met pikante salami, tomaat en veel gesmolten kaas.",
+        options: [
+          { wine: "Droge Lambrusco", note: "fris, bruisend en sappig rood", verdict: "perfect", why: "Bubbels en zuren reinigen vet en kaas, rood fruit past bij tomaat en lage alcohol houdt chili onder controle.", principle: "Bij vet én pittig zijn frisheid, bubbels en gematigde alcohol ideaal." },
+          { wine: "Barbera", note: "hoge zuren en sappig fruit", verdict: "good", why: "De zuren passen bij tomaat en kaas, maar zonder bubbels is het iets minder verfrissend.", principle: "Hoge zuren maken rode wijn pizzavriendelijk." },
+          { wine: "Pinot Grigio", note: "licht en neutraal", verdict: "bad", why: "Te weinig fruit en body voor salami, kaas en tomaat; de wijn smaakt waterig.", principle: "Pittige, vette pizza vraagt meer karakter dan een zeer neutrale lichte wijn." }
+        ]
+      },
+      {
+        id: "lobster-chardonnay", difficulty: 2, category: "Schaaldieren", style: "Luxueus",
+        customer: "Kreeft met beurre blanc. Ik verwacht klasse, geen fruitsap.",
+        options: [
+          { wine: "Meursault / volle Chardonnay", note: "rijk, subtiel hout en fris", verdict: "perfect", why: "De body en boterige textuur sluiten aan bij kreeft en beurre blanc, terwijl zuren voor spanning zorgen.", principle: "Rijk schaaldier met botersaus vraagt een volle witte wijn met frisse ruggengraat." },
+          { wine: "Vintage Champagne", note: "complex, fris en bruisend", verdict: "good", why: "Zuren en rijping passen uitstekend bij kreeft en saus, al spiegelt de textuur minder direct.", principle: "Complexe mousserende wijn kan rijke zeevruchten dragen." },
+          { wine: "Jonge Cabernet Sauvignon", note: "droog en tanninerijk", verdict: "bad", why: "De tannines en donkere fruitsmaak domineren de zoete kreeft en botsen met botersaus.", principle: "Krachtig tanninerijk rood is ongeschikt voor delicate schaaldieren." }
+        ]
+      },
+      {
+        id: "mussels-muscadet", difficulty: 1, category: "Schaaldieren", style: "Zilt",
+        customer: "Mosselen in witte wijn met selder en peterselie.",
+        options: [
+          { wine: "Muscadet Sèvre-et-Maine", note: "licht, droog en zilt", verdict: "perfect", why: "De frisse, zilte stijl past bij mosselen en sluit aan bij de eenvoudige wittewijnbouillon.", principle: "Pure schelpdieren vragen droge, frisse wijn zonder zwaar hout." },
+          { wine: "Chablis", note: "strak en mineraal", verdict: "good", why: "Ook zeer fris en passend bij schelpdieren, maar vaak iets voller en duurder dan nodig.", principle: "Meerdere frisse kuststijlen werken bij mosselen." },
+          { wine: "Amarone", note: "rijk, warm en gedroogd fruit", verdict: "bad", why: "De wijn overrompelt de mosselen volledig en botst met de frisse bouillon.", principle: "Delicate schelpdieren verdragen geen zware alcoholrijke rode wijn." }
+        ]
+      },
+      {
+        id: "prosciutto-prosecco", difficulty: 2, category: "Aperitief", style: "Zoet-zout",
+        customer: "Prosciutto met meloen. Simpel, zout, sappig en zomers.",
+        options: [
+          { wine: "Prosecco Brut", note: "fris, fruitig en bruisend", verdict: "perfect", why: "Bubbels en zuren verfrissen het zout en vet; fruitige aroma’s sluiten aan bij meloen.", principle: "Bij zoet-zout aperitief werken frisse bubbels en fruitige aroma’s." },
+          { wine: "Droge rosé", note: "licht rood fruit en fris", verdict: "good", why: "Fris genoeg voor ham en fruitig genoeg voor meloen, maar mist het reinigende effect van bubbels.", principle: "Droge rosé is een veelzijdige zomerse partner voor charcuterie en fruit." },
+          { wine: "Barolo", note: "krachtig en tanninerijk", verdict: "bad", why: "Te zwaar en droog voor sappige meloen; tannines maken de ham stroef.", principle: "Een delicaat zoet-zout hapje vraagt geen monumentale rode wijn." }
+        ]
+      },
+      {
+        id: "tiramisu-marsala", difficulty: 3, category: "Dessert", style: "Koffie-cacao",
+        customer: "Tiramisu met espresso, mascarpone en cacao. Uiteraard een royale portie.",
+        options: [
+          { wine: "Zoete Marsala", note: "noten, karamel en gedroogd fruit", verdict: "perfect", why: "De wijn is zoet genoeg en sluit met noten-, koffie- en karameltinten aan bij espresso en mascarpone.", principle: "Bij romig koffiedessert werkt een zoete wijn met oxidatieve, nootachtige aroma’s." },
+          { wine: "10 jaar oude Tawny Port", note: "noten, karamel en frisheid", verdict: "good", why: "De nootachtige rijping past uitstekend, maar de wijn kan wat zwaarder zijn dan het dessert.", principle: "Gerijpte zoete wijn harmonieert met koffie, noten en cacao." },
+          { wine: "Sauvignon Blanc", note: "kurkdroog en grassig", verdict: "bad", why: "De wijn wordt scherp en dun naast suiker, koffie en romige mascarpone.", principle: "Droge frisse wijn botst met zoet, romig dessert." }
+        ]
+      },
+      {
+        id: "pork-apple-chenin", difficulty: 3, category: "Vlees", style: "Zoet-hartig",
+        customer: "Varkensgebraad met appel, salie en een lichte roomsaus.",
+        options: [
+          { wine: "Vouvray demi-sec", note: "Chenin Blanc, fris met zachte zoetheid", verdict: "perfect", why: "Appel en zachte zoetheid sluiten aan bij de saus, terwijl hoge zuren het vlees en de room verfrissen.", principle: "Bij fruit in een hartig gerecht kan een licht zoete wijn harmonie geven, mits de zuren hoog blijven." },
+          { wine: "Pinot Noir", note: "licht rood en fris", verdict: "good", why: "De zachte tannines passen bij varkensvlees en rood fruit kan met appel werken, maar de roomsaus vraagt meer textuur.", principle: "Licht rood kan bij varkensvlees wanneer de garnituur niet te zoet is." },
+          { wine: "Tanninerijke Tannat", note: "zeer krachtig rood", verdict: "bad", why: "Te hard en droog voor mals varkensvlees, appel en roomsaus.", principle: "Mild vlees met fruitige saus vraagt finesse, geen tanninebom." }
+        ]
+      },
+      {
+        id: "spicy-noodles-riesling", difficulty: 2, category: "Pittig", style: "Umami",
+        customer: "Pikante noedels met chili-olie, soja, sesam en lente-ui.",
+        options: [
+          { wine: "Kabinett Riesling", note: "lage alcohol, fris en licht zoet", verdict: "perfect", why: "Lage alcohol en een beetje restzoet temperen chili; zuren en citrus houden soja en olie fris.", principle: "Pittig eten houdt van lage alcohol, frisheid en een tikje zoet." },
+          { wine: "Moscato secco", note: "aromatisch en licht", verdict: "good", why: "Aromatisch en niet te zwaar, maar vaak minder zuur en minder precies bij soja en sesam.", principle: "Aromatische lichte wijn kan werken zolang hij niet alcoholrijk is." },
+          { wine: "Napa Cabernet", note: "krachtig, hout en hoge alcohol", verdict: "bad", why: "Alcohol versterkt de chili, tannines botsen met soja en hout domineert de noedels.", principle: "Hoge alcohol en tannines zijn een slechte combinatie met chili en zoute umami." }
+        ]
+      },
+      {
+        id: "bruschetta-vermentino", difficulty: 2, category: "Aperitief", style: "Tomaat-kruiden",
+        customer: "Bruschetta met rijpe tomaat, basilicum, look en olijfolie.",
+        options: [
+          { wine: "Vermentino", note: "fris, kruidig en licht zilt", verdict: "perfect", why: "Frisse zuren passen bij tomaat; mediterrane kruiden en een zilte toets sluiten aan bij basilicum en olijfolie.", principle: "Tomaat vraagt zuur; mediterrane aroma’s kunnen elkaar mooi spiegelen." },
+          { wine: "Sangiovese rosato", note: "fris en rood fruit", verdict: "good", why: "Genoeg zuren voor tomaat en fruitigheid voor de geroosterde smaak, maar minder kruidige aansluiting.", principle: "Droge rosé met goede zuren werkt breed bij tomaat." },
+          { wine: "Oaked Viognier", note: "vol, bloemig en laag zuur", verdict: "bad", why: "Te zwaar en zacht voor tomaat; hout en bloemigheid botsen met look en basilicum.", principle: "Lage zuren maken wijn vlak naast tomaat." }
+        ]
+      },
+      {
+        id: "beef-stew-syrah", difficulty: 2, category: "Stoofpot", style: "Diep-hartig",
+        customer: "Langzaam gegaarde rundstoofpot met wortel, ui en donkere saus.",
+        options: [
+          { wine: "Syrah uit de Rhône", note: "hartig, peperig en gestructureerd", verdict: "perfect", why: "De wijn heeft body voor het vlees en hartige, peperige tonen voor de diepe saus.", principle: "Een stoofpot vraagt een wijn met vergelijkbare diepte en voldoende structuur." },
+          { wine: "Bordeaux Supérieur", note: "stevig en donker fruit", verdict: "good", why: "Genoeg kracht en tannine voor rund, maar de precieze match hangt sterk af van de saus.", principle: "Stevig rood is breed inzetbaar bij lang gegaard rundvlees." },
+          { wine: "Picpoul de Pinet", note: "zeer fris en licht", verdict: "bad", why: "Veel te licht voor de diepe saus en het lang gegaarde vlees.", principle: "De intensiteit van wijn en gerecht moet in evenwicht zijn." }
+        ]
+      }
     ];
 
     const state = {
-      screen: "start", difficultyKey: "normal", config: DIFFICULTIES.normal,
-      score: 0, lives: 3, streak: 0, bestStreak: 0, hints: 1,
-      deck: [], index: 0, locked: false, paused: false,
-      timerId: null, timeLeft: 0, outcomes: [], mistakes: [], selectedButton: null
+      screen: "start",
+      difficultyKey: "normal",
+      config: DIFFICULTIES.normal,
+      score: 0,
+      lives: 3,
+      streak: 0,
+      bestStreak: 0,
+      hints: 1,
+      deck: [],
+      index: 0,
+      locked: false,
+      paused: false,
+      timerId: null,
+      timeLeft: 0,
+      outcomes: [],
+      mistakes: [],
+      selectedButton: null
     };
 
     const $ = (selector, root = document) => root.querySelector(selector);
     const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
     const elements = {
-      screens: $$(".screen"), startScreen: $("#start-screen"), gameScreen: $("#game-screen"), resultScreen: $("#result-screen"),
-      startButton: $("#start-button"), highScoreLine: $("#high-score-line"), pauseButton: $("#pause-button"), muteButton: $("#mute-button"),
-      score: $("#score-value"), streak: $("#streak-value"), round: $("#round-value"), roundTotal: $("#round-total"), lives: $("#lives-indicator"),
-      roundProgressFill: $("#round-progress-fill"), roundProgressLabel: $("#round-progress-label"), reputationFill: $("#reputation-fill"), reputationLabel: $("#reputation-label"),
-      timerWrap: $("#timer-wrap"), timerValue: $("#timer-value"), timerFill: $("#timer-fill"), gameScroll: $("#game-scroll"),
-      larsPhoto: $("#lars-photo"), larsImage: $("#lars-image"), comboPill: $("#combo-pill"), customerLabel: $("#customer-label"), customerQuote: $("#customer-quote"), categoryRow: $("#category-row"),
-      optionsBox: $("#options-box"), hintButton: $("#hint-button"), hintCount: $("#hint-count"), feedbackOverlay: $("#feedback-overlay"), feedbackDialog: $("#feedback-dialog"),
-      feedbackBadge: $("#feedback-badge"), feedbackReaction: $("#feedback-reaction"), feedbackKnowledge: $("#feedback-knowledge"), feedbackScore: $("#feedback-score"),
-      feedbackNext: $("#feedback-next-button"), pauseOverlay: $("#pause-overlay"), resumeButton: $("#resume-button"), quitButton: $("#quit-button"),
-      resultTitle: $("#result-title"), levelBadge: $("#level-badge"), finalScore: $("#final-score"), resultPerfect: $("#result-perfect"), resultAccuracy: $("#result-accuracy"),
-      resultBestStreak: $("#result-best-streak"), resultMessage: $("#result-message"), learningSummary: $("#learning-summary"), resultBackground: $("#result-background"),
-      resultImage: $("#result-image"), replayButton: $("#replay-button"), menuButton: $("#menu-button"), toast: $("#toast"), announcer: $("#live-announcer")
+      screens: $$(".screen"),
+      startScreen: $("#start-screen"),
+      gameScreen: $("#game-screen"),
+      resultScreen: $("#result-screen"),
+      startButton: $("#start-button"),
+      highScoreLine: $("#high-score-line"),
+      pauseButton: $("#pause-button"),
+      muteButton: $("#mute-button"),
+      score: $("#score-value"),
+      streak: $("#streak-value"),
+      round: $("#round-value"),
+      roundTotal: $("#round-total"),
+      lives: $("#lives-indicator"),
+      roundProgressFill: $("#round-progress-fill"),
+      roundProgressLabel: $("#round-progress-label"),
+      reputationFill: $("#reputation-fill"),
+      reputationLabel: $("#reputation-label"),
+      timerWrap: $("#timer-wrap"),
+      timerValue: $("#timer-value"),
+      timerFill: $("#timer-fill"),
+      gameScroll: $("#game-scroll"),
+      larsPhoto: $("#lars-photo"),
+      larsImage: $("#lars-image"),
+      comboPill: $("#combo-pill"),
+      customerLabel: $("#customer-label"),
+      customerQuote: $("#customer-quote"),
+      categoryRow: $("#category-row"),
+      optionsBox: $("#options-box"),
+      hintButton: $("#hint-button"),
+      hintCount: $("#hint-count"),
+      feedbackOverlay: $("#feedback-overlay"),
+      feedbackDialog: $("#feedback-dialog"),
+      feedbackBadge: $("#feedback-badge"),
+      feedbackReaction: $("#feedback-reaction"),
+      feedbackKnowledge: $("#feedback-knowledge"),
+      feedbackScore: $("#feedback-score"),
+      feedbackNext: $("#feedback-next-button"),
+      pauseOverlay: $("#pause-overlay"),
+      resumeButton: $("#resume-button"),
+      quitButton: $("#quit-button"),
+      resultTitle: $("#result-title"),
+      levelBadge: $("#level-badge"),
+      finalScore: $("#final-score"),
+      resultPerfect: $("#result-perfect"),
+      resultAccuracy: $("#result-accuracy"),
+      resultBestStreak: $("#result-best-streak"),
+      resultMessage: $("#result-message"),
+      learningSummary: $("#learning-summary"),
+      resultBackground: $("#result-background"),
+      resultImage: $("#result-image"),
+      replayButton: $("#replay-button"),
+      menuButton: $("#menu-button"),
+      toast: $("#toast"),
+      announcer: $("#live-announcer")
     };
 
     const AudioEngine = {
-      context: null, muted: false, musicTimer: null, backgroundMusic: null,
+      context: null,
+      muted: false,
+      musicTimer: null,
+      musicStep: 0,
+      backgroundMusic: null,
+      melody: [261.63, 329.63, 392.00, 329.63, 293.66, 349.23, 440.00, 349.23],
+
       init() {
         if (!this.context) {
           const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -1141,7 +1551,8 @@
         }
         if (this.context?.state === "suspended") this.context.resume().catch(() => {});
       },
-      tone(frequency, duration = 0.08, type = "square", volume = 0.05, delay = 0) { // Gewijzigd naar retro square waves
+
+      tone(frequency, duration = 0.08, type = "sine", volume = 0.05, delay = 0) {
         if (this.muted || !this.context) return;
         const start = this.context.currentTime + delay;
         const oscillator = this.context.createOscillator();
@@ -1156,31 +1567,43 @@
         oscillator.start(start);
         oscillator.stop(start + duration + 0.02);
       },
+
       click() { this.tone(740, 0.05, "square", 0.025); },
-      uncork() { this.tone(1050, 0.06, "square", 0.03); this.tone(125, 0.12, "square", 0.08, 0.055); },
-      success() { [523.25, 659.25, 783.99].forEach((n, i) => this.tone(n, 0.18, "square", 0.045, i * 0.06)); },
-      good() { this.tone(523.25, 0.12, "square", 0.04); this.tone(659.25, 0.16, "square", 0.04, 0.1); },
+      uncork() { this.tone(1050, 0.06, "sine", 0.03); this.tone(125, 0.12, "sine", 0.08, 0.055); },
+      success() { [523.25, 659.25, 783.99].forEach((n, i) => this.tone(n, 0.18, "triangle", 0.045, i * 0.06)); },
+      good() { this.tone(523.25, 0.12, "triangle", 0.04); this.tone(659.25, 0.16, "triangle", 0.04, 0.1); },
       fail() { this.tone(220, 0.23, "sawtooth", 0.035); this.tone(146.83, 0.32, "sawtooth", 0.035, 0.14); },
+
       startMusic() {
         this.stopMusic();
         if (this.muted) return;
         if (!this.backgroundMusic) {
-          this.backgroundMusic = new Audio("audio/backgroundmusic.mp3");
+          this.backgroundMusic = document.getElementById("background-music") || new Audio("audio/backgroundmusic.mp3");
           this.backgroundMusic.loop = true;
+          this.backgroundMusic.preload = "auto";
+          this.backgroundMusic.playsInline = true;
           this.backgroundMusic.volume = 0.28;
         }
-        this.backgroundMusic.currentTime = 0;
-        this.backgroundMusic.play().catch(() => {});
+        this.backgroundMusic.play().catch(() => {
+          // Hoorbare autoplay wordt door onder meer Safari en Chrome vaak geblokkeerd.
+          // De eerstvolgende tik, klik of toets hervat de muziek automatisch.
+        });
       },
+
       stopMusic() {
         window.clearInterval(this.musicTimer);
         this.musicTimer = null;
-        if (this.backgroundMusic) { this.backgroundMusic.pause(); this.backgroundMusic.currentTime = 0; }
+        if (this.backgroundMusic) {
+          this.backgroundMusic.pause();
+          this.backgroundMusic.currentTime = 0;
+        }
       },
+
       toggle() {
         this.muted = !this.muted;
         localStorage.setItem("sommelierLarsMuted", String(this.muted));
         elements.muteButton.textContent = this.muted ? "🔇" : "🔊";
+        elements.muteButton.setAttribute("aria-label", this.muted ? "Geluid inschakelen" : "Geluid uitschakelen");
         if (this.muted) this.stopMusic(); else { this.init(); this.startMusic(); this.click(); }
       }
     };
@@ -1194,8 +1617,13 @@
       return array;
     }
 
-    function randomItem(items) { return items[Math.floor(Math.random() * items.length)]; }
-    function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
+    function randomItem(items) {
+      return items[Math.floor(Math.random() * items.length)];
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
 
     function switchScreen(name) {
       state.screen = name;
@@ -1210,10 +1638,23 @@
       elements.larsPhoto.className = `lars-photo ${kind === "idle" ? "idle" : kind === "happy" ? "happy" : "fail"} image-shell`;
     }
 
-    function preloadImages() { Object.values(IMAGE_PATHS).forEach(src => { const image = new Image(); image.src = src; }); }
-    function setupImageFallbacks() { $$('[data-fallback-image]').forEach(image => { image.addEventListener("error", () => image.closest(".image-shell")?.classList.add("has-image-error")); image.addEventListener("load", () => image.closest(".image-shell")?.classList.remove("has-image-error")); }); }
+    function preloadImages() {
+      Object.values(IMAGE_PATHS).forEach(src => {
+        const image = new Image();
+        image.src = src;
+      });
+    }
 
-    function getSelectedDifficulty() { return $("input[name='difficulty']:checked")?.value || "normal"; }
+    function setupImageFallbacks() {
+      $$('[data-fallback-image]').forEach(image => {
+        image.addEventListener("error", () => image.closest(".image-shell")?.classList.add("has-image-error"));
+        image.addEventListener("load", () => image.closest(".image-shell")?.classList.remove("has-image-error"));
+      });
+    }
+
+    function getSelectedDifficulty() {
+      return $("input[name='difficulty']:checked")?.value || "normal";
+    }
 
     function buildDeck(config) {
       const eligible = wineDatabase.filter(question => question.difficulty <= config.maxQuestionDifficulty);
@@ -1222,7 +1663,12 @@
         if (!grouped.has(question.category)) grouped.set(question.category, []);
         grouped.get(question.category).push(question);
       });
-      const categoryQueues = fisherYates([...grouped.entries()]).map(([category, questions]) => ({ category, questions: fisherYates(questions) }));
+
+      const categoryQueues = fisherYates([...grouped.entries()]).map(([category, questions]) => ({
+        category,
+        questions: fisherYates(questions)
+      }));
+
       const selected = [];
       let cursor = 0;
       while (selected.length < Math.min(config.rounds, eligible.length)) {
@@ -1232,6 +1678,7 @@
         cursor += 1;
         if (cursor > eligible.length * 4) break;
       }
+
       if (selected.length < config.rounds) {
         const leftovers = fisherYates(eligible.filter(q => !selected.some(s => s.id === q.id)));
         selected.push(...leftovers.slice(0, config.rounds - selected.length));
@@ -1240,12 +1687,22 @@
     }
 
     function startGame() {
-      AudioEngine.init(); AudioEngine.click();
+      AudioEngine.init();
+      AudioEngine.click();
+
       state.difficultyKey = getSelectedDifficulty();
       state.config = DIFFICULTIES[state.difficultyKey];
-      state.score = 0; state.lives = state.config.lives; state.streak = 0; state.bestStreak = 0;
-      state.hints = state.config.hints; state.deck = buildDeck(state.config); state.index = 0;
-      state.locked = false; state.paused = false; state.outcomes = []; state.mistakes = [];
+      state.score = 0;
+      state.lives = state.config.lives;
+      state.streak = 0;
+      state.bestStreak = 0;
+      state.hints = state.config.hints;
+      state.deck = buildDeck(state.config);
+      state.index = 0;
+      state.locked = false;
+      state.paused = false;
+      state.outcomes = [];
+      state.mistakes = [];
 
       elements.roundTotal.textContent = state.deck.length;
       elements.timerWrap.classList.toggle("visible", state.config.seconds > 0);
@@ -1256,7 +1713,8 @@
 
     function loadRound() {
       stopTimer();
-      state.locked = false; state.selectedButton = null;
+      state.locked = false;
+      state.selectedButton = null;
       elements.feedbackOverlay.classList.remove("show");
       imageState("idle");
       elements.gameScroll.scrollTo({ top: 0, behavior: "smooth" });
@@ -1264,22 +1722,27 @@
       const round = state.deck[state.index];
       const customerType = randomItem(CUSTOMER_TYPES);
       const table = randomItem(TABLES);
-      elements.customerLabel.textContent = `${customerType.toUpperCase()} · TABLE ${table}`;
+      elements.customerLabel.textContent = `${customerType.toUpperCase()} · TAFEL ${table}`;
       elements.customerQuote.textContent = `“${round.customer}”`;
-      elements.categoryRow.innerHTML = `<span class="tag">${round.category}</span><span class="tag">${round.style}</span><span class="tag">NIV. ${round.difficulty}</span>`;
+      elements.categoryRow.innerHTML = `<span class="tag">${round.category}</span><span class="tag">${round.style}</span><span class="tag">niveau ${round.difficulty}</span>`;
 
       elements.optionsBox.innerHTML = "";
       fisherYates(round.options).forEach((option, index) => {
         const button = document.createElement("button");
-        button.type = "button"; button.className = "option-button";
-        button.dataset.verdict = option.verdict; button.dataset.optionIndex = String(index);
-        button.innerHTML = `<span class="option-key" aria-hidden="true">${index + 1}</span><span class="option-copy"><strong>${option.wine}</strong><small>${option.note}</small></span>`;
+        button.type = "button";
+        button.className = "option-button";
+        button.dataset.verdict = option.verdict;
+        button.dataset.optionIndex = String(index);
+        button.innerHTML = `
+          <span class="option-key" aria-hidden="true">${index + 1}</span>
+          <span class="option-copy"><strong>${option.wine}</strong><small>${option.note}</small></span>
+        `;
         button.addEventListener("click", () => selectOption(option, button));
         elements.optionsBox.appendChild(button);
       });
 
       updateUI();
-      elements.announcer.textContent = `Tour ${state.index + 1} de ${state.deck.length}. ${round.customer}`;
+      elements.announcer.textContent = `Ronde ${state.index + 1} van ${state.deck.length}. ${round.customer}`;
       requestAnimationFrame(() => elements.optionsBox.querySelector("button")?.focus({ preventScroll: true }));
       startTimer();
     }
@@ -1297,7 +1760,11 @@
       }, 1000);
     }
 
-    function stopTimer() { window.clearInterval(state.timerId); state.timerId = null; }
+    function stopTimer() {
+      window.clearInterval(state.timerId);
+      state.timerId = null;
+    }
+
     function updateTimerUI() {
       if (!state.config.seconds) return;
       const ratio = clamp(state.timeLeft / state.config.seconds, 0, 1);
@@ -1310,7 +1777,12 @@
       if (state.locked) return;
       const round = state.deck[state.index];
       const perfect = round.options.find(option => option.verdict === "perfect");
-      resolveAnswer({ verdict: "bad", wine: "Geen keuze", why: `Je liet de klant wachten. De sterkste match was ${perfect.wine}: ${perfect.why}`, principle: perfect.principle }, null, true);
+      resolveAnswer({
+        verdict: "bad",
+        wine: "Geen keuze",
+        why: `Je liet de klant wachten. De sterkste match was ${perfect.wine}: ${perfect.why}`,
+        principle: perfect.principle
+      }, null, true);
     }
 
     function selectOption(option, button) {
@@ -1322,23 +1794,42 @@
     }
 
     function resolveAnswer(option, button, timedOut) {
-      state.locked = true; stopTimer();
+      state.locked = true;
+      stopTimer();
       $$(".option-button", elements.optionsBox).forEach(btn => { btn.disabled = true; });
 
-      let points = 0; let quality = 0; let reactionType = option.verdict;
+      let points = 0;
+      let quality = 0;
+      let reactionType = option.verdict;
 
       if (option.verdict === "perfect") {
-        state.streak += 1; state.bestStreak = Math.max(state.bestStreak, state.streak);
+        state.streak += 1;
+        state.bestStreak = Math.max(state.bestStreak, state.streak);
         const comboBonus = Math.min(50, Math.max(0, state.streak - 1) * 10);
-        points = 100 + comboBonus; quality = 1;
-        AudioEngine.success(); imageState("happy");
+        points = 100 + comboBonus;
+        quality = 1;
+        AudioEngine.success();
+        imageState("happy");
       } else if (option.verdict === "good") {
-        points = 60; quality = 0.6; state.streak = 0;
-        AudioEngine.good(); imageState("happy");
+        points = 60;
+        quality = 0.6;
+        state.streak = 0;
+        AudioEngine.good();
+        imageState("happy");
       } else {
-        points = -25; quality = 0; state.streak = 0; state.lives -= 1;
-        AudioEngine.fail(); imageState("fail");
-        if (!timedOut) { state.mistakes.push({ question: state.deck[state.index].customer, chosen: option.wine, lesson: option.principle }); }
+        points = -25;
+        quality = 0;
+        state.streak = 0;
+        state.lives -= 1;
+        AudioEngine.fail();
+        imageState("fail");
+        if (!timedOut) {
+          state.mistakes.push({
+            question: state.deck[state.index].customer,
+            chosen: option.wine,
+            lesson: option.principle
+          });
+        }
       }
 
       state.score = Math.max(0, state.score + points);
@@ -1348,25 +1839,37 @@
       if (perfectButton) perfectButton.classList.add("reveal-perfect");
       if (button && option.verdict === "bad") button.classList.add("reveal-bad");
 
-      // French feedback labels
-      const badgeText = option.verdict === "perfect" ? `⭐ PARFAIT +${points}` : option.verdict === "good" ? `👌 TRÈS BIEN +${points}` : `💀 ZUT! ${points} · -1 LEVEN`;
+      const badgeText = option.verdict === "perfect"
+        ? `⭐ PERFECT +${points}`
+        : option.verdict === "good"
+          ? `👌 GOED +${points}`
+          : `💀 MIS ${points} · -1 LEVEN`;
 
       reactionType = timedOut ? "timeout" : reactionType;
       elements.feedbackBadge.className = `feedback-badge ${option.verdict}`;
       elements.feedbackBadge.textContent = badgeText;
       elements.feedbackReaction.textContent = randomItem(REACTIONS[reactionType]);
       elements.feedbackKnowledge.innerHTML = `<strong>Waarom?</strong> ${option.why}<br><br><strong>Onthoud:</strong> ${option.principle}`;
-      elements.feedbackScore.textContent = option.verdict === "perfect" && state.streak > 1 ? `Combo x${state.streak}: je kreeg extra bonuspunten.` : `Totaalscore: ${state.score} punten.`;
+      elements.feedbackScore.textContent = option.verdict === "perfect" && state.streak > 1
+        ? `Combo x${state.streak}: je kreeg extra bonuspunten.`
+        : `Totaalscore: ${state.score} punten.`;
 
       const finished = state.lives <= 0 || state.index >= state.deck.length - 1;
-      elements.feedbackNext.textContent = finished ? "VOIR LE VERDICT" : "CLIENT SUIVANT";
+      elements.feedbackNext.textContent = finished ? "BEKIJK HET OORDEEL" : "VOLGENDE KLANT";
       elements.feedbackNext.dataset.action = finished ? "results" : "next";
 
       updateUI();
-      window.setTimeout(() => { elements.feedbackOverlay.classList.add("show"); elements.feedbackNext.focus({ preventScroll: true }); }, 280);
+      window.setTimeout(() => {
+        elements.feedbackOverlay.classList.add("show");
+        elements.feedbackNext.focus({ preventScroll: true });
+      }, 280);
     }
 
-    function nextRound() { AudioEngine.click(); state.index += 1; loadRound(); }
+    function nextRound() {
+      AudioEngine.click();
+      state.index += 1;
+      loadRound();
+    }
 
     function calculateReputation() {
       if (!state.outcomes.length) return 0;
@@ -1375,9 +1878,11 @@
     }
 
     function updateUI() {
-      elements.score.textContent = state.score; elements.streak.textContent = state.streak;
+      elements.score.textContent = state.score;
+      elements.streak.textContent = state.streak;
       elements.round.textContent = Math.min(state.index + 1, state.deck.length || 1);
-      elements.hintCount.textContent = state.hints; elements.hintButton.disabled = state.hints <= 0 || state.locked;
+      elements.hintCount.textContent = state.hints;
+      elements.hintButton.disabled = state.hints <= 0 || state.locked;
 
       const hearts = Array.from({ length: state.config.lives }, (_, index) => index < state.lives ? "❤️" : "🖤").join("");
       elements.lives.textContent = hearts;
@@ -1385,13 +1890,19 @@
 
       const completed = state.outcomes.length;
       const roundPercent = state.deck.length ? Math.round((completed / state.deck.length) * 100) : 0;
-      elements.roundProgressFill.style.width = `${roundPercent}%`; elements.roundProgressLabel.textContent = `${roundPercent}%`;
+      elements.roundProgressFill.style.width = `${roundPercent}%`;
+      elements.roundProgressLabel.textContent = `${roundPercent}%`;
 
       const reputation = calculateReputation();
-      elements.reputationFill.style.width = `${reputation}%`; elements.reputationLabel.textContent = completed ? `${reputation}%` : "—";
+      elements.reputationFill.style.width = `${reputation}%`;
+      elements.reputationLabel.textContent = completed ? `${reputation}%` : "—";
 
-      if (state.streak >= 2) { elements.comboPill.textContent = `COMBO x${state.streak}`; elements.comboPill.classList.add("visible"); }
-      else { elements.comboPill.classList.remove("visible"); }
+      if (state.streak >= 2) {
+        elements.comboPill.textContent = `COMBO x${state.streak}`;
+        elements.comboPill.classList.add("visible");
+      } else {
+        elements.comboPill.classList.remove("visible");
+      }
     }
 
     function useHint() {
@@ -1400,36 +1911,51 @@
       if (!badButtons.length) return;
       AudioEngine.click();
       const target = randomItem(badButtons);
-      target.classList.add("eliminated"); target.disabled = true; target.setAttribute("aria-hidden", "true");
-      state.hints -= 1; updateUI();
-      showToast("Lars mompelt: ‘Die fles zou ik zelfs niet in een boeuf bourguignon durven koken.’");
+      target.classList.add("eliminated");
+      target.disabled = true;
+      target.setAttribute("aria-hidden", "true");
+      state.hints -= 1;
+      updateUI();
+      showToast("Lars mompelt: ‘Die fles zou ik zelfs niet gebruiken om te koken.’");
       const firstRemaining = $(".option-button:not(.eliminated)", elements.optionsBox);
       firstRemaining?.focus();
     }
 
     function showToast(message) {
-      elements.toast.textContent = message; elements.toast.classList.add("show");
+      elements.toast.textContent = message;
+      elements.toast.classList.add("show");
       window.clearTimeout(showToast.timer);
       showToast.timer = window.setTimeout(() => elements.toast.classList.remove("show"), 2600);
     }
 
     function pauseGame() {
       if (state.screen !== "game" || elements.feedbackOverlay.classList.contains("show")) return;
-      state.paused = true; elements.pauseOverlay.classList.add("show"); elements.resumeButton.focus({ preventScroll: true });
+      state.paused = true;
+      elements.pauseOverlay.classList.add("show");
+      elements.resumeButton.focus({ preventScroll: true });
     }
 
     function resumeGame() {
-      state.paused = false; elements.pauseOverlay.classList.remove("show"); elements.pauseButton.focus({ preventScroll: true });
+      state.paused = false;
+      elements.pauseOverlay.classList.remove("show");
+      elements.pauseButton.focus({ preventScroll: true });
     }
 
     function quitToMenu() {
-      stopTimer(); AudioEngine.stopMusic(); state.paused = false;
-      elements.pauseOverlay.classList.remove("show"); elements.feedbackOverlay.classList.remove("show");
-      switchScreen("start"); updateHighScoreLine(); elements.startButton.focus({ preventScroll: true });
+      stopTimer();
+      AudioEngine.stopMusic();
+      state.paused = false;
+      elements.pauseOverlay.classList.remove("show");
+      elements.feedbackOverlay.classList.remove("show");
+      switchScreen("start");
+      updateHighScoreLine();
+      elements.startButton.focus({ preventScroll: true });
     }
 
     function finishGame() {
-      stopTimer(); AudioEngine.stopMusic(); elements.feedbackOverlay.classList.remove("show");
+      stopTimer();
+      AudioEngine.stopMusic();
+      elements.feedbackOverlay.classList.remove("show");
 
       const reputation = calculateReputation();
       const perfectCount = state.outcomes.filter(outcome => outcome.verdict === "perfect").length;
@@ -1437,65 +1963,125 @@
       if (state.score > highScore) localStorage.setItem("sommelierLarsHighScore", String(state.score));
 
       let tier = "average";
-      if (state.lives <= 0 || reputation < 45) tier = "fail"; else if (reputation >= 82) tier = "great";
+      if (state.lives <= 0 || reputation < 45) tier = "fail";
+      else if (reputation >= 82) tier = "great";
 
       const settings = {
-        fail: { title: "C'EST FINI!", badge: "🍇 STAGIAIRE", image: IMAGE_PATHS.angry, color: "var(--red)", shadow: "4px 4px 0 var(--red)" },
-        average: { title: "FIN DE SERVICE", badge: "🍷 AMATEUR DE VIN", image: IMAGE_PATHS.congrats, color: "var(--amber)", shadow: "4px 4px 0 var(--amber)" },
-        great: { title: "LÉGENDE!", badge: "⭐ MAÎTRE DE CAVE", image: IMAGE_PATHS.congrats, color: "var(--green)", shadow: "4px 4px 0 var(--green)" }
+        fail: {
+          title: "ONTSLAGEN!",
+          badge: "🍇 KURKENTREKKER-STAGIAIR",
+          image: IMAGE_PATHS.angry,
+          color: "var(--red)",
+          shadow: "4px 4px 0 var(--red)"
+        },
+        average: {
+          title: "SHIFT KLAAR",
+          badge: "🍷 WIJNLIEFHEBBER",
+          image: IMAGE_PATHS.congrats,
+          color: "var(--amber)",
+          shadow: "4px 4px 0 var(--amber)"
+        },
+        great: {
+          title: "LEGENDE!",
+          badge: "⭐ KELDERMEESTER",
+          image: IMAGE_PATHS.congrats,
+          color: "var(--green)",
+          shadow: "4px 4px 0 var(--green)"
+        }
       }[tier];
 
-      elements.resultTitle.textContent = settings.title; elements.resultTitle.style.textShadow = settings.shadow;
-      elements.levelBadge.textContent = settings.badge; elements.levelBadge.style.background = settings.color;
-      elements.resultImage.src = settings.image; elements.finalScore.textContent = state.score;
-      elements.resultPerfect.textContent = perfectCount; elements.resultAccuracy.textContent = `${reputation}%`;
-      elements.resultBestStreak.textContent = state.bestStreak; elements.resultMessage.textContent = `“${randomItem(END_REACTIONS[tier])}”`;
+      elements.resultTitle.textContent = settings.title;
+      elements.resultTitle.style.textShadow = settings.shadow;
+      elements.levelBadge.textContent = settings.badge;
+      elements.levelBadge.style.background = settings.color;
+      elements.resultImage.src = settings.image;
+      elements.finalScore.textContent = state.score;
+      elements.resultPerfect.textContent = perfectCount;
+      elements.resultAccuracy.textContent = `${reputation}%`;
+      elements.resultBestStreak.textContent = state.bestStreak;
+      elements.resultMessage.textContent = `“${randomItem(END_REACTIONS[tier])}”`;
 
       if (state.mistakes.length) {
         const lesson = randomItem(state.mistakes);
-        elements.learningSummary.innerHTML = `<strong>Pour la prochaine fois:</strong> ${lesson.lesson}`;
+        elements.learningSummary.innerHTML = `<strong>Één ding voor je volgende shift:</strong> ${lesson.lesson}`;
       } else {
-        elements.learningSummary.innerHTML = `<strong>Aucune grosse erreur.</strong> Lars controleert voor de zekerheid toch nog even de kast met Grand Crus.`;
+        elements.learningSummary.innerHTML = `<strong>Geen grote misstappen.</strong> Lars controleert voor de zekerheid toch nog de inventaris.`;
       }
 
-      switchScreen("result"); AudioEngine.init();
+      switchScreen("result");
+      AudioEngine.init();
       if (tier === "great") AudioEngine.success(); else if (tier === "fail") AudioEngine.fail(); else AudioEngine.good();
       elements.replayButton.focus({ preventScroll: true });
     }
 
     function updateHighScoreLine() {
       const highScore = Number(localStorage.getItem("sommelierLarsHighScore") || 0);
-      elements.highScoreLine.textContent = `Record personnel: ${highScore} points`;
+      elements.highScoreLine.textContent = `Persoonlijk record: ${highScore} punten`;
     }
 
     function handleKeyboard(event) {
       if (event.key === "Escape") {
-        if (state.screen !== "game" || elements.feedbackOverlay.classList.contains("show")) return;
-        event.preventDefault(); state.paused ? resumeGame() : pauseGame(); return;
+        if (state.screen !== "game") return;
+        if (elements.feedbackOverlay.classList.contains("show")) return;
+        event.preventDefault();
+        state.paused ? resumeGame() : pauseGame();
+        return;
       }
+
       if (state.screen !== "game" || state.paused || state.locked) return;
       if (["1", "2", "3"].includes(event.key)) {
         const button = $(`.option-button[data-option-index="${Number(event.key) - 1}"]:not(.eliminated)`, elements.optionsBox);
         if (button) { event.preventDefault(); button.click(); }
       }
-      if (event.key.toLowerCase() === "h") { event.preventDefault(); useHint(); }
+      if (event.key.toLowerCase() === "h") {
+        event.preventDefault();
+        useHint();
+      }
     }
 
     function setupEvents() {
-      elements.startButton.addEventListener("click", startGame); elements.pauseButton.addEventListener("click", pauseGame);
-      elements.muteButton.addEventListener("click", () => AudioEngine.toggle()); elements.hintButton.addEventListener("click", useHint);
-      elements.resumeButton.addEventListener("click", resumeGame); elements.quitButton.addEventListener("click", quitToMenu);
-      elements.feedbackNext.addEventListener("click", () => { elements.feedbackNext.dataset.action === "results" ? finishGame() : nextRound(); });
-      elements.replayButton.addEventListener("click", startGame); elements.menuButton.addEventListener("click", quitToMenu);
+      elements.startButton.addEventListener("click", startGame);
+      elements.pauseButton.addEventListener("click", pauseGame);
+      elements.muteButton.addEventListener("click", () => AudioEngine.toggle());
+      elements.hintButton.addEventListener("click", useHint);
+      elements.resumeButton.addEventListener("click", resumeGame);
+      elements.quitButton.addEventListener("click", quitToMenu);
+      elements.feedbackNext.addEventListener("click", () => {
+        elements.feedbackNext.dataset.action === "results" ? finishGame() : nextRound();
+      });
+      elements.replayButton.addEventListener("click", startGame);
+      elements.menuButton.addEventListener("click", quitToMenu);
       document.addEventListener("keydown", handleKeyboard);
-      document.addEventListener("visibilitychange", () => { if (document.hidden && state.screen === "game" && !state.paused && !elements.feedbackOverlay.classList.contains("show")) pauseGame(); });
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden && state.screen === "game" && !state.paused && !elements.feedbackOverlay.classList.contains("show")) {
+          pauseGame();
+        }
+      });
     }
 
     function init() {
-      preloadImages(); setupImageFallbacks(); setupEvents();
+      preloadImages();
+      setupImageFallbacks();
+      setupEvents();
       AudioEngine.muted = localStorage.getItem("sommelierLarsMuted") === "true";
       elements.muteButton.textContent = AudioEngine.muted ? "🔇" : "🔊";
       elements.muteButton.setAttribute("aria-label", AudioEngine.muted ? "Geluid inschakelen" : "Geluid uitschakelen");
+
+      // Probeer de muziek al tijdens het laden te starten. Dit werkt meteen wanneer
+      // de browser hoorbare autoplay toestaat. Anders start ze bij de eerste interactie.
+      AudioEngine.init();
+      if (!AudioEngine.muted) AudioEngine.startMusic();
+      const unlockAudio = () => {
+        AudioEngine.init();
+        if (!AudioEngine.muted && AudioEngine.backgroundMusic?.paused) {
+          AudioEngine.backgroundMusic.play().catch(() => {});
+        }
+      };
+      ["pointerdown", "touchstart", "keydown"].forEach(type =>
+        document.addEventListener(type, unlockAudio, { once: true, passive: true })
+      );
+
       updateHighScoreLine();
     }
 
