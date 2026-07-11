@@ -138,7 +138,7 @@
     }
 
     .panel {
-      width: min(100%, 760px);
+      width: min(100%, 1040px);
       margin: auto;
       padding: clamp(20px, 4vw, 36px);
       border: 4px solid var(--wine-600);
@@ -325,18 +325,155 @@
     .start-button { width: 100%; margin-top: 18px; padding-block: 18px; }
 
 
-    .character-picker { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:18px 0; }
-    .character-option { position:relative; }
-    .character-option input { position:absolute; opacity:0; pointer-events:none; }
-    .character-card { display:grid; grid-template-columns:68px 1fr; gap:10px; align-items:center; min-height:88px; padding:9px; border:3px solid #9c8a80; border-radius:13px; background:rgba(255,255,255,.65); cursor:pointer; text-align:left; transition:transform 120ms ease,border-color 120ms ease,background 120ms ease; }
-    .character-card img { width:68px; height:68px; object-fit:cover; border-radius:9px; border:2px solid var(--wine-700); background:#d9c49a; }
-    .character-card strong { display:block; font-family:var(--pixel); font-size:10px; line-height:1.35; color:var(--wine-700); }
-    .character-card span { display:block; margin-top:4px; color:var(--muted); font-size:18px; line-height:1; }
-    .character-option input:checked + .character-card { border-color:var(--wine-600); background:#f7dfaa; transform:translateY(-2px); box-shadow:0 5px 0 #b98c35; }
-    .character-option input:focus-visible + .character-card { outline:4px solid var(--gold); outline-offset:3px; }
+    /* Startscherm: robuuste karakterkeuze voor desktop, browserzoom en mobiel. */
+    #start-screen {
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    #start-screen .panel {
+      margin-block: auto;
+    }
+
+    .character-picker {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .character-option {
+      position: relative;
+      display: block;
+      min-width: 0;
+    }
+
+    .character-option input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .character-card {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      gap: 13px;
+      align-items: center;
+      width: 100%;
+      min-height: 108px;
+      padding: 11px;
+      overflow: hidden;
+      border: 3px solid #9c8a80;
+      border-radius: 14px;
+      background: rgba(255,255,255,.68);
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+      transition: transform 120ms ease, border-color 120ms ease, background 120ms ease, box-shadow 120ms ease;
+    }
+
+    .character-card__image {
+      position: relative;
+      width: 82px;
+      height: 82px;
+      overflow: hidden;
+      border: 3px solid var(--wine-700);
+      border-radius: 10px;
+      background: #d9c49a;
+    }
+
+    .character-card__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .character-card__copy {
+      min-width: 0;
+    }
+
+    .character-card__name {
+      display: block;
+      margin: 0;
+      color: var(--wine-700);
+      font-family: var(--pixel);
+      font-size: clamp(10px, 1.45vw, 13px);
+      line-height: 1.45;
+    }
+
+    .character-card__description {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: clamp(18px, 2.2vw, 22px);
+      line-height: 1.05;
+      overflow-wrap: anywhere;
+    }
+
+    .character-card::after {
+      content: "KIES";
+      position: absolute;
+      right: 10px;
+      bottom: 8px;
+      opacity: 0;
+      color: var(--wine-700);
+      font-family: var(--pixel);
+      font-size: 7px;
+      transition: opacity 120ms ease;
+    }
+
+    .character-option input:checked + .character-card {
+      border-color: var(--wine-600);
+      background: #f7dfaa;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #b98c35;
+    }
+
+    .character-option input:checked + .character-card::after { opacity: 1; }
+
+    .character-option input:focus-visible + .character-card {
+      outline: 4px solid var(--gold);
+      outline-offset: 3px;
+    }
+
     .app.beer-mode { --wine-950:#07131a; --wine-900:#0b2029; --wine-800:#123746; --wine-700:#925a08; --wine-600:#d3890d; --cream:#fff8df; --cream-2:#f2dfac; --gold:#ffd04d; }
-    .app.beer-mode body { background:#07131a; }
-    @media(max-width:520px){ .character-picker{grid-template-columns:1fr;} }
+
+    @media (min-width: 820px) {
+      #start-screen .start-layout {
+        grid-template-columns: minmax(250px, .72fr) minmax(480px, 1.28fr);
+        gap: clamp(26px, 4vw, 48px);
+      }
+
+      #start-screen .start-copy { text-align: center; }
+      #start-screen .portrait-frame { width: min(19vw, 210px); }
+    }
+
+    @media (max-width: 819px) {
+      #start-screen .panel { width: min(100%, 680px); }
+      .character-card { grid-template-columns: 74px minmax(0, 1fr); min-height: 96px; }
+      .character-card__image { width: 74px; height: 74px; }
+    }
+
+    @media (max-width: 620px) {
+      .character-picker { grid-template-columns: 1fr; }
+      .character-card { min-height: 86px; }
+      #start-screen .portrait-frame { width: min(42vw, 170px); margin-block: 12px; }
+      #start-screen .subtitle { font-size: clamp(20px, 6vw, 26px); }
+    }
+
+    @media (max-height: 760px) and (min-width: 820px) {
+      #start-screen .panel { margin-block: 8px; padding: 18px 24px; }
+      #start-screen .portrait-frame { width: min(23vh, 150px); margin-block: 10px; }
+      #start-screen .character-card { min-height: 88px; grid-template-columns: 66px minmax(0,1fr); }
+      #start-screen .character-card__image { width: 66px; height: 66px; }
+      #start-screen .rules { margin-block: 12px 10px; }
+      #start-screen .difficulty-group { margin-top: 12px; }
+      #start-screen .difficulty-card { min-height: 76px; }
+      #start-screen .start-button { margin-top: 12px; padding-block: 14px; }
+    }
 
     /* Game */
     #game-screen {
@@ -925,11 +1062,23 @@
             <div class="character-picker" aria-label="Kies je expert">
               <label class="character-option">
                 <input type="radio" name="character" value="lars" checked>
-                <span class="character-card"><img src="images/Lars_idle.jpg" alt=""><span><strong>LARS</strong><span>Wijn, druiven en vernietigende blikken.</span></span></span>
+                <span class="character-card">
+                  <span class="character-card__image"><img src="images/Lars_idle.jpg" alt="Lars"></span>
+                  <span class="character-card__copy">
+                    <strong class="character-card__name">LARS</strong>
+                    <span class="character-card__description">Wijn, druiven en vernietigende blikken.</span>
+                  </span>
+                </span>
               </label>
               <label class="character-option">
                 <input type="radio" name="character" value="tibo">
-                <span class="character-card"><img src="images/Tibo_idle.jpg" alt=""><span><strong>TIBO</strong><span>Bierkenner en wandelende cafékaart.</span></span></span>
+                <span class="character-card">
+                  <span class="character-card__image"><img src="images/Tibo_idle.jpg" alt="Tibo"></span>
+                  <span class="character-card__copy">
+                    <strong class="character-card__name">TIBO</strong>
+                    <span class="character-card__description">Bierkenner en wandelende cafékaart.</span>
+                  </span>
+                </span>
               </label>
             </div>
 
