@@ -133,7 +133,8 @@
             border: 4px solid var(--panel-border);
             border-radius: 12px;
             background-color: #e0d8c8;
-            background-image: url('./Lars_idle.png'); /* Direct load */
+            /* Aangepast naar jouw images folder op GitHub! */
+            background-image: url('images/Lars_idle.png'); 
             background-size: cover;
             background-position: center;
             image-rendering: pixelated;
@@ -198,11 +199,13 @@
             50% { transform: translateY(-5px); }
         }
         .lars-frame.idle {
-            background-image: url('./Lars_idle.png');
+            /* Gelinkt naar de images folder op GitHub! */
+            background-image: url('images/Lars_idle.png');
             animation: subtleBounce 2s infinite ease-in-out;
         }
         .lars-frame.fail {
-            background-image: url('./Lars_fail.png');
+            /* Gelinkt naar de images folder op GitHub! */
+            background-image: url('images/Lars_fail.png');
             animation: none;
             transform: scale(0.98);
         }
@@ -440,7 +443,7 @@
         }
     };
 
-    // --- DATASET (De 15 hoogwaardig onderzochte Franse wijnmatches) ---
+    // --- DATASET (De 12 hoogwaardig onderzochte Franse wijnmatches) ---
     const wineDB = [
         { customer: "Ik bestel een zware, gegrilde ribeye steak met pepersaus.", options: [
             { wine: "Bordeaux (Cabernet Sauvignon)", type: "perfect", desc: "Perfect! De stevige tannines breken prachtig door het vette vlees." },
@@ -513,7 +516,6 @@
         locked: false
     };
 
-    // --- STREAMING_CHUNK: Core Logic functions & setup... ---
     function shuffle(arr) {
         return arr.sort(() => Math.random() - 0.5);
     }
@@ -570,7 +572,7 @@
         });
     }
 
-    // --- STREAMING_CHUNK: Processing user answer & fixing the modal bug... ---
+    // --- STREAMING_CHUNK: Processing user choices and adjusting UI states... ---
     function handleChoice(option) {
         if (state.locked) return;
         state.locked = true;
@@ -604,8 +606,7 @@
 
             updateHeader();
 
-            // === OPLOSSING VOOR DE BUG ===
-            // Als je levens op zijn, of als dit de allerlaatste klant van de database was:
+            // Als je levens op zijn, of als dit de allerlaatste klant was:
             const nextBtn = document.getElementById('feedback-next-btn');
             if (state.lives <= 0 || state.currentIndex >= state.questions.length - 1) {
                 nextBtn.innerText = "BEKIJK RESULTAAT";
@@ -634,7 +635,7 @@
         loadQuestion();
     }
 
-    // --- STREAMING_CHUNK: Generating visual score progress & 3 ranks... ---
+    // --- STREAMING_CHUNK: Calculating ranks and building final progress bar... ---
     function showGameOver(msg) {
         document.getElementById('feedback-overlay').classList.remove('show');
         document.getElementById('game-over-msg').innerText = msg;
@@ -654,7 +655,7 @@
         if (state.lives <= 0) {
             badge.innerText = "🤢 PRUTSER";
             badge.style.backgroundColor = "var(--danger)";
-            desc.innerText = "Lars schudt droevig zijn hoofd. Je hebt alle levens verloren en liet klanten met een vieze smaak achter. Weet je wel het verschil tussen azijn en een dure Bordeaux?";
+            desc.innerText = "Lars schudt droevig zijn hoofd. Je hebt alle levens verloren en liet klanten met een vieze smaak achter. Weet je wel het verschil tussen azijn en een dure Bourgogne?";
         } else if (pct < 45) {
             badge.innerText = "🤢 PRUTSER";
             badge.style.backgroundColor = "var(--danger)";
