@@ -9,6 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 
         :root {
+            /* Sfeervolle bordeauxrode retro palet */
             --bg-dark: #1a0a0c;
             --panel-bg: rgba(242, 237, 228, 0.96);
             --panel-border: #8c2531;
@@ -29,16 +30,27 @@
 
         body {
             font-family: 'VT323', monospace;
-            background-color: var(--bg-dark);
-            background-size: cover;
-            background-position: center;
+            /* Sfeervolle diepe wijnrode radial gradient i.p.v. zware achtergrondafbeelding */
+            background: radial-gradient(circle, #300f13 0%, #100305 100%);
             color: var(--text-main);
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            transition: background-image 0.3s ease-in-out;
+            position: relative;
+        }
+
+        /* Subtiel CRT Scanline effect voor echte arcade sfeer */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 99;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
         }
 
         /* --- LAYOUT & CONTAINERS --- */
@@ -172,6 +184,7 @@
             color: var(--panel-border);
         }
 
+        /* --- GAMEPLAY UI --- */
         .header-bar {
             width: 100%; 
             display: flex; 
@@ -195,6 +208,7 @@
             min-height: 220px;
         }
 
+        /* Lars display frame */
         .lars-frame {
             width: 100%;
             max-width: 280px;
@@ -206,11 +220,12 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center bottom;
-            image-rendering: pixelated;
+            image-rendering: pixelated; /* Mooie scherpe retro pixels */
             box-shadow: 0 8px 20px rgba(0,0,0,0.6);
             transition: transform 0.2s, background-image 0.2s ease-in-out;
         }
         
+        /* Subtiele retro adem-animatie */
         @keyframes subtleBounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-5px); }
@@ -416,16 +431,14 @@
     };
 
     // --- ASSETS TO PRELOAD ---
-    // Deze verwijzen nu naar je lokale bestanden in je GitHub 'images' folder
+    // Lokale bestanden uit jouw directory met exact de juiste hoofdletters
     const ASSETS = {
-        background: "images/background.png",
-        larsIdle: "images/lars_idle.png",
-        larsFail: "images/lars_fail.png"
+        larsIdle: "Lars_idle.png",
+        larsFail: "Lars_fail.png"
     };
 
-    // Robuuste CSS of placeholder fallbacks mocht je ze lokaal opstarten zonder dat de bestanden er al staan
+    // Robuuste fallbacks voor het geval de bestanden lokaal ontbreken
     const FALLBACKS = {
-        background: "radial-gradient(circle, #2b1114 0%, #110506 100%)",
         larsIdle: "https://placehold.co/280x280/58111A/E0D8C8?text=Lars+Idle+🍷",
         larsFail: "https://placehold.co/280x280/58111A/C62828?text=Lars+Disgusted+🤢"
     };
@@ -512,12 +525,6 @@
                 }
             };
 
-            // Preload Background
-            const bgImg = new Image();
-            bgImg.src = ASSETS.background;
-            bgImg.onload = () => handleLoaded('background', true);
-            bgImg.onerror = () => handleLoaded('background', false);
-
             // Preload Lars Idle
             const idleImg = new Image();
             idleImg.src = ASSETS.larsIdle;
@@ -532,13 +539,6 @@
         },
 
         applyImages: function() {
-            // Apply background
-            if (this.loadedStatus['background']) {
-                document.body.style.backgroundImage = `url('${ASSETS.background}')`;
-            } else {
-                document.body.style.background = FALLBACKS.background;
-            }
-
             // Apply profile picture preview
             const profile = document.getElementById('start-profile');
             if (this.loadedStatus['larsIdle']) {
@@ -557,7 +557,7 @@
         }
     };
 
-    // --- CORE LOGIC ---
+    // --- STREAMING_CHUNK: Core Logic functions... ---
     function shuffle(arr) {
         return arr.sort(() => Math.random() - 0.5);
     }
@@ -619,6 +619,7 @@
         });
     }
 
+    // --- STREAMING_CHUNK: Processing user answer... ---
     function handleChoice(option) {
         if (state.locked) return;
         state.locked = true;
