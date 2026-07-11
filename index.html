@@ -9,6 +9,10 @@
   <title>Sommelier Lars — De Wijnshift</title>
 
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --wine-950: #170306;
@@ -26,8 +30,8 @@
       --red: #c72c41;
       --blue: #3e6fa8;
       --shadow: rgba(10, 0, 2, 0.58);
-      --pixel: ui-monospace, "Courier New", monospace;
-      --body: ui-monospace, "Cascadia Mono", "Courier New", monospace;
+      --pixel: "Press Start 2P", "Courier New", monospace;
+      --body: "VT323", "Courier New", monospace;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-right: env(safe-area-inset-right, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -56,6 +60,17 @@
     }
 
     button, input { font: inherit; }
+
+    /* Consequente retro 8-bit typografie in de volledige interface. */
+    body, button, input, .option-button, .feedback-card, .question-card {
+      font-family: var(--body);
+      letter-spacing: 0.015em;
+    }
+
+    h1, h2, h3, .pixel-title, .eyebrow, .button-primary, .button-secondary,
+    .mode-card strong, .stat-label, .feedback-badge, .level-badge {
+      font-family: var(--pixel);
+    }
     button { touch-action: manipulation; }
     button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 
@@ -877,6 +892,7 @@
   </style>
 </head>
 <body>
+  <audio id="background-music" src="audio/backgroundmusic.mp3" autoplay loop preload="auto" playsinline></audio>
   <main class="app" id="app">
     <section class="screen active" id="start-screen" aria-labelledby="game-title">
       <div class="panel">
@@ -1562,14 +1578,15 @@
         this.stopMusic();
         if (this.muted) return;
         if (!this.backgroundMusic) {
-          this.backgroundMusic = new Audio("audio/backgroundmusic.mp3");
+          this.backgroundMusic = document.getElementById("background-music") || new Audio("audio/backgroundmusic.mp3");
           this.backgroundMusic.loop = true;
           this.backgroundMusic.preload = "auto";
+          this.backgroundMusic.playsInline = true;
           this.backgroundMusic.volume = 0.28;
         }
-        this.backgroundMusic.currentTime = 0;
         this.backgroundMusic.play().catch(() => {
-          // Browsers may block autoplay until the user interacts; startGame is user-triggered.
+          // Hoorbare autoplay wordt door onder meer Safari en Chrome vaak geblokkeerd.
+          // De eerstvolgende tik, klik of toets hervat de muziek automatisch.
         });
       },
 
@@ -2050,6 +2067,21 @@
       AudioEngine.muted = localStorage.getItem("sommelierLarsMuted") === "true";
       elements.muteButton.textContent = AudioEngine.muted ? "🔇" : "🔊";
       elements.muteButton.setAttribute("aria-label", AudioEngine.muted ? "Geluid inschakelen" : "Geluid uitschakelen");
+
+      // Probeer de muziek al tijdens het laden te starten. Dit werkt meteen wanneer
+      // de browser hoorbare autoplay toestaat. Anders start ze bij de eerste interactie.
+      AudioEngine.init();
+      if (!AudioEngine.muted) AudioEngine.startMusic();
+      const unlockAudio = () => {
+        AudioEngine.init();
+        if (!AudioEngine.muted && AudioEngine.backgroundMusic?.paused) {
+          AudioEngine.backgroundMusic.play().catch(() => {});
+        }
+      };
+      ["pointerdown", "touchstart", "keydown"].forEach(type =>
+        document.addEventListener(type, unlockAudio, { once: true, passive: true })
+      );
+
       updateHighScoreLine();
     }
 
