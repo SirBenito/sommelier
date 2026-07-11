@@ -1525,6 +1525,7 @@
       muted: false,
       musicTimer: null,
       musicStep: 0,
+      backgroundMusic: null,
       melody: [261.63, 329.63, 392.00, 329.63, 293.66, 349.23, 440.00, 349.23],
 
       init() {
@@ -1559,20 +1560,26 @@
 
       startMusic() {
         this.stopMusic();
-        if (this.muted || !this.context) return;
-        this.musicStep = 0;
-        this.musicTimer = window.setInterval(() => {
-          if (this.muted || state.paused || state.screen !== "game" || !this.context) return;
-          const note = this.melody[this.musicStep % this.melody.length];
-          this.tone(note, 0.18, "triangle", 0.012);
-          if (this.musicStep % 2 === 0) this.tone(note / 4, 0.22, "sine", 0.018);
-          this.musicStep += 1;
-        }, 620);
+        if (this.muted) return;
+        if (!this.backgroundMusic) {
+          this.backgroundMusic = new Audio("audio/backgroundmusic.mp3");
+          this.backgroundMusic.loop = true;
+          this.backgroundMusic.preload = "auto";
+          this.backgroundMusic.volume = 0.28;
+        }
+        this.backgroundMusic.currentTime = 0;
+        this.backgroundMusic.play().catch(() => {
+          // Browsers may block autoplay until the user interacts; startGame is user-triggered.
+        });
       },
 
       stopMusic() {
         window.clearInterval(this.musicTimer);
         this.musicTimer = null;
+        if (this.backgroundMusic) {
+          this.backgroundMusic.pause();
+          this.backgroundMusic.currentTime = 0;
+        }
       },
 
       toggle() {
