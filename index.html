@@ -664,15 +664,15 @@
         const percent = (state.score / (state.qIndex * 100 || 1)) * 100;
 
         if (state.lives <= 0 || percent < 40) {
-            DOM.goBg.style.backgroundImage = "url('images/Lars_fail.png')";
+            DOM.goBg.style.backgroundImage = "url('images/Lars_angry.jpg')";
             DOM.goRank.innerText = "🤢 PRUTSER"; DOM.goRank.style.backgroundColor = varColor('--danger'); DOM.goRank.style.color = 'white';
             DOM.goRoast.innerText = '"Je serveerde Chablis bij een biefstuk. Verwijder per direct je kurkentrekker en verlaat het pand."';
         } else if (percent < 85) {
-            DOM.goBg.style.backgroundImage = "url('images/Lars_idle.png')";
+            DOM.goBg.style.backgroundImage = "url('images/Lars_congrats.jpg')";
             DOM.goRank.innerText = "😐 LIEFHEBBER"; DOM.goRank.style.backgroundColor = varColor('--warning'); DOM.goRank.style.color = 'black';
             DOM.goRoast.innerText = '"Je weet dat rood bij vlees hoort, maar er is nog ruimte voor verfijning. Prima shift gewerkt."';
         } else {
-            DOM.goBg.style.backgroundImage = "url('images/Lars_idle.png')"; // Ideally congrats.png
+            DOM.goBg.style.backgroundImage = "url('images/Lars_congrats.jpg')"; // Ideally congrats.png
             DOM.goRank.innerText = "⭐ LEGENDE"; DOM.goRank.style.backgroundColor = varColor('--success'); DOM.goRank.style.color = 'black';
             DOM.goRoast.innerText = '"Absolute perfectie. Je neus herkent een kurk op 3 kilometer afstand. Een ware meester."';
         }
