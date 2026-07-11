@@ -4,685 +4,582 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer">
-    <title>Sommelier: Neo-Bistro 2026</title>
+    <title>Lars de Sommelier</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Press+Start+2P&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 
         :root {
-            --bg-base: #0f070a;
-            --bg-glass: rgba(30, 15, 20, 0.65);
-            --wine-red: #e6194b;
-            --wine-dark: #58111A;
-            --gold: #ffd700;
-            --success: #00e676;
-            --warning: #ffea00;
-            --danger: #ff1744;
-            --text-light: #f8f0f2;
-            --font-pixel: 'Press Start 2P', cursive;
-            --font-modern: 'Outfit', sans-serif;
+            --bg-dark: #1e090b;
+            --panel-bg: rgba(245, 240, 230, 0.98);
+            --text-dark: #2c221e;
+            --highlight: #8c2531;
+            --success: #2e7d32;
+            --warning: #f57f17;
+            --danger: #c62828;
+            --shadow-color: rgba(43, 17, 20, 0.5);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: var(--font-modern);
-            background-color: var(--bg-base);
-            color: var(--text-light);
-            height: 100dvh;
+            font-family: 'VT323', monospace;
+            background: radial-gradient(circle, #4a151e 0%, #100305 100%);
+            color: var(--text-dark);
+            height: 100dvh; /* Optimalisatie voor mobiele URL bars */
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
             position: relative;
-            background: radial-gradient(circle at 50% 50%, #301018 0%, #0a0204 100%);
         }
 
-        /* 32-bit CRT Scanline Overlay */
         body::before {
             content: " ";
             display: block;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-            z-index: 999;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            z-index: 99;
             background-size: 100% 4px;
             pointer-events: none;
-            opacity: 0.6;
         }
 
-        /* Particle Canvas */
-        #particle-canvas {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 900;
-        }
-
+        /* */
         #game-container {
-            width: 100%;
-            max-width: 550px;
+            width: 100%; max-width: 600px; /* Breder op desktop */
             height: 100dvh;
-            position: relative;
-            display: flex;
-            flex-direction: column;
+            position: relative; background: rgba(25, 6, 8, 0.85);
+            display: flex; flex-direction: column;
+            box-shadow: 0 0 40px rgba(0,0,0,0.9);
+            border-left: 2px solid rgba(255,255,255,0.05);
+            border-right: 2px solid rgba(255,255,255,0.05);
             overflow: hidden;
-            box-shadow: 0 0 50px rgba(230, 25, 75, 0.15);
-            perspective: 1000px;
         }
 
-        /* Screen Shake Animation */
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
-        }
-        .shake-active { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
-
-        /* --- SCREENS --- */
         .screen {
-            display: none;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            padding: 25px;
-            align-items: center;
-            z-index: 10;
+            display: none; flex-direction: column; width: 100%; height: 100%;
+            padding: 15px; align-items: center; 
+            overflow-y: auto; /* Zorgt dat content scrolt als scherm te klein is */
+            padding-bottom: 30px;
         }
-        .screen.active { display: flex; animation: fadeIn 0.4s ease-out; }
+        .screen.active { display: flex; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-
-        /* --- START & GAME OVER (NEO-BISTRO STYLE) --- */
+        /* --- MENU PANELS --- */
         .menu-panel {
-            background: var(--bg-glass);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-top: 2px solid rgba(230, 25, 75, 0.5);
-            border-bottom: 2px solid rgba(230, 25, 75, 0.5);
-            border-radius: 16px;
-            padding: 40px 25px;
-            text-align: center;
-            margin: auto;
-            width: 100%;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(230, 25, 75, 0.1);
+            background: var(--panel-bg); border: 4px solid var(--highlight);
+            border-radius: 12px; padding: 30px 20px; width: 100%;
+            text-align: center; margin: auto;
+            box-shadow: 0 8px 20px var(--shadow-color); max-width: 95%;
         }
-
-        h1 {
-            font-family: var(--font-pixel);
-            font-size: 26px;
-            color: var(--text-light);
-            text-shadow: 3px 3px 0px var(--wine-red), -1px -1px 0px var(--gold);
-            margin-bottom: 10px;
-            line-height: 1.4;
-            letter-spacing: 1px;
-        }
-
-        .subtitle { font-size: 18px; color: #a09095; font-weight: 300; margin-bottom: 30px; letter-spacing: 2px; text-transform: uppercase; }
-
-        /* --- BUTTONS --- */
-        .btn-neo {
-            font-family: var(--font-pixel);
-            background: linear-gradient(135deg, var(--wine-red) 0%, var(--wine-dark) 100%);
-            color: white;
-            border: 2px solid rgba(255,255,255,0.2);
-            padding: 20px;
-            font-size: 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            width: 100%;
-            box-shadow: 0 8px 0px rgba(40, 5, 10, 0.8), 0 15px 20px rgba(230, 25, 75, 0.4);
-            transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-neo::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
-            transform: rotate(45deg) translateY(-100%);
-            transition: transform 0.5s ease-out;
-        }
-        .btn-neo:hover::after { transform: rotate(45deg) translateY(100%); }
-        .btn-neo:active { transform: translateY(8px); box-shadow: 0 0px 0px rgba(40, 5, 10, 0.8), 0 5px 10px rgba(230, 25, 75, 0.4); border-color: var(--gold); }
-
-        /* --- STREAMING_CHUNK: Game UI Elements & Timer --- */
-        .top-hud {
-            width: 100%; display: flex; justify-content: space-between; align-items: center;
-            background: var(--bg-glass); backdrop-filter: blur(10px);
-            padding: 15px 20px; border-radius: 0 0 20px 20px;
-            border-bottom: 2px solid rgba(255,255,255,0.05);
-            margin-bottom: 15px; flex-shrink: 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .score-block { display: flex; flex-direction: column; }
-        .score-label { font-size: 12px; color: #a09095; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
-        .score-val { font-family: var(--font-pixel); font-size: 20px; color: var(--gold); text-shadow: 0 0 10px rgba(255,215,0,0.5); }
         
-        .combo-badge {
-            background: linear-gradient(90deg, #ff9100, #ffea00);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            font-family: var(--font-pixel); font-size: 14px;
-            animation: pulseGlow 1s infinite alternate;
-            opacity: 0; transition: opacity 0.3s;
-        }
-        .combo-badge.active { opacity: 1; }
-        @keyframes pulseGlow { from { filter: drop-shadow(0 0 2px #ff9100); transform: scale(1); } to { filter: drop-shadow(0 0 8px #ffea00); transform: scale(1.1); } }
-
-        .lives-block { font-size: 20px; letter-spacing: 4px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+        h1 { font-family: 'Press Start 2P', cursive; font-size: 24px; color: var(--highlight); margin-bottom: 15px; line-height: 1.5; text-shadow: 2px 2px 0px rgba(0,0,0,0.15); }
         
-        .controls { display: flex; gap: 15px; }
-        .icon-btn { background: none; border: none; color: white; font-size: 22px; cursor: pointer; transition: transform 0.2s; opacity: 0.7; }
-        .icon-btn:hover { opacity: 1; transform: scale(1.1); }
-
-        /* Timer Bar */
-        .timer-container { width: 100%; height: 6px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; margin-bottom: 20px; flex-shrink: 0; }
-        .timer-fill { height: 100%; width: 100%; background: var(--success); transition: width 0.1s linear, background-color 0.3s; }
-        .timer-fill.warning { background: var(--warning); }
-        .timer-fill.danger { background: var(--danger); }
-
-        /* --- STREAMING_CHUNK: Character Stage & 3D Cards --- */
-        .stage-area {
-            flex: 1; display: flex; justify-content: center; align-items: flex-end;
-            width: 100%; min-height: 220px; position: relative;
+        .profile-container {
+            width: 140px; height: 140px; margin: 15px auto;
+            border: 4px solid var(--highlight); border-radius: 12px;
+            background-color: #ebdcb9; background-image: url('images/Lars_idle.jpg'); 
+            background-size: cover; background-position: center;
+            image-rendering: pixelated; box-shadow: 0 6px 15px var(--shadow-color);
         }
 
-        .lars-sprite {
-            width: 100%; max-width: 280px; aspect-ratio: 1/1;
-            background-color: transparent;
-            background-size: contain; background-repeat: no-repeat; background-position: bottom center;
-            image-rendering: pixelated;
-            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.8));
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s;
-            z-index: 5;
+        .btn {
+            font-family: 'Press Start 2P', cursive; background: var(--highlight); 
+            color: white; border: 3px solid #58111A; padding: 16px 20px; 
+            font-size: 13px; border-radius: 8px; cursor: pointer;
+            box-shadow: 0 6px 0px #3d080f; transition: all 0.1s ease-in-out;
+            width: 100%; text-align: center; margin-top: 15px; line-height: 1.4;
+        }
+        .btn:active { transform: translateY(6px); box-shadow: 0 0px 0px #3d080f; }
+
+        .rules-card {
+            background: rgba(0,0,0,0.05); border-radius: 8px; padding: 15px;
+            font-size: 18px; line-height: 1.6; text-align: left;
+            margin: 15px 0; border-left: 4px solid var(--highlight);
         }
 
-        @keyframes breathe { 0%, 100% { transform: translateY(0) scaleY(1); } 50% { transform: translateY(-3px) scaleY(1.02); } }
-        .lars-sprite.idle { background-image: url('images/Lars_idle.png'); animation: breathe 2.5s infinite ease-in-out; }
+        /* */
+        .top-bar {
+            width: 100%; display: flex; flex-direction: column;
+            background: var(--panel-bg); border-bottom: 4px solid var(--highlight);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 5; flex-shrink: 0;
+        }
+
+        .stats-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 14px; font-size: 24px; font-weight: bold;
+        }
+
+        .menu-quit-btn {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px; background: var(--highlight);
+            color: white; border: 2px solid #58111A;
+            padding: 6px 10px; border-radius: 4px; cursor: pointer;
+            box-shadow: 0 2px 0px #3d080f; transition: all 0.05s;
+        }
+        .menu-quit-btn:active { transform: translateY(2px); box-shadow: 0 0px 0px #3d080f; }
+
+        .mute-btn { cursor: pointer; font-size: 24px; transition: transform 0.1s; padding: 0 8px; }
+        .mute-btn:active { transform: scale(0.9); }
+
+        .live-progress-container {
+            width: 100%; height: 14px; background: #d7ccc8;
+            position: relative; border-top: 2px solid #a1887f;
+        }
+        .live-progress-fill {
+            height: 100%; width: 0%; background: var(--success);
+            transition: width 0.4s cubic-bezier(0.1, 0.8, 0.2, 1);
+        }
+        .marker { position: absolute; top: 0; bottom: 0; width: 2px; background: #58111A; z-index: 2; }
+        .marker-45 { left: 45%; }
+        .marker-80 { left: 80%; }
+        .marker-label {
+            position: absolute; top: 14px; transform: translateX(-50%);
+            font-size: 12px; font-weight: bold; color: var(--panel-bg);
+            text-shadow: 1px 1px 2px black;
+        }
+
+        /* */
+        .stage-box {
+            flex: 1; display: flex; justify-content: center; align-items: center;
+            width: 100%; padding: 10px; min-height: 300px; position: relative;
+        }
+
+        .lars-character {
+            width: 100%; max-width: 340px; aspect-ratio: 1 / 1; height: auto;
+            background-color: #2b1114;
+            border: 5px solid var(--highlight); border-radius: 12px;
+            background-size: cover; background-repeat: no-repeat; background-position: center;
+            image-rendering: pixelated; box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2;
+        }
+
+        @keyframes gentleBreath {
+            0%, 100% { transform: translateY(0) scaleY(1); }
+            50% { transform: translateY(-4px) scaleY(1.02); }
+        }
         
-        /* Fallbacks if local images are missing (Generates a CSS silhouette) */
-        .lars-sprite.idle:after { content: ''; position: absolute; inset:0; background: linear-gradient(to bottom, transparent 20%, rgba(230,25,75,0.2) 100%); z-index: -1; opacity: 0; transition: opacity 0.5s; }
-        
-        .lars-sprite.action { background-image: url('images/Lars_fail.png'); animation: none; transform: scale(1.15) translateY(-5%); z-index: 20; }
-        .lars-sprite.success-glow { filter: drop-shadow(0 0 30px var(--success)); }
-        .lars-sprite.fail-glow { filter: drop-shadow(0 0 40px var(--danger)); }
+        .lars-character.idle { background-image: url('images/Lars_idle.jpg'); animation: gentleBreath 2.2s infinite ease-in-out; }
+        .lars-character.happy { background-image: url('images/Lars_happy.jpg'); animation: none; }
+        .lars-character.fail { background-image: url('images/Lars_fail.jpg'); animation: none; }
 
-        /* 3D Customer Card */
-        .card-container { perspective: 1000px; width: 100%; margin-bottom: 15px; z-index: 10; flex-shrink: 0; }
-        .customer-card {
-            background: linear-gradient(145deg, rgba(40,20,30,0.9) 0%, rgba(20,10,15,0.95) 100%);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-left: 4px solid var(--wine-red);
-            border-radius: 12px; padding: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
+        /* Prominent Highlight State: Pop out when choice is made! */
+        .lars-character.prominent {
+            transform: scale(1.15) translateY(-3%); /* Groter en iets omhoog */
+            z-index: 30; /* Boven de modal en tekst */
         }
-        .card-title { font-family: var(--font-pixel); font-size: 10px; color: var(--wine-red); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px; }
-        .card-quote { font-size: 20px; font-weight: 700; line-height: 1.4; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        .highlight-good { box-shadow: 0 0 40px 15px rgba(46, 125, 50, 0.8); border-color: var(--success); }
+        .highlight-bad { box-shadow: 0 0 40px 15px rgba(198, 40, 40, 0.8); border-color: var(--danger); }
 
-        .options-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; z-index: 10; padding-bottom: 20px;}
-        .opt-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: var(--text-light);
-            padding: 16px 20px; font-size: 17px; font-weight: 600; font-family: var(--font-modern);
-            border-radius: 10px; cursor: pointer; text-align: left;
-            display: flex; align-items: center;
-            transition: all 0.2s;
-            backdrop-filter: blur(5px);
+        /* --- QUESTION UI --- */
+        .question-bubble {
+            background: var(--panel-bg); padding: 18px 15px; border-radius: 12px;
+            border: 3px solid var(--highlight); font-size: 22px; text-align: center;
+            margin-bottom: 15px; width: 100%; box-shadow: 0 6px 12px rgba(0,0,0,0.4); position: relative;
+            z-index: 1; flex-shrink: 0;
         }
-        .opt-btn:hover { background: rgba(230, 25, 75, 0.2); border-color: var(--wine-red); transform: translateX(5px); }
-        .opt-btn:active { transform: scale(0.98); }
-        .wine-icon { font-size: 22px; margin-right: 12px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+        .question-bubble::before {
+            content: "Klant vraagt:"; position: absolute; top: -11px; left: 15px;
+            background: var(--highlight); color: white; font-size: 11px; padding: 2px 10px;
+            border-radius: 4px; font-family: 'Press Start 2P', cursive;
+        }
 
-        /* --- STREAMING_CHUNK: Feedback Modal & Game Over --- */
+        .options-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; flex-shrink: 0; }
+        .option-button {
+            font-family: 'VT323', monospace; background: var(--panel-bg);
+            border: 3px solid #888; padding: 14px 15px; font-size: 21px;
+            border-radius: 8px; cursor: pointer; text-align: left;
+            transition: all 0.1s; display: flex; align-items: center; box-shadow: 0 5px 0px #888;
+        }
+        .option-button:active { transform: translateY(5px); box-shadow: 0 0px 0px #888; }
+        .option-button:hover { border-color: var(--highlight); background: #ebdcb9; }
+
+        /* */
         #feedback-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 100;
-            padding: 20px;
+            background: rgba(0,0,0,0.65); display: flex; justify-content: center; align-items: flex-end;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 20;
         }
         #feedback-overlay.show { opacity: 1; pointer-events: auto; }
-        
-        .feedback-box {
-            background: var(--bg-base); border: 2px solid var(--wine-red);
-            border-radius: 16px; padding: 30px 25px; width: 100%; max-width: 400px;
-            text-align: center; transform: scale(0.8) translateY(50px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 30px rgba(230, 25, 75, 0.1);
-        }
-        #feedback-overlay.show .feedback-box { transform: scale(1) translateY(0); }
-        
-        .fb-badge { font-family: var(--font-pixel); font-size: 14px; margin-bottom: 15px; display: inline-block; padding: 8px 16px; border-radius: 6px; color: #000; text-transform: uppercase; box-shadow: 0 4px 0 rgba(0,0,0,0.3); }
-        .fb-desc { font-size: 18px; line-height: 1.5; margin-bottom: 25px; color: #e0d8c8; font-weight: 300;}
 
-        /* Game Over Specifics */
-        .go-bg {
-            position: absolute; inset: 0; z-index: -1;
-            background-image: url('images/Lars_fail.png'); /* Dynamic in JS */
+        .feedback-board {
+            background: var(--panel-bg); border-top: 6px solid var(--highlight);
+            width: 100%; padding: 25px 20px 35px 20px; border-radius: 16px 16px 0 0;
+            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            text-align: center; box-shadow: 0 -10px 25px rgba(0,0,0,0.5);
+        }
+        #feedback-overlay.show .feedback-board { transform: translateY(0); }
+
+        .feedback-badge { font-family: 'Press Start 2P', cursive; font-size: 13px; margin-bottom: 15px; display: inline-block; padding: 6px 14px; border-radius: 4px; color: white; }
+        #feedback-text { font-size: 22px; margin-bottom: 25px; line-height: 1.5; }
+
+        /* Full Screen Game Over Specific */
+        #game-over-screen {
+            padding: 0; overflow: hidden; position: relative;
+        }
+        .game-over-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
-            filter: brightness(0.2) blur(4px); opacity: 0.8;
+            z-index: 1; filter: brightness(0.35); /* Maakt de foto donkerder voor leesbaarheid */
             transition: background-image 0.5s;
         }
-        .rank-badge { font-family: var(--font-pixel); font-size: 16px; padding: 12px 20px; border-radius: 8px; color: #000; margin: 15px 0; display: inline-block; box-shadow: 0 6px 0 rgba(0,0,0,0.4); text-shadow: none; }
-        .go-stats { background: rgba(0,0,0,0.6); padding: 20px; border-radius: 12px; border-left: 4px solid var(--wine-red); text-align: left; margin-bottom: 25px; width: 100%; }
-        .go-stats p { font-size: 18px; margin-bottom: 8px; display: flex; justify-content: space-between; font-weight: 300;}
-        .go-stats b { font-family: var(--font-pixel); font-size: 14px; color: var(--gold); }
+        .game-over-content {
+            position: relative; z-index: 2; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: flex-end; /* Veranderd naar flex-end om inhoud omlaag te duwen */
+            padding: 25px; text-align: center; color: white;
+            padding-bottom: 35px;
+        }
+
+        .huge-title { 
+            font-family: 'Press Start 2P', cursive; font-size: 34px; color: white; 
+            text-shadow: 4px 4px 0px var(--danger); margin-bottom: 8px; line-height: 1.2;
+        }
+
+        .level-badge {
+            font-family: 'Press Start 2P', cursive; font-size: 15px; padding: 8px 16px;
+            border-radius: 6px; color: white; display: inline-block;
+            margin: 10px 0; box-shadow: 0 4px 0px rgba(0,0,0,0.3); text-transform: uppercase;
+        }
+
+        .funny-reaction {
+            font-size: 22px; line-height: 1.4; margin: 10px 0 20px 0;
+            background: rgba(0,0,0,0.7); padding: 15px; border-radius: 8px;
+            border-left: 4px solid var(--highlight);
+            text-align: left;
+        }
+
+        .giant-btn {
+            font-size: 15px; padding: 22px; margin-top: 5px; margin-bottom: 5px;
+            border-width: 4px; box-shadow: 0 8px 0px #3d080f;
+            width: 100%;
+        }
+        .giant-btn:active { transform: translateY(8px); box-shadow: 0 0px 0px #3d080f; }
+
     </style>
-    <!-- Tone.js for Next-Gen Retro Audio -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 </head>
 <body>
 
-<canvas id="particle-canvas"></canvas>
+<!-- Dit laadt alle afbeeldingen direct bij het opstarten geluidloos in de browsercache -->
+<div id="preloader-cache" style="position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none; z-index: -9999;">
+    <img src="images/Lars_idle.jpg" alt="preload_idle">
+    <img src="images/Lars_happy.jpg" alt="preload_happy">
+    <img src="images/Lars_fail.jpg" alt="preload_fail">
+    <img src="images/Lars_angry.jpg" alt="preload_angry">
+    <img src="images/Lars_congrats.jpg" alt="preload_congrats">
+</div>
 
 <div id="game-container">
     
-    <!-- MAIN MENU -->
+    <!-- START SCHERM -->
     <div id="start-screen" class="screen active">
-        <div class="menu-panel" style="margin-top: 10vh;">
-            <h1>SOMMELIER<br>2026</h1>
-            <div class="subtitle">Neo-Bistro Edition</div>
+        <div class="menu-panel">
+            <h1 style="font-size: 28px;">SOMMELIER<br>LARS</h1>
+            <div class="profile-container"></div>
+            <p style="font-size: 24px; font-weight: bold; margin-top:10px;">De Enige Echte Expert</p>
             
-            <div style="width: 120px; height: 120px; margin: 0 auto 20px auto; border-radius: 16px; border: 4px solid var(--wine-red); background: url('images/Lars_idle.png') bottom center/cover no-repeat; background-color: var(--bg-base); image-rendering: pixelated; box-shadow: 0 10px 20px rgba(0,0,0,0.5);"></div>
-            
-            <div style="font-size: 15px; font-weight: 300; text-align: left; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; margin-bottom: 25px; line-height: 1.6;">
-                <span style="color:var(--success);">● PERFECT:</span> +100pt & Combo<br>
-                <span style="color:var(--warning);">● PRIMA:</span> +50pt<br>
-                <span style="color:var(--danger);">● FOUT / TE LAAT:</span> -1 Leven
+            <div class="rules-card">
+                🍷 <b>Perfecte Match:</b> +100 pt<br>
+                😐 <b>Prima Match:</b> +50 pt<br>
+                🤢 <b>Foute Match:</b> -1 leven
             </div>
             
-            <button class="btn-neo" onclick="initGame()">Start Shift</button>
+            <button class="btn" style="padding: 20px; font-size: 16px;" onclick="startGame()">START SHIFT</button>
         </div>
     </div>
 
-    <div id="game-ui" class="screen" style="padding: 0;">
-        <div class="top-hud">
-            <div class="score-block">
-                <span class="score-label">Score</span>
-                <span class="score-val" id="score-display">0</span>
+    <!-- GAME SCHERM -->
+    <div id="game-screen" class="screen" style="padding: 0;">
+        <div class="top-bar">
+            <div class="stats-row">
+                <button class="menu-quit-btn" onclick="quitToMenu()">🚪 MENU</button>
+                <div>⭐ <span id="score-val">0</span></div>
+                <div class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</div>
+                <div id="lives-indicator">❤️❤️❤️</div>
             </div>
-            <div class="combo-badge" id="combo-display">x1 COMBO</div>
-            <div class="controls">
-                <div class="lives-block" id="lives-display">❤️❤️❤️</div>
-                <button class="icon-btn" onclick="toggleMute()" id="mute-btn">🔊</button>
-                <button class="icon-btn" onclick="quitGame()">🚪</button>
+            <div class="live-progress-container">
+                <div id="live-progress-fill" class="live-progress-fill"></div>
+                <div class="marker marker-45"><span class="marker-label" style="top: 14px;">OK</span></div>
+                <div class="marker marker-80"><span class="marker-label" style="top: 14px;">PRO</span></div>
             </div>
         </div>
 
-        <div class="timer-container"><div class="timer-fill" id="timer-bar"></div></div>
-
-        <div class="stage-area">
-            <div id="lars-sprite" class="lars-sprite idle"></div>
-        </div>
-
-        <!-- Scrollable wrapper for cards so it fits all screens -->
-        <div style="width: 100%; padding: 0 20px; display: flex; flex-direction: column; flex: 1; justify-content: flex-end;">
-            <div class="card-container" id="card-container">
-                <div class="customer-card">
-                    <div class="card-title">Bestelling:</div>
-                    <div class="card-quote">"<span id="customer-text"></span>"</div>
-                </div>
+        <!-- Inner wrapper for scrolling content -->
+        <div style="width: 100%; height: 100%; display: flex; flex-direction: column; overflow-y: auto; padding: 15px;">
+            <div class="stage-box">
+                <div id="lars-sprite" class="lars-character idle"></div>
             </div>
 
-            <div class="options-grid" id="options-container"></div>
+            <div class="question-bubble">
+                "<span id="customer-quote"></span>"
+            </div>
+
+            <div class="options-grid" id="options-box"></div>
         </div>
     </div>
 
-    <!-- FEEDBACK OVERLAY -->
+    <!-- FEEDBACK DIALOGUE OVERLAY -->
     <div id="feedback-overlay">
-        <div class="feedback-box">
-            <div id="fb-badge" class="fb-badge">STATUS</div>
-            <div id="fb-desc" class="fb-desc">Uitleg.</div>
-            <button class="btn-neo" id="fb-btn" onclick="nextQuestion()">Verder</button>
+        <div class="feedback-board">
+            <div id="feedback-badge" class="feedback-badge">STATUS</div>
+            <div id="feedback-text">Uitleg over de wijn-keuze.</div>
+            <button class="btn" id="feedback-action-btn" onclick="nextRound()">VOLGENDE KLANT</button>
         </div>
     </div>
 
-    <!-- GAME OVER SCREEN -->
+    <!-- FULL SCREEN GAME OVER SCHERM -->
     <div id="game-over-screen" class="screen">
-        <div class="go-bg" id="go-bg"></div>
-        <div class="menu-panel" style="margin-top: auto; margin-bottom: 20px; background: rgba(15, 7, 10, 0.85);">
-            <h1 style="font-size: 32px; margin-bottom: 5px;">SHIFT END</h1>
-            <div id="go-rank" class="rank-badge">RANK</div>
+        <div id="game-over-bg" class="game-over-bg"></div>
+        <div class="game-over-content">
+            <!-- Flex spacer pushes the content to the bottom of the screen -->
+            <div style="flex-grow: 1;"></div>
             
-            <div class="go-stats">
-                <p>Eindscore: <b id="go-score">0</b></p>
-                <p>Max Combo: <b id="go-combo">x1</b></p>
-                <p style="font-size: 14px; margin-top: 15px; color: #aaa; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; display: block;" id="go-roast">...</p>
+            <h1 class="huge-title" id="game-over-title">GAME OVER</h1>
+            
+            <div>
+                <div id="level-badge" class="level-badge">NIVEAU</div>
             </div>
             
-            <button class="btn-neo" onclick="resetToMenu()">Opnieuw Spelen</button>
+            <p style="font-size: 22px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">Behaalde Score: <br><b id="final-score-val" style="font-size: 32px; color: gold;">0 PT</b></p>
+            
+            <p id="game-over-msg" class="funny-reaction"></p>
+
+            <button class="btn giant-btn" onclick="resetApp()">OPNIEUW PROBEREN</button>
         </div>
     </div>
 
 </div>
 
 <script>
-    // --- 32-Bit Particle Engine (Canvas) ---
-    const canvas = document.getElementById('particle-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    
-    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    window.addEventListener('resize', resizeCanvas); resizeCanvas();
-
-    class Particle {
-        constructor(x, y, color) {
-            this.x = x; this.y = y;
-            this.color = color;
-            this.size = Math.random() * 6 + 4;
-            this.speedX = (Math.random() - 0.5) * 15;
-            this.speedY = (Math.random() - 1) * 15;
-            this.gravity = 0.5;
-            this.life = 1;
-            this.decay = Math.random() * 0.02 + 0.015;
-        }
-        update() {
-            this.x += this.speedX;
-            this.speedY += this.gravity;
-            this.y += this.speedY;
-            this.life -= this.decay;
-        }
-        draw() {
-            ctx.fillStyle = `rgba(${this.color}, ${this.life})`;
-            ctx.fillRect(this.x, this.y, this.size, this.size); // Square pixels for retro feel
-        }
-    }
-
-    function spawnParticles(colorRGB, amount = 40) {
-        const x = window.innerWidth / 2; const y = window.innerHeight * 0.4; // Center stage
-        for(let i=0; i<amount; i++) particles.push(new Particle(x, y, colorRGB));
-    }
-
-    function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for(let i = particles.length - 1; i >= 0; i--) {
-            particles[i].update(); particles[i].draw();
-            if(particles[i].life <= 0) particles.splice(i, 1);
-        }
-        requestAnimationFrame(animateParticles);
-    }
-    animateParticles();
-
-    // --- Modern Audio Engine (Tone.js) ---
-    let isMuted = false;
-    const AudioSys = {
-        bgm: null, loop: null, sfxSuccess: null, sfxFail: null, sfxTick: null, sfxPop: null,
-        init() {
-            if(this.bgm) return;
-            // Droning cyberpunk/french bass
-            this.bgm = new Tone.Synth({ oscillator: { type: "fmsquare", modulationType: "sawtooth" }, envelope: { attack: 0.1, decay: 0.3, sustain: 0.2, release: 1 } }).toDestination();
-            this.bgm.volume.value = -18;
-            
-            this.sfxSuccess = new Tone.PolySynth(Tone.Synth, { oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.1 } }).toDestination();
-            this.sfxSuccess.volume.value = -8;
-            
-            this.sfxFail = new Tone.MembraneSynth({ pitchDecay: 0.2, octaves: 4, oscillator: { type: "square" }, envelope: { attack: 0.01, decay: 0.4, sustain: 0, release: 0.2 } }).toDestination();
-            this.sfxFail.volume.value = -2;
-
-            this.sfxPop = new Tone.MembraneSynth({ pitchDecay: 0.01, octaves: 1, envelope: { attack: 0.001, decay: 0.1, sustain: 0 } }).toDestination();
-            this.sfxPop.volume.value = 2;
-
-            const notes = ["C3", "G2", "A2", "E2"];
-            let step = 0;
-            this.loop = new Tone.Loop(time => {
-                if(!isMuted) this.bgm.triggerAttackRelease(notes[step % notes.length], "8n", time);
-                step++;
-            }, "4n");
-            Tone.Transport.bpm.value = 110;
-        },
-        playBGM() { if(Tone.context.state !== 'running') Tone.start(); Tone.Transport.start(); this.loop.start(0); },
-        stopBGM() { Tone.Transport.stop(); this.loop.stop(); },
-        play(type) {
-            if(isMuted || !this.sfxSuccess) return;
-            const now = Tone.now();
-            if(type === 'pop') this.sfxPop.triggerAttackRelease("C4", "16n", now);
-            if(type === 'perfect') this.sfxSuccess.triggerAttackRelease(["C5", "E5", "G5", "C6"], "8n", now);
-            if(type === 'ok') this.sfxSuccess.triggerAttackRelease(["C5", "E5"], "8n", now);
-            if(type === 'fail') this.sfxFail.triggerAttackRelease("A1", "4n", now);
-        }
-    };
-
-    function toggleMute() {
-        isMuted = !isMuted;
-        document.getElementById('mute-btn').innerText = isMuted ? "🔇" : "🔊";
-    }
-
-    // --- STREAMING_CHUNK: Expanded 2026 Wine Database ---
-    const db = [
-        { c: "Zware, gegrilde ribeye steak met pepersaus.", o: [
-            { w: "Bordeaux (Cabernet Blend)", t: "perfect", d: "Krachtige tannines snijden perfect door het vet en de proteïnen." },
-            { w: "Bourgogne (Pinot Noir)", t: "ok", d: "Rood bij rood vlees, maar eigenlijk wat te delicaat voor peper." },
-            { w: "Zoete Sauternes", t: "bad", d: "Suiker bij een pepersteak? Een absolute aanslag op de zintuigen." }] },
-        { c: "Een dozijn verse, zoute Zeeuwse oesters.", o: [
-            { w: "Chablis (Strakke Chardonnay)", t: "perfect", d: "Kalkachtige mineraliteit en hoge zuren maken dit de ultieme match." },
-            { w: "Champagne Brut", t: "ok", d: "Bubbels en zuren reinigen de mond heerlijk van het ziltige." },
-            { w: "Zware Shiraz", t: "bad", d: "Rode wijn en rauwe oesters geeft een ranzige metaalsmaak." }] },
-        { c: "Pikante Thaise groene curry met kip.", o: [
-            { w: "Gewürztraminer (Licht zoet)", t: "perfect", d: "Een hint van restzoet blust de intense hitte van de pepers af." },
-            { w: "Droge Sauvignon Blanc", t: "ok", d: "Lekker fris, maar mist het zoetje om de hitte echt te temmen." },
-            { w: "Houtgelagerde Chardonnay", t: "bad", d: "Alcohol en eikenhout maken pittig eten exponentieel heter in de mond." }] },
-        { c: "Rijke, romige truffelrisotto.", o: [
-            { w: "Barolo (Nebbiolo)", t: "perfect", d: "De aardse koning der wijnen voor de aardse koning der schimmels." },
-            { w: "Volle Witte Bourgondiër", t: "ok", d: "De romigheid van de wijn sluit mooi aan bij de boterige risotto." },
-            { w: "Lichte Provence Rosé", t: "bad", d: "Compleet weggespoeld door het zware geweld van de truffel." }] },
-        { c: "Plankje met sterke Roquefort (Blauwe kaas).", o: [
-            { w: "Sauternes", t: "perfect", d: "Zout en zoet: de oudste en meest briljante combinatie in de wijnwereld." },
-            { w: "Tawny Port", t: "ok", d: "Sterk, zoet en notig. Werkt altijd prima met blauwschimmel." },
-            { w: "Strakke Chablis", t: "bad", d: "Hoge zuren vloeken agressief met de schimmelculturen in de kaas." }] },
-        { c: "Klassieke pasta Carbonara (Guanciale & Pecorino).", o: [
-            { w: "Frascati (Fris Italiaans Wit)", t: "perfect", d: "Frisse zuren snijden als een mes door de vettige kaassaus." },
-            { w: "Lichte, gekoelde Pinot Noir", t: "ok", d: "Weinig tannine, dus kan net als 'vleeswijn' functioneren." },
-            { w: "Zware Malbec", t: "bad", d: "Zware, stroeve tannines vermoorden de romige textuur van de pasta." }] },
-        { c: "Gegrilde zalmmoot met dille-kruidenboter.", o: [
-            { w: "Houtgelagerde Chardonnay", t: "perfect", d: "Vette vis en kruidenboter smeken om een rijke, boterige wijn." },
-            { w: "Pinot Noir", t: "ok", d: "Zalm is een van de zeldzame vissen die zachte rode wijn tolereert." },
-            { w: "Stroeve Cabernet Sauvignon", t: "bad", d: "Rode wijn met tannine geeft bij vis een afgrijselijke ijzersmaak." }] },
-        { c: "Spaanse tapas: chorizo en knoflookgarnalen.", o: [
-            { w: "Rioja Crianza (Tempranillo)", t: "perfect", d: "Spaanse kruidigheid voor een pittig en knoflookrijk Spaans gerecht." },
-            { w: "Droge Sherry (Fino)", t: "ok", d: "Super authentiek, snijdt heerlijk door de knoflookolie heen." },
-            { w: "Mierzoete Moscato", t: "bad", d: "Knoflook met zoete, bruisende dessertwijn is een recept voor buikpijn." }] },
-        { c: "Vegetarische paddenstoelen ravioli.", o: [
-            { w: "Earthy Pinot Noir", t: "perfect", d: "Aardse tonen in de wijn matchen perfect met de paddenstoelen." },
-            { w: "Rijke Chardonnay", t: "ok", d: "Boterige witte wijn past goed bij de deegkussentjes en kaas." },
-            { w: "Explosieve, jammige Zinfandel", t: "bad", d: "Fruitbom. Slaat de delicate, hartige smaak volledig dood." }] },
-        { c: "Als dessert: citroentaart met merengue.", o: [
-            { w: "Late Harvest Riesling", t: "perfect", d: "Hoge zuren in de wijn balanceren de citroen, het zoet sluit aan op de merengue." },
-            { w: "Moscato d'Asti", t: "ok", d: "Lekker zoet en feestelijk, maar mist de zuren om de citroen aan te kunnen." },
-            { w: "Kurkdroge Sancerre", t: "bad", d: "De taart is zoeter dan de wijn, waardoor de wijn ineens naar citroenzuur smaakt." }] }
+    /* */
+    const imagePreloadSources = [
+        'images/Lars_idle.jpg',
+        'images/Lars_happy.jpg',
+        'images/Lars_fail.jpg',
+        'images/Lars_angry.jpg',
+        'images/Lars_congrats.jpg'
     ];
-
-    // --- GAME STATE ---
-    let state = {
-        score: 0, lives: 3, combo: 0, maxCombo: 0,
-        deck: [], qIndex: 0, locked: false,
-        timer: null, timeLeft: 100
-    };
-
-    const DOM = {
-        screens: document.querySelectorAll('.screen'),
-        score: document.getElementById('score-display'),
-        lives: document.getElementById('lives-display'),
-        combo: document.getElementById('combo-display'),
-        timerBar: document.getElementById('timer-bar'),
-        lars: document.getElementById('lars-sprite'),
-        customer: document.getElementById('customer-text'),
-        options: document.getElementById('options-container'),
-        overlay: document.getElementById('feedback-overlay'),
-        fbTitle: document.getElementById('fb-badge'),
-        fbDesc: document.getElementById('fb-desc'),
-        fbBtn: document.getElementById('fb-btn'),
-        goScore: document.getElementById('go-score'),
-        goCombo: document.getElementById('go-combo'),
-        goRank: document.getElementById('go-rank'),
-        goRoast: document.getElementById('go-roast'),
-        goBg: document.getElementById('go-bg'),
-        card: document.getElementById('card-container')
-    };
-
-    // 3D Card Hover Effect
-    document.addEventListener('mousemove', (e) => {
-        if(state.locked) return;
-        const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-        const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
-        DOM.card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+    const loadedImagesBuffer = [];
+    imagePreloadSources.forEach(src => {
+        const img = new Image();
+        img.src = src;
+        loadedImagesBuffer.push(img);
     });
 
-    // --- STREAMING_CHUNK: Game Logic Loop ---
-    function switchScreen(id) {
-        DOM.screens.forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
+    /* */
+    const AudioEngine = {
+        isMuted: false, synth: null, popSynth: null, squeakSynth: null, melodySynth: null, bassSynth: null,
+        isPlayingMusic: false, musicInterval: null, step: 0,
+        melody: ["C5", "E5", "G5", "B4", "D5", "G5", "A4", "C5", "E5", "G4", "B4", "D5", "F4", "A4", "C5", "E4", "G4", "C5", "D4", "F4", "B4", "C4", null, null],
+        bass: ["C3", "E3", "E3", "G2", "B2", "B2", "A2", "C3", "C3", "E2", "G2", "G2", "F2", "A2", "A2", "C2", "E2", "E2", "G2", "B2", "B2", "C3", null, null],
 
-    function initGame() {
-        AudioSys.init(); AudioSys.playBGM();
-        state = { score: 0, lives: 3, combo: 0, maxCombo: 0, deck: [...db].sort(() => Math.random() - 0.5), qIndex: 0, locked: false, timer: null, timeLeft: 100 };
-        updateHUD(); switchScreen('game-ui'); loadQuestion();
-    }
+        init: function() {
+            if (this.synth) return;
+            this.synth = new Tone.PolySynth(Tone.Synth).toDestination(); this.synth.volume.value = -6;
+            this.popSynth = new Tone.MembraneSynth({ pitchDecay: 0.05, octaves: 3, oscillator: { type: "sine" }, envelope: { attack: 0.001, decay: 0.08, sustain: 0, release: 0.08 } }).toDestination(); this.popSynth.volume.value = 4;
+            this.squeakSynth = new Tone.MonoSynth({ oscillator: { type: "sine" }, envelope: { attack: 0.02, decay: 0.05, sustain: 0, release: 0.05 } }).toDestination(); this.squeakSynth.volume.value = -14;
+            this.melodySynth = new Tone.Synth({ oscillator: { type: "triangle" }, envelope: { attack: 0.05, decay: 0.15, sustain: 0.3, release: 0.2 } }).toDestination(); this.melodySynth.volume.value = -20;
+            this.bassSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.08, decay: 0.2, sustain: 0.1, release: 0.15 } }).toDestination(); this.bassSynth.volume.value = -16;
+        },
+        playClick: function() { if (!this.isMuted && this.synth) this.synth.triggerAttackRelease("C6", "32n", undefined, 0.1); },
+        playUncork: function() {
+            if (this.isMuted || !this.popSynth) return;
+            const now = Tone.now();
+            this.squeakSynth.triggerAttackRelease("E5", "16n", now);
+            this.squeakSynth.frequency.setValueAtTime("E5", now);
+            this.squeakSynth.frequency.exponentialRampToValueAtTime("B5", now + 0.06);
+            setTimeout(() => { if (!this.isMuted) this.popSynth.triggerAttackRelease("G2", "16n"); }, 60);
+        },
+        playSuccess: function() { if (!this.isMuted && this.synth) { const now = Tone.now(); this.synth.triggerAttackRelease(["C5", "E5", "G5"], "8n", now); this.synth.triggerAttackRelease(["E5", "G5", "C6"], "4n", now + 0.12); } },
+        playOk: function() { if (!this.isMuted && this.synth) { const now = Tone.now(); this.synth.triggerAttackRelease("C5", "8n", now); this.synth.triggerAttackRelease("E5", "4n", now + 0.12); } },
+        playFail: function() { if (!this.isMuted && this.synth) { const now = Tone.now(); this.synth.triggerAttackRelease("D3", "4n", now); this.synth.triggerAttackRelease("A2", "2n", now + 0.25); } },
+        startMusic: function() {
+            if (this.isPlayingMusic) return;
+            this.isPlayingMusic = true; this.step = 0;
+            this.musicInterval = setInterval(() => {
+                if (this.isMuted || !this.isPlayingMusic) return;
+                const now = Tone.now();
+                const mNote = this.melody[this.step % this.melody.length];
+                const bNote = this.bass[this.step % this.bass.length];
+                if (mNote) this.melodySynth.triggerAttackRelease(mNote, "4n", now);
+                if (bNote) this.bassSynth.triggerAttackRelease(bNote, "4n", now);
+                this.step++;
+            }, 420);
+        },
+        stopMusic: function() { this.isPlayingMusic = false; clearInterval(this.musicInterval); }
+    };
 
-    function updateHUD() {
-        DOM.score.innerText = state.score;
-        DOM.lives.innerText = '❤️'.repeat(state.lives) + '🖤'.repeat(3 - state.lives);
-        if(state.combo > 1) {
-            DOM.combo.innerText = `x${state.combo} COMBO`; DOM.combo.classList.add('active');
-        } else { DOM.combo.classList.remove('active'); }
-    }
+    /* */
+    const wineDatabase = [
+        { customer: "Ik bestel een zware, gegrilde ribeye steak met pepersaus.", options: [
+            { wine: "Bordeaux (Cabernet Sauvignon)", type: "perfect", desc: "Perfect! De stevige tannines in deze rode wijn snijden prachtig door het vette vlees." },
+            { wine: "Bourgogne (Pinot Noir)", type: "ok", desc: "Prima, rood bij rood vlees is een oké basisregel, maar hij is eigenlijk te licht." },
+            { wine: "Zoete Sauternes", type: "bad", desc: "Vreselijk! Zoete dessertwijn bij een hartige pepersteak is een aanslag." }] },
+        { customer: "We delen een dozijn verse, zoute oesters.", options: [
+            { wine: "Chablis (Strakke Chardonnay)", type: "perfect", desc: "Geniaal! De droge, kalkachtige mineraliteit past subliem bij verse oesters." },
+            { wine: "Champagne Brut", type: "ok", desc: "Absoluut feestelijk en de frisse bubbels wassen de zoutheid soepel weg." },
+            { wine: "Zware Shiraz (Rood)", type: "bad", desc: "Nee! Rode wijn bij oesters geeft een ranzige, metaalachtige bloedsmaak." }] },
+        { customer: "Ik eet een super pittige Thaise groene curry.", options: [
+            { wine: "Gewürztraminer (Licht zoet)", type: "perfect", desc: "Spot on! Een vleugje restzoet tempert en blust de intense hitte van de curry." },
+            { wine: "Droge Sauvignon Blanc", type: "ok", desc: "Lekker fris, maar droge wijn blust de brandende pepers niet optimaal af." },
+            { wine: "Houtgelagerde Chardonnay", type: "bad", desc: "Oef! Alcohol en eikenhout maakt het eten in je mond alleen maar heter." }] },
+        { customer: "Voor mij de rijke, romige truffelrisotto.", options: [
+            { wine: "Barolo (Nebbiolo)", type: "perfect", desc: "Klassieker! De aardse tonen smelten fantastisch samen met verse truffel." },
+            { wine: "Meursault (Vol wit)", type: "ok", desc: "Rijke witte wijn sluit redelijk goed aan bij de romige textuur van de risotto." },
+            { wine: "Lichte Provence Rosé", type: "bad", desc: "Veel te licht. Deze wijn wordt compleet overlopen door het zware truffelgerecht." }] },
+        { customer: "Een plankje met sterke, blauwe schimmelkaas (Roquefort).", options: [
+            { wine: "Sauternes", type: "perfect", desc: "De koninklijke combinatie! Honingzoetheid balanceert het extreem zoute karakter perfect." },
+            { wine: "Ruby Port", type: "ok", desc: "Sterk en zoet. Een veilige partner die eigenlijk altijd wel werkt." },
+            { wine: "Droge Champagne", type: "bad", desc: "Oei, felle zuren en koolzuur vloeken met de vettige schimmelculturen." }] },
+        { customer: "Klassieke pasta Carbonara met lekker veel spek.", options: [
+            { wine: "Frascati of Soave", type: "perfect", desc: "Heerlijk! Frisse en opwekkende witte wijnen snijden soepel door de vettige laag." },
+            { wine: "Lichte Pinot Noir", type: "ok", desc: "Rood kan zeker, mits hij heel licht van stijl is en weinig tannines heeft." },
+            { wine: "Zware, eikenhouten Malbec", type: "bad", desc: "Veel te stroef. Vermoordt de romige harmonie van de pasta volledig." }] },
+        { customer: "Gegrilde zalmmoot met een romige dille-kruidenboter.", options: [
+            { wine: "Houtgelagerde Chardonnay", type: "perfect", desc: "Uitstekend! De vettige zalm verlangt naar de rijpe, romige structuur van de wijn." },
+            { wine: "Chablis", type: "ok", desc: "Fris en opwekkend, maar mist net een beetje body voor de kruidenboter." },
+            { wine: "Stroeve Nebbiolo (Rood)", type: "bad", desc: "Rampzalig. Het visvet botst wild met tannines (metaalsmaak)." }] }
+    ];
 
-    function loadQuestion() {
-        if (state.lives <= 0) return triggerGameOver();
-        if (state.qIndex >= state.deck.length) return triggerGameOver(true);
+    let gameState = { score: 0, lives: 3, deck: [], currentIndex: 0, isAnswerLocked: false, maxPossibleScore: 0 };
 
-        state.locked = false; state.timeLeft = 100;
-        DOM.overlay.classList.remove('show');
-        DOM.lars.className = 'lars-sprite idle';
-        document.getElementById('game-container').classList.remove('shake-active');
+    function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
+    function switchScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
-        const q = state.deck[state.qIndex];
-        DOM.customer.innerText = q.c;
-        DOM.options.innerHTML = '';
+    /* */
+    async function startGame() {
+        await Tone.start(); AudioEngine.init(); AudioEngine.playClick(); AudioEngine.startMusic();
+
+        gameState.score = 0; gameState.lives = 3;
+        gameState.deck = shuffle([...wineDatabase]);
+        gameState.currentIndex = 0;
+        gameState.maxPossibleScore = gameState.deck.length * 100;
         
-        [...q.o].sort(() => Math.random() - 0.5).forEach(opt => {
-            const btn = document.createElement('button'); btn.className = 'opt-btn';
-            btn.innerHTML = `<span class="wine-icon">🍷</span> ${opt.w}`;
-            btn.onclick = () => submitAnswer(opt);
-            DOM.options.appendChild(btn);
+        updateHeaderUI(); switchScreen('game-screen'); loadNextCustomer();
+    }
+
+    function quitToMenu() {
+        AudioEngine.playClick();
+        AudioEngine.stopMusic();
+        switchScreen('start-screen');
+    }
+
+    function updateHeaderUI() {
+        document.getElementById('score-val').innerText = gameState.score;
+        let hearts = ''; for (let i = 0; i < 3; i++) hearts += (i < gameState.lives) ? '❤️' : '🖤';
+        document.getElementById('lives-indicator').innerText = hearts;
+
+        const fillPercentage = Math.max(0, Math.min(100, (gameState.score / gameState.maxPossibleScore) * 100));
+        document.getElementById('live-progress-fill').style.width = fillPercentage + '%';
+    }
+
+    function loadNextCustomer() {
+        gameState.isAnswerLocked = false;
+        document.getElementById('feedback-overlay').classList.remove('show');
+        
+        // Reset Lars to Idle and remove prominent pop-out
+        const lars = document.getElementById('lars-sprite');
+        lars.className = 'lars-character idle';
+
+        const roundData = gameState.deck[gameState.currentIndex];
+        document.getElementById('customer-quote').innerText = roundData.customer;
+
+        const optionsBox = document.getElementById('options-box'); optionsBox.innerHTML = '';
+        const shuffledChoices = shuffle([...roundData.options]);
+        
+        shuffledChoices.forEach(opt => {
+            const btn = document.createElement('button'); btn.className = 'option-button';
+            btn.innerHTML = `🍷 &nbsp; ${opt.wine}`;
+            btn.onclick = () => selectWine(opt);
+            optionsBox.appendChild(btn);
         });
-
-        clearInterval(state.timer);
-        DOM.timerBar.className = 'timer-fill';
-        state.timer = setInterval(() => {
-            if(state.locked) return;
-            state.timeLeft -= 0.6; // Speed of timer
-            DOM.timerBar.style.width = Math.max(0, state.timeLeft) + '%';
-            
-            if(state.timeLeft < 40) DOM.timerBar.className = 'timer-fill warning';
-            if(state.timeLeft < 15) DOM.timerBar.className = 'timer-fill danger';
-
-            if(state.timeLeft <= 0) {
-                clearInterval(state.timer);
-                submitAnswer(null); // Timeout
-            }
-        }, 50);
     }
 
-    function submitAnswer(opt) {
-        if(state.locked) return;
-        state.locked = true; clearInterval(state.timer);
-        AudioSys.play('pop');
+    function selectWine(option) {
+        if (gameState.isAnswerLocked) return;
+        gameState.isAnswerLocked = true;
+        AudioEngine.playUncork();
 
-        let isPerfect = false, isOk = false, isTimeout = !opt;
-        
-        if(isTimeout) {
-            state.combo = 0; state.lives--; state.score -= 20;
-            DOM.fbTitle.innerText = "⏳ TE LAAT! (-1 Leven)"; DOM.fbTitle.style.backgroundColor = varColor('--warning');
-            DOM.fbDesc.innerText = "De klant verloor zijn geduld en is weggelopen naar de concurrentie.";
-            setFailVisuals();
-        } else {
-            DOM.fbDesc.innerText = opt.d;
-            if(opt.t === 'perfect') {
-                state.combo++; if(state.combo > state.maxCombo) state.maxCombo = state.combo;
-                const points = 100 + (state.combo * 10); state.score += points;
-                DOM.fbTitle.innerText = `⭐ PERFECT! (+${points})`; DOM.fbTitle.style.backgroundColor = varColor('--success'); DOM.fbTitle.style.color = '#000';
-                DOM.lars.className = 'lars-sprite action success-glow';
-                AudioSys.play('perfect'); spawnParticles('0, 230, 118', 60);
-            } else if(opt.t === 'ok') {
-                state.combo = 0; state.score += 50;
-                DOM.fbTitle.innerText = "✔️ PRIMA (+50)"; DOM.fbTitle.style.backgroundColor = varColor('--warning'); DOM.fbTitle.style.color = '#000';
-                DOM.lars.className = 'lars-sprite action';
-                AudioSys.play('ok'); spawnParticles('255, 234, 0', 20);
-            } else {
-                state.combo = 0; state.lives--; state.score -= 50;
-                DOM.fbTitle.innerText = "❌ VRESELIJK (-1 Leven)"; DOM.fbTitle.style.backgroundColor = varColor('--danger'); DOM.fbTitle.style.color = '#fff';
-                setFailVisuals();
-            }
-        }
+        const badge = document.getElementById('feedback-badge');
+        document.getElementById('feedback-text').innerText = option.desc;
+        const lars = document.getElementById('lars-sprite');
 
-        updateHUD();
-        DOM.card.style.transform = `rotateY(0deg) rotateX(0deg)`; // Reset 3D
-        
         setTimeout(() => {
-            if(state.lives <= 0 || state.qIndex >= state.deck.length - 1) {
-                DOM.fbBtn.innerText = "Resultaat Bekijken"; DOM.fbBtn.onclick = () => triggerGameOver();
+            if (option.type === 'perfect') {
+                gameState.score += 100; badge.innerText = "⭐ PERFECT! (+100)"; badge.style.backgroundColor = "var(--success)";
+                lars.className = 'lars-character happy prominent highlight-good'; AudioEngine.playSuccess();
+            } else if (option.type === 'ok') {
+                gameState.score += 50; badge.innerText = "✔️ PRIMA KEUZE (+50)"; badge.style.backgroundColor = "var(--warning)";
+                lars.className = 'lars-character happy prominent highlight-good'; AudioEngine.playOk();
             } else {
-                DOM.fbBtn.innerText = "Volgende Tafel"; DOM.fbBtn.onclick = () => nextQuestion();
+                gameState.score -= 50; gameState.lives -= 1; badge.innerText = "❌ VRESELIJK! (-1 leven)"; badge.style.backgroundColor = "var(--danger)";
+                lars.className = 'lars-character fail prominent highlight-bad'; AudioEngine.playFail();
             }
-            DOM.overlay.classList.add('show');
-        }, 300);
+
+            updateHeaderUI();
+
+            const actionBtn = document.getElementById('feedback-action-btn');
+            if (gameState.lives <= 0 || gameState.currentIndex >= gameState.deck.length - 1) {
+                actionBtn.innerText = "BEKIJK RESULTAAT";
+                actionBtn.onclick = () => triggerGameOver();
+            } else {
+                actionBtn.innerText = "VOLGENDE KLANT";
+                actionBtn.onclick = () => nextRound();
+            }
+            document.getElementById('feedback-overlay').classList.add('show');
+        }, 150);
     }
 
-    function setFailVisuals() {
-        DOM.lars.className = 'lars-sprite action fail-glow';
-        document.getElementById('game-container').classList.add('shake-active');
-        AudioSys.play('fail');
+    function nextRound() {
+        AudioEngine.playClick();
+        gameState.currentIndex++;
+        loadNextCustomer();
     }
 
-    function varColor(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
-
-    function nextQuestion() { state.qIndex++; loadQuestion(); }
-
-    // --- STREAMING_CHUNK: Game Over Calculation ---
-    function triggerGameOver(completed = false) {
-        AudioSys.stopBGM(); clearInterval(state.timer);
-        DOM.overlay.classList.remove('show');
+    /* */
+    function triggerGameOver() {
+        AudioEngine.stopMusic(); AudioEngine.playClick();
+        document.getElementById('feedback-overlay').classList.remove('show');
         
-        DOM.goScore.innerText = state.score + ' pt';
-        DOM.goCombo.innerText = 'x' + state.maxCombo;
+        document.getElementById('final-score-val').innerText = gameState.score + " PT";
 
-        const maxPossible = db.length * 150; // Approximated with combos
-        const percent = (state.score / (state.qIndex * 100 || 1)) * 100;
+        const fillPercentage = Math.max(0, Math.min(100, (gameState.score / gameState.maxPossibleScore) * 100));
+        const badge = document.getElementById('level-badge');
+        const bg = document.getElementById('game-over-bg');
+        const msgBox = document.getElementById('game-over-msg');
+        const title = document.getElementById('game-over-title');
 
-        if (state.lives <= 0 || percent < 40) {
-            DOM.goBg.style.backgroundImage = "url('images/Lars_angry.jpg')";
-            DOM.goRank.innerText = "🤢 PRUTSER"; DOM.goRank.style.backgroundColor = varColor('--danger'); DOM.goRank.style.color = 'white';
-            DOM.goRoast.innerText = '"Je serveerde Chablis bij een biefstuk. Verwijder per direct je kurkentrekker en verlaat het pand."';
-        } else if (percent < 85) {
-            DOM.goBg.style.backgroundImage = "url('images/Lars_congrats.jpg')";
-            DOM.goRank.innerText = "😐 LIEFHEBBER"; DOM.goRank.style.backgroundColor = varColor('--warning'); DOM.goRank.style.color = 'black';
-            DOM.goRoast.innerText = '"Je weet dat rood bij vlees hoort, maar er is nog ruimte voor verfijning. Prima shift gewerkt."';
+        if (gameState.lives <= 0 || fillPercentage < 45) {
+            title.innerText = "ONTSLAGEN!";
+            title.style.textShadow = "4px 4px 0px var(--danger)";
+            badge.innerText = "🤢 PRUTSER"; badge.style.backgroundColor = "var(--danger)";
+            bg.style.backgroundImage = "url('images/Lars_angry.jpg')";
+            msgBox.innerText = '"Je hebt zojuist een droge Chablis bij een frikandel geserveerd. Mijn oma heeft nog meer verstand van wijn, en die drinkt alleen jenever! Eruit!"';
+        } else if (fillPercentage < 80) {
+            title.innerText = "SHIFT KLAAR";
+            title.style.textShadow = "4px 4px 0px var(--warning)";
+            badge.innerText = "😐 WIJNLIEFHEBBER"; badge.style.backgroundColor = "var(--warning)";
+            bg.style.backgroundImage = "url('images/Lars_congrats.jpg')";
+            msgBox.innerText = '"Niet slecht... Je weet in ieder geval dat de kurk niet in het glas hoort. Maar ik laat je voorlopig nog niet aan mijn Grand Crus zitten."';
         } else {
-            DOM.goBg.style.backgroundImage = "url('images/Lars_congrats.jpg')"; // Ideally congrats.png
-            DOM.goRank.innerText = "⭐ LEGENDE"; DOM.goRank.style.backgroundColor = varColor('--success'); DOM.goRank.style.color = 'black';
-            DOM.goRoast.innerText = '"Absolute perfectie. Je neus herkent een kurk op 3 kilometer afstand. Een ware meester."';
+            title.innerText = "LEGENDE!";
+            title.style.textShadow = "4px 4px 0px var(--success)";
+            badge.innerText = "⭐ RECHTE EXPERT"; badge.style.backgroundColor = "var(--success)";
+            bg.style.backgroundImage = "url('images/Lars_congrats.jpg')";
+            msgBox.innerText = '"Magnifique! Je hebt de neus van een bloedhond en de smaak van een keizer. Vanaf nu betaal ik je uit in flessen Bordeaux!"';
         }
 
         switchScreen('game-over-screen');
     }
 
-    function quitGame() { AudioSys.stopBGM(); clearInterval(state.timer); switchScreen('start-screen'); }
-    function resetToMenu() { switchScreen('start-screen'); }
+    function toggleMute() {
+        AudioEngine.isMuted = !AudioEngine.isMuted;
+        const muteBtn = document.getElementById('mute-btn');
+        if (AudioEngine.isMuted) muteBtn.innerText = "🔇";
+        else { muteBtn.innerText = "🔊"; if (Tone.context.state !== 'running') Tone.start(); }
+    }
 
+    function resetApp() { AudioEngine.playClick(); switchScreen('start-screen'); }
 </script>
 
 </body>
