@@ -44,7 +44,7 @@
             pointer-events: none;
         }
 
-        /* --- STREAMING_CHUNK: Responsive Hoofdcontainer Setup --- */
+        /* --- STREAMING_CHUNK: Designing layout containers... --- */
         #game-container {
             width: 100%; max-width: 600px; /* Breder op desktop */
             height: 100dvh;
@@ -97,7 +97,7 @@
             margin: 15px 0; border-left: 4px solid var(--highlight);
         }
 
-        /* --- STREAMING_CHUNK: Styling Game UI & Progress Bar --- */
+        /* --- STREAMING_CHUNK: Styling UI progress controls... --- */
         .top-bar {
             width: 100%; display: flex; flex-direction: column;
             background: var(--panel-bg); border-bottom: 4px solid var(--highlight);
@@ -129,7 +129,7 @@
             text-shadow: 1px 1px 2px black;
         }
 
-        /* --- STREAMING_CHUNK: Prominent Character Stage --- */
+        /* --- STREAMING_CHUNK: Constructing stage and sprites... --- */
         .stage-box {
             flex: 1; display: flex; justify-content: center; align-items: center;
             width: 100%; padding: 15px; min-height: 250px; position: relative;
@@ -185,7 +185,7 @@
         .option-button:active { transform: translateY(5px); box-shadow: 0 0px 0px #888; }
         .option-button:hover { border-color: var(--highlight); background: #ebdcb9; }
 
-        /* --- STREAMING_CHUNK: Feedback & Full-Screen Game Over --- */
+        /* --- STREAMING_CHUNK: Feedback overlays and game over... --- */
         #feedback-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.65); display: flex; justify-content: center; align-items: flex-end;
@@ -247,6 +247,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 </head>
 <body>
+
+<!-- Dit laadt alle afbeeldingen direct bij het opstarten geluidloos in de browsercache -->
+<div id="preloader-cache" style="position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none; z-index: -9999;">
+    <img src="images/Lars_idle.jpg" alt="preload_idle">
+    <img src="images/Lars_happy.jpg" alt="preload_happy">
+    <img src="images/Lars_fail.jpg" alt="preload_fail">
+    <img src="images/Lars_angry.jpg" alt="preload_angry">
+    <img src="images/Lars_congrats.jpg" alt="preload_congrats">
+</div>
 
 <div id="game-container">
     
