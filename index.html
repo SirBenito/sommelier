@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#26070c">
   <meta name="color-scheme" content="dark">
   <meta name="referrer" content="no-referrer">
-  <title>Sommelier Lars — De Wijnshift</title>
+  <title>Lars & Tibo — De Drankshift</title>
 
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -323,6 +323,20 @@
     }
 
     .start-button { width: 100%; margin-top: 18px; padding-block: 18px; }
+
+
+    .character-picker { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:18px 0; }
+    .character-option { position:relative; }
+    .character-option input { position:absolute; opacity:0; pointer-events:none; }
+    .character-card { display:grid; grid-template-columns:68px 1fr; gap:10px; align-items:center; min-height:88px; padding:9px; border:3px solid #9c8a80; border-radius:13px; background:rgba(255,255,255,.65); cursor:pointer; text-align:left; transition:transform 120ms ease,border-color 120ms ease,background 120ms ease; }
+    .character-card img { width:68px; height:68px; object-fit:cover; border-radius:9px; border:2px solid var(--wine-700); background:#d9c49a; }
+    .character-card strong { display:block; font-family:var(--pixel); font-size:10px; line-height:1.35; color:var(--wine-700); }
+    .character-card span { display:block; margin-top:4px; color:var(--muted); font-size:18px; line-height:1; }
+    .character-option input:checked + .character-card { border-color:var(--wine-600); background:#f7dfaa; transform:translateY(-2px); box-shadow:0 5px 0 #b98c35; }
+    .character-option input:focus-visible + .character-card { outline:4px solid var(--gold); outline-offset:3px; }
+    .app.beer-mode { --wine-950:#07131a; --wine-900:#0b2029; --wine-800:#123746; --wine-700:#925a08; --wine-600:#d3890d; --cream:#fff8df; --cream-2:#f2dfac; --gold:#ffd04d; }
+    .app.beer-mode body { background:#07131a; }
+    @media(max-width:520px){ .character-picker{grid-template-columns:1fr;} }
 
     /* Game */
     #game-screen {
@@ -898,16 +912,27 @@
       <div class="panel">
         <div class="start-layout">
           <div class="start-copy">
-            <p class="eyebrow">De wijnbar sluit pas als Lars tevreden is</p>
-            <h1 class="pixel-title" id="game-title">SOMMELIER<br>LARS</h1>
+            <p class="eyebrow" id="menu-eyebrow">Kies wie jouw shift komt beoordelen</p>
+            <h1 class="pixel-title" id="game-title">DE DRANKSHIFT</h1>
             <div class="portrait-frame image-shell">
-              <img src="images/Lars_idle.jpg" alt="Lars, de sommelier" data-fallback-image>
-              <span class="image-fallback" aria-hidden="true">🍷</span>
+              <img id="menu-character-image" src="images/Lars_idle.jpg" alt="Gekozen drankenexpert" data-fallback-image>
+              <span class="image-fallback" id="menu-fallback" aria-hidden="true">🍷</span>
             </div>
-            <p class="subtitle">Serveer de juiste wijn. Overleef zijn commentaar.</p>
+            <p class="subtitle" id="menu-subtitle">Serveer de juiste wijn. Overleef zijn commentaar.</p>
           </div>
 
           <div>
+            <div class="character-picker" aria-label="Kies je expert">
+              <label class="character-option">
+                <input type="radio" name="character" value="lars" checked>
+                <span class="character-card"><img src="images/Lars_idle.jpg" alt=""><span><strong>LARS</strong><span>Wijn, druiven en vernietigende blikken.</span></span></span>
+              </label>
+              <label class="character-option">
+                <input type="radio" name="character" value="tibo">
+                <span class="character-card"><img src="images/Tibo_idle.jpg" alt=""><span><strong>TIBO</strong><span>Bierkenner en wandelende cafékaart.</span></span></span>
+              </label>
+            </div>
+
             <div class="rules" aria-label="Puntentelling">
               <div class="rule">⭐ <span><strong>Perfect</strong>100 + combo</span></div>
               <div class="rule">👌 <span><strong>Goed</strong>60 punten</span></div>
@@ -992,10 +1017,10 @@
               <div class="category-row" id="category-row"></div>
             </article>
 
-            <div class="options-grid" id="options-box" aria-label="Wijnkeuzes"></div>
+            <div class="options-grid" id="options-box" aria-label="Keuzes"></div>
 
             <div class="helper-row">
-              <button class="button secondary hint-button" id="hint-button" type="button">💡 LARS-TIP (<span id="hint-count">1</span>)</button>
+              <button class="button secondary hint-button" id="hint-button" type="button">💡 <span id="expert-tip-name">LARS</span>-TIP (<span id="hint-count">1</span>)</button>
               <span class="keyboard-tip">Toets 1–3 · H = tip · Esc = pauze</span>
             </div>
           </div>
@@ -1025,7 +1050,7 @@
 
           <div class="result-actions">
             <button class="button" id="replay-button" type="button">🔁 NOG EEN SHIFT</button>
-            <button class="button secondary" id="menu-button" type="button">🍷 TERUG NAAR MENU</button>
+            <button class="button secondary" id="menu-button" type="button">↩️ TERUG NAAR MENU</button>
           </div>
         </div>
       </div>
@@ -1043,9 +1068,9 @@
 
     <div class="overlay" id="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title">
       <div class="dialog pause-dialog">
-        <p class="eyebrow">De kurk zit er even op</p>
+        <p class="eyebrow">De shift staat even stil</p>
         <h2 class="pixel-title" id="pause-title" style="font-size:clamp(18px,5vw,27px);">PAUZE</h2>
-        <p class="subtitle" style="margin-top:10px;">Lars houdt je tafel angstvallig in de gaten.</p>
+        <p class="subtitle" style="margin-top:10px;">Je expert houdt de zaal angstvallig in de gaten.</p>
         <div class="pause-actions">
           <button class="button" id="resume-button" type="button">▶️ VERDER SERVEREN</button>
           <button class="button secondary" id="quit-button" type="button">🚪 SHIFT VERLATEN</button>
@@ -1060,12 +1085,21 @@
   <script>
     "use strict";
 
-    const IMAGE_PATHS = {
-      idle: "images/Lars_idle.jpg",
-      happy: "images/Lars_happy.jpg",
-      fail: "images/Lars_fail.jpg",
-      angry: "images/Lars_angry.jpg",
-      congrats: "images/Lars_congrats.jpg"
+    const CHARACTER_CONFIG = {
+      lars: {
+        name: "Lars", icon: "🍷", mode: "wine", databaseName: "wineDatabase",
+        subtitle: "Serveer de juiste wijn. Overleef zijn commentaar.",
+        eyebrow: "De wijnbar sluit pas als Lars tevreden is",
+        optionLabel: "wijn", questionLabel: "klant", highScoreKey: "sommelierLarsHighScore",
+        images: { idle:"images/Lars_idle.jpg", happy:"images/Lars_happy.jpg", fail:"images/Lars_fail.jpg", angry:"images/Lars_angry.jpg", congrats:"images/Lars_congrats.jpg" }
+      },
+      tibo: {
+        name: "Tibo", icon: "🍺", mode: "beer", databaseName: "beerDatabase",
+        subtitle: "Kies de juiste gelegenheid bij elk bier. Vermijd caféverbod.",
+        eyebrow: "Tibo kent elk bier — en veroordeelt elke verkeerde gelegenheid",
+        optionLabel: "gelegenheid", questionLabel: "bierproef", highScoreKey: "bierkennerTiboHighScore",
+        images: { idle:"images/Tibo_idle.jpg", happy:"images/Tibo_happy.jpg", fail:"images/Tibo_fail.jpg", angry:"images/Tibo_angry.jpg", congrats:"images/Tibo_congrats.jpg" }
+      }
     };
 
     const DIFFICULTIES = {
@@ -1082,7 +1116,7 @@
 
     const TABLES = [2, 4, 6, 7, 9, 11, 14, 17];
 
-    const REACTIONS = {
+    const LARS_REACTIONS = {
       perfect: [
         "Lars knikt. Zeldzaam. Noteer de datum.",
         "Dat is geen keuze, dat is pure kelderpoëzie.",
@@ -1129,7 +1163,7 @@
       ]
     };
 
-    const END_REACTIONS = {
+    const LARS_END_REACTIONS = {
       fail: [
         "Je hebt zoveel combinaties laten botsen dat de glazen relatietherapie nodig hebben. Eruit — en blijf uit de buurt van mijn Grand Crus.",
         "Lars heeft je schort symbolisch in een emmer goedkope sangria gedoopt. Dat is geen onderscheiding.",
@@ -1144,6 +1178,51 @@
         "Magnifique! Je hebt balans, lef en een neus die niet enkel voor decoratie dient. De kelder vertrouwt je.",
         "Lars verklaart je officieel gevaarlijk goed. Vanaf nu mag je de etiketten aanraken zonder handschoenen.",
         "Een grootse shift. De klanten glimlachen, de flessen zijn leeg en Lars heeft geen ontslagbrief geschreven."
+      ]
+    };
+
+    const TIBO_REACTIONS = {
+      perfect: [
+        "Tibo heft zijn glas. Dat is bij hem een officiële onderscheiding.", "Juist. Zelfs het schuim staat recht van trots.",
+        "Exact de juiste gelegenheid. De brouwerij stuurt straks een bedankkaart.", "Kijk aan: jij drinkt niet zomaar, jij plant strategisch.",
+        "Perfect. Tibo overweegt je toegang te geven tot zijn geheime bierfrigo.", "Dat klopt beter dan een pint na een verhuis.",
+        "Sterk gekozen. En voor één keer bedoelt Tibo niet het alcoholpercentage.", "Schol! Dit is vloeibare timing op topniveau."
+      ],
+      good: [
+        "Kan. Tibo trekt maar met één mondhoek scheef.", "Niet ideaal, wel verdedigbaar na twee rondjes.",
+        "Een veilige keuze. Niemand verlaat boos het café.", "Goed genoeg. De bierviltjes blijven op tafel.",
+        "Tibo noemt het ‘acceptabel’. Dat is bijna een staande ovatie.", "Je hebt de sfeer niet verpest. Ook een talent.",
+        "Redelijk. De pint wordt niet terug naar de brouwerij gestuurd.", "Dat werkt, al mist Tibo een beetje bravoure."
+      ],
+      bad: [
+        "Dat bier past daar even goed als een frietvorkje in een trouwring.", "Tibo heeft net uit protest zijn flesopener dichtgeklapt.",
+        "Knap. Je hebt dorst en sfeer tegelijk verpest.", "Dat is geen gelegenheid, dat is een sociaal experiment.",
+        "Zelfs lauw Cara-pils kijkt hierop neer.", "Je keuze schuimt harder over dan je gezond verstand.",
+        "Tibo noteert je naam onder ‘enkel water serveren’.", "Dat botst harder dan karaoke om drie uur 's nachts.",
+        "De brouwer heeft hier niet jaren voor gewerkt.", "Dit bier verdient een beter leven dan deze gelegenheid.",
+        "Je hebt een speciaalbier behandeld alsof het gratis kraantjeswater was.", "Tibo vraagt zich af of je smaakpapillen op caféverbod staan."
+      ],
+      timeout: [
+        "Tegen dat jij kiest, is het bier plat en de gelegenheid voorbij.", "Te laat. Tibo heeft intussen zelf een café geopend.",
+        "De schuimkraag is verdwenen, net als Tibo's geduld.", "Besluiteloosheid is geen bierstijl.", "De vrienden zijn al naar het volgende café."
+      ]
+    };
+
+    const TIBO_END_REACTIONS = {
+      fail: [
+        "Je hebt zoveel gelegenheden verkeerd ingeschat dat Tibo je uitnodiging voor elk volgend cafébezoek intrekt.",
+        "De bierkaart is veiliggesteld. Jij krijgt voorlopig enkel een leeg glas en tijd om na te denken.",
+        "Tibo noemt dit geen shift maar een collectieve kater zonder het leuke stuk ervoor."
+      ],
+      average: [
+        "Niet slecht. Je weet minstens dat een quadrupel geen sportdrank is. Tibo laat je terugkomen.",
+        "Je bierinstinct leeft, al zit het soms verstopt onder twijfel en slechte timing.",
+        "Degelijk. Tibo heeft maar vier keer ‘amai toch’ gemompeld."
+      ],
+      great: [
+        "Schol! Jij koppelt bier en momenten alsof je zelf een cafélegende bent.",
+        "Tibo geeft je officieel toegang tot de bovenste plank van de bierfrigo.",
+        "Een magistrale ronde. De glazen zijn juist, de sfeer zit goed en niemand bestelde wijn."
       ]
     };
 
@@ -1456,8 +1535,112 @@
       }
     ];
 
+    const beerDatabase = [
+      { id:"pils-terras", difficulty:1, category:"Pils", style:"Fris & doordrinkbaar", customer:"Een ijskoude Belgische pils met een droge, bittere afdronk. Wanneer komt die het best tot zijn recht?", options:[
+        { wine:"Op een zonnig terras na het werk", note:"dorstopwekkend, eenvoudig en sociaal", verdict:"perfect", why:"Een frisse pils is licht, bruisend en dorstlessend: ideaal wanneer gezelligheid en verfrissing belangrijker zijn dan zwaar proeven.", principle:"Lichte, frisse bieren passen bij informele momenten en grote dorst." },
+        { wine:"Bij frieten of een eenvoudige snack", note:"zout en krokant", verdict:"good", why:"Koolzuur en bitterheid verfrissen goed bij zout en vet, al is het moment minder typerend dan het terras.", principle:"Koolzuur en bitterheid snijden door vet en zout." },
+        { wine:"Als slaapmutsje na een zwaar kerstdiner", note:"rustig en meditatief", verdict:"bad", why:"Een lichte pils mist warmte en diepgang voor een traag afsluitmoment na een rijk diner.", principle:"Stem de intensiteit van het bier af op het gewicht van het moment en het eten." }
+      ]},
+      { id:"witbier-zomerbrunch", difficulty:1, category:"Witbier", style:"Citrus & kruidig", customer:"Een troebel witbier met koriander, sinaasappel en zachte zuren. Welke gelegenheid verdient dit glas?", options:[
+        { wine:"Een zomerse brunch met salades en lichte hapjes", note:"fris, zonnig en ongedwongen", verdict:"perfect", why:"Citrus, kruidigheid en zachte tarwetextuur passen bij frisse gerechten en een lichte, zonnige sfeer.", principle:"Witbier werkt goed bij lichte gerechten, kruiden en zomerse momenten." },
+        { wine:"Een pittige Aziatische afhaalavond", note:"aromatisch en verfrissend", verdict:"good", why:"De citrus en zachte mout kunnen pittigheid milderen, al kan een zoeter bier soms nog beter werken.", principle:"Lage bitterheid en fruitige aroma's zijn vriendelijk bij pittig eten." },
+        { wine:"Een serieuze whiskyproeverij bij de open haard", note:"donker, traag en intens", verdict:"bad", why:"Het lichte, frisse karakter verdwijnt volledig in zo'n zwaar en contemplatief moment.", principle:"Een delicaat bier raakt verloren naast intense dranken en zware smaken." }
+      ]},
+      { id:"tripel-feestmaal", difficulty:1, category:"Tripel", style:"Krachtig & kruidig", customer:"Een goudblonde tripel van 9%, kruidig, fruitig en verraderlijk vlot. Waar zet je die in?", options:[
+        { wine:"Bij een feestelijk diner of uitgebreide kaastafel", note:"traag genieten met stevig eten", verdict:"perfect", why:"De kracht, kruidigheid en hoge carbonatie kunnen rijke gerechten en kazen aan; bovendien nodigt het alcoholpercentage uit tot rustig drinken.", principle:"Sterke bieren horen bij rijke smaken en momenten waarop je langzaam drinkt." },
+        { wine:"Als aperitief in een klein proefglas", note:"feestelijk maar beheerst", verdict:"good", why:"De levendige bubbels en fruitigheid werken feestelijk, zolang de portie klein blijft.", principle:"Een sterk bier kan als aperitief, maar doseer voorzichtig." },
+        { wine:"Tijdens een dorstige voetbalmatch in de volle zon", note:"snel achteroverslaan", verdict:"bad", why:"Hoge alcohol en zon vormen een slechte combinatie; een tripel is geen doordrinkbier.", principle:"Hoe sterker het bier, hoe rustiger en bewuster de gelegenheid moet zijn." }
+      ]},
+      { id:"dubbel-stoofavond", difficulty:1, category:"Dubbel", style:"Moutig & donker fruit", customer:"Een bruine dubbel met karamel, rozijn en zachte kruidigheid. Wat is zijn natuurlijke habitat?", options:[
+        { wine:"Een herfstige stoofpotavond met vrienden", note:"warm, hartig en gezellig", verdict:"perfect", why:"Karamel en donker fruit sluiten aan bij gebraden en gestoofde smaken, terwijl de zachte bitterheid de maaltijd niet overstemt.", principle:"Moutige bruine bieren passen bij geroosterde, gekaramelliseerde en gestoofde smaken." },
+        { wine:"Bij een plank oude kaas", note:"rijk en hartig", verdict:"good", why:"De moutzoetheid en fruitigheid kunnen zout en rijping mooi opvangen.", principle:"Rijke moutsmaken werken goed met gerijpte kaas." },
+        { wine:"Na het joggen als sportherstel", note:"snel hydrateren", verdict:"bad", why:"Alcohol en restsuikers maken dit allesbehalve een herstel- of hydratiedrank.", principle:"Bier is geen sportdrank, hoe atletisch het etiket ook oogt." }
+      ]},
+      { id:"quadrupel-winter", difficulty:1, category:"Quadrupel", style:"Zwaar & complex", customer:"Een donkere quadrupel van 11% met vijg, karamel en warme alcohol. Kies het juiste moment.", options:[
+        { wine:"Een lange winteravond bij de open haard", note:"klein glas, traag tempo", verdict:"perfect", why:"De warmte, complexiteit en hoge alcohol passen bij langzaam nippen in een rustige, koude setting.", principle:"Zware, complexe bieren zijn contemplatieve sippers, geen dorstlessers." },
+        { wine:"Als afsluiter bij chocolade of blauwe kaas", note:"dessertachtig en intens", verdict:"good", why:"Donker fruit en karamel sluiten mooi aan bij rijke desserts en krachtige kaas.", principle:"Zoete en geroosterde bieraroma's kunnen dessert en sterke kaas dragen." },
+        { wine:"Op een kinderfeestje tussen de limonade", note:"licht en speels", verdict:"bad", why:"De gelegenheid is evident ongeschikt en het bier is bovendien extreem sterk.", principle:"Alcohol hoort alleen thuis in een passende volwassen context." }
+      ]},
+      { id:"ipa-bbq", difficulty:1, category:"IPA", style:"Hoppig & bitter", customer:"Een uitgesproken IPA met citrus, dennenhars en stevige bitterheid. Waar scoort die?", options:[
+        { wine:"Bij een kruidige barbecue met burgers", note:"rook, vet en krachtige smaken", verdict:"perfect", why:"Hoparoma's passen bij kruiden en grill, terwijl bitterheid en koolzuur door vet snijden.", principle:"Hoppige bitterheid werkt bij vet, grill en uitgesproken kruiding." },
+        { wine:"Bij pittige taco's", note:"fris maar mogelijk extra heet", verdict:"good", why:"Citrushop sluit aan bij limoen en kruiden, maar veel bitterheid en alcohol kunnen chili versterken.", principle:"IPA kan bij pittig eten, maar bitterheid en alcohol kunnen hitte vergroten." },
+        { wine:"Bij een subtiele vanillepudding", note:"zacht en zoet", verdict:"bad", why:"De bitterheid maakt het dessert wrang en de delicate vanille verdwijnt.", principle:"Sterk bitter bier botst vaak met zachte zoete desserts." }
+      ]},
+      { id:"saison-picknick", difficulty:1, category:"Saison", style:"Droog & peperig", customer:"Een droge saison met peper, citrus en aardse gisttonen. Waar open je ze?", options:[
+        { wine:"Op een landelijke picknick met brood, kaas en charcuterie", note:"rustiek en veelzijdig", verdict:"perfect", why:"De droge, bruisende en kruidige stijl is breed inzetbaar bij rustieke hapjes en past historisch bij een landelijke sfeer.", principle:"Droge, kruidige saisons zijn veelzijdige tafelbieren voor rustieke gerechten." },
+        { wine:"Bij gebraden kip met kruiden", note:"hartig en aromatisch", verdict:"good", why:"Peperige gisttonen en hoge carbonatie ondersteunen kruiden en verfrissen bij het vlees.", principle:"Saison combineert goed met gevogelte, kruiden en geroosterde smaken." },
+        { wine:"Als zoete cocktailbasis op een beachparty", note:"suiker en parapluutjes", verdict:"bad", why:"De droge, aardse finesse verdwijnt onder suiker en sterke mixers.", principle:"Laat karaktervolle bieren spreken zonder ze onnodig te overstemmen." }
+      ]},
+      { id:"lambiek-proeverij", difficulty:2, category:"Lambiek", style:"Zuur & funky", customer:"Een traditionele lambiek: droog, zuur, funky en zonder zoete fruitsiroop. Wanneer is dit briljant?", options:[
+        { wine:"Tijdens een avontuurlijke bierproeverij", note:"ontdekken, vergelijken en bespreken", verdict:"perfect", why:"De complexe zuren en wilde aroma's vragen aandacht en zijn ideaal om bewust te ontdekken.", principle:"Uitgesproken zure of funky bieren schitteren in een proefcontext." },
+        { wine:"Bij vette charcuterie of rijke paté", note:"zuur als tegengewicht", verdict:"good", why:"Het zuur snijdt door vet en maakt de volgende hap weer fris.", principle:"Zuur bier kan rijke, vette gerechten verlichten." },
+        { wine:"Voor iemand die enkel zoete fruitpils lust", note:"veilig en toegankelijk", verdict:"bad", why:"De droge zuren en funky aroma's liggen mijlenver van een zoet, eenvoudig smaakprofiel.", principle:"Houd rekening met het smaakavontuur dat de drinker werkelijk zoekt." }
+      ]},
+      { id:"kriek-zomerfeest", difficulty:1, category:"Kriek", style:"Fruitig & zuur", customer:"Een echte kriek met frisse kersenzuren en weinig plakkerige zoetheid. Welke setting past?", options:[
+        { wine:"Een zomers tuinfeest met fruitdessert", note:"feestelijk, fris en rood fruit", verdict:"perfect", why:"Kers sluit aan bij rood fruit en het zuur houdt een zomers dessert levendig.", principle:"Fruitbier werkt mooi wanneer fruitaroma's terugkomen en het bier fris genoeg blijft." },
+        { wine:"Als aperitief voor mensen die iets verrassends willen", note:"licht feestelijk", verdict:"good", why:"De kleur, zuren en fruitigheid maken het toegankelijk en verfrissend.", principle:"Zure fruitbieren kunnen een levendig aperitief zijn." },
+        { wine:"Bij een loodzware pepersaus en ribeye", note:"krachtig en vlezig", verdict:"bad", why:"De fruitige zuren missen body voor het vlees en kunnen vreemd botsen met peper en saus.", principle:"Een delicaat fruitbier raakt overspoeld door zeer krachtig vlees." }
+      ]},
+      { id:"gueuze-oesters", difficulty:2, category:"Geuze", style:"Droog & mousserend", customer:"Een oude geuze met champagneachtige bubbels, citruszuur en boerige complexiteit. Waar hoort die?", options:[
+        { wine:"Bij oesters of een verfijnde zeevruchtenlunch", note:"zilt, strak en feestelijk", verdict:"perfect", why:"Hoge zuren en koolzuur sluiten aan bij zilte zeevruchten en reinigen het gehemelte.", principle:"Droge zure bubbels passen uitstekend bij zilte, delicate zeeproducten." },
+        { wine:"Als alternatief voor schuimwijn bij een feestelijke toast", note:"origineel en droog", verdict:"good", why:"De levendige carbonatie en droge stijl geven een feestelijk effect, al is de funky smaak uitdagender.", principle:"Geuze kan een avontuurlijk alternatief voor mousserende wijn zijn." },
+        { wine:"Bij een zoete snoepbuffetmarathon", note:"suiker op suiker", verdict:"bad", why:"Het scherpe zuur wordt hard en schraal naast zeer zoete snoep.", principle:"Een droog zuur bier smaakt agressief naast uitgesproken zoetigheid." }
+      ]},
+      { id:"stout-dessert", difficulty:1, category:"Stout", style:"Geroosterd & chocolade", customer:"Een donkere stout met koffie, cacao en geroosterde mout. Wanneer wordt dit vloeibaar dessert?", options:[
+        { wine:"Bij chocoladetaart of tiramisu na het diner", note:"donker, rijk en traag", verdict:"perfect", why:"Koffie- en cacaotonen spiegelen het dessert, terwijl geroosterde bitterheid zoetheid balanceert.", principle:"Geroosterde bieren passen bij chocolade, koffie en gekaramelliseerde desserts." },
+        { wine:"Bij oesters in een stout-liefhebbersmenu", note:"klassiek contrast", verdict:"good", why:"De zilte oester en geroosterde stout vormen een bekende contrasterende combinatie, maar niet voor iedereen.", principle:"Zout en geroosterd kunnen verrassend contrasteren." },
+        { wine:"Als frisse dorstlesser tijdens beachvolley", note:"licht en hydraterend", verdict:"bad", why:"De volle geroosterde smaak is zwaar en alcohol hydrateert niet.", principle:"Donkere stout is voor smaak en rust, niet voor sportieve dorst." }
+      ]},
+      { id:"porter-kampvuur", difficulty:2, category:"Porter", style:"Toast & karamel", customer:"Een porter met toast, noten, koffie en zachte chocolade. Geef hem een podium.", options:[
+        { wine:"Een koude kampvuuravond met geroosterde snacks", note:"rook, toast en gezelligheid", verdict:"perfect", why:"Geroosterde mout sluit aan bij kampvuur, toast en gekaramelliseerde smaken.", principle:"Zoek aromatische echo's tussen geroosterde mout en geroosterd eten." },
+        { wine:"Bij gerookt vlees", note:"hartig en donker", verdict:"good", why:"De moutige roostertonen kunnen rook en korst aanvullen, zolang het bier genoeg body heeft.", principle:"Donkere mout werkt goed bij rook en grill." },
+        { wine:"Tijdens een citroenwater-detox", note:"ultralicht en zuur", verdict:"bad", why:"Niet alleen thematisch absurd: de rijke moutsmaken botsen met een scherp, minimalistisch moment.", principle:"Een gelegenheid moet het karakter van het bier ondersteunen, niet ontkennen." }
+      ]},
+      { id:"weizen-brunch", difficulty:1, category:"Hefeweizen", style:"Banaan & kruidnagel", customer:"Een Duitse weizen met banaan, kruidnagel en romige tarwe. Wanneer schenk je die?", options:[
+        { wine:"Bij een ontspannen brunch met omelet en worst", note:"zacht, fruitig en vullend", verdict:"perfect", why:"De zachte tarwetextuur, fruitigheid en lage bitterheid passen bij eieren, brood en milde worst.", principle:"Tarwebier is vriendelijk bij brunch, mild vlees en zachte kruiding." },
+        { wine:"Op een zonnige namiddag in een biergarten", note:"traditioneel en sociaal", verdict:"good", why:"De frisse carbonatie en fruitige gist maken het een uitstekend sociaal zomerbier.", principle:"Een weizen is verfrissend maar smaakvoller dan een eenvoudige lager." },
+        { wine:"Bij pikdonkere espresso en pure chocolade", note:"bitter en intens", verdict:"bad", why:"De lichte banaan- en kruidnageltonen verdwijnen naast koffie en pure cacao.", principle:"Delicate gistfruitigheid wordt overspoeld door sterk geroosterde smaken." }
+      ]},
+      { id:"bock-herfst", difficulty:2, category:"Bock", style:"Moutig & verwarmend", customer:"Een amberkleurige bock met broodkorst, karamel en zachte warmte. Kies het seizoen én moment.", options:[
+        { wine:"Een herfstbarbecue of avond met geroosterd vlees", note:"mout, korst en koeler weer", verdict:"perfect", why:"Broodkorst en karamel sluiten aan bij geroosterde smaken; de body past bij koeler weer.", principle:"Moutige bieren horen bij geroosterde gerechten en koelere seizoenen." },
+        { wine:"Bij een stevige kaasplank", note:"hartig en rijk", verdict:"good", why:"De moutzoetheid vangt zout op en heeft genoeg body voor halfharde kazen.", principle:"Moutige rijkdom en kaas vormen vaak een harmonieuze combinatie." },
+        { wine:"Na drie uur grasmaaien in 35 graden", note:"maximale verfrissing", verdict:"bad", why:"De moutige body en hogere alcohol zijn te zwaar voor extreme hitte en grote dorst.", principle:"Kies bij hitte voor lager alcohol, hoge frisheid en echte hydratatie." }
+      ]},
+      { id:"session-ipa-festival", difficulty:2, category:"Session IPA", style:"Hoppig & lichter", customer:"Een Session IPA: veel hoparoma, minder alcohol, droog en verfrissend. Beste gelegenheid?", options:[
+        { wine:"Een lang muziekfestival waar je rustig wilt blijven", note:"smaakvol met lager alcohol", verdict:"perfect", why:"Het lagere alcoholpercentage en droge karakter maken langer en bewuster genieten makkelijker dan met zware IPA.", principle:"Session-bieren bieden veel smaak met meer doordrinkbaarheid, maar blijven alcoholisch." },
+        { wine:"Bij streetfood met citrus en kruiden", note:"aromatische aansluiting", verdict:"good", why:"Hopcitrus en bitterheid werken goed bij kruidige, vette hapjes.", principle:"Hoparoma's kunnen kruiden en citrus aanvullen; bitterheid verfrist bij vet." },
+        { wine:"Als enige drank tijdens een marathon", note:"sportief en langdurig", verdict:"bad", why:"Ook een Session IPA bevat alcohol en is geen hydratiemiddel.", principle:"‘Session’ betekent lichter, niet alcoholvrij of sportgeschikt." }
+      ]},
+      { id:"alcoholvrij-bob", difficulty:1, category:"Alcoholvrij", style:"Fris & verantwoord", customer:"Een kwalitatieve alcoholvrije blond met citrus en lichte bitterheid. Wanneer is dit de held van de avond?", options:[
+        { wine:"Als je BOB bent op een feest", note:"wel smaak, geen alcohol", verdict:"perfect", why:"Je behoudt het sociale ritueel en de biersmaak zonder alcohol te drinken voor het rijden.", principle:"Alcoholvrij bier past bij momenten waarop verantwoordelijkheid en deelname samengaan." },
+        { wine:"Tijdens een lunch op een werkdag", note:"fris zonder loomte", verdict:"good", why:"Het biedt smaak en verfrissing zonder alcoholische impact op de rest van de dag.", principle:"Alcoholvrij is breed inzetbaar wanneer helderheid belangrijk blijft." },
+        { wine:"Om sneller dronken te worden", note:"doelgericht maar onmogelijk", verdict:"bad", why:"Dat doel spreekt de kern van alcoholvrij bier nogal letterlijk tegen.", principle:"Lees niet alleen het etiket; begrijp ook waarom het bier bestaat." }
+      ]},
+      { id:"barleywine-verjaardag", difficulty:3, category:"Barleywine", style:"Zeer sterk & rijk", customer:"Een gerijpte barleywine van 12% met toffee, gedroogd fruit en oxidatieve complexiteit. Wanneer trek je die open?", options:[
+        { wine:"Op een bijzondere verjaardag om met kleine glaasjes te delen", note:"zeldzaam, traag en ceremonieel", verdict:"perfect", why:"De hoge alcohol en complexiteit vragen kleine porties, tijd en een moment dat de fles bijzonder maakt.", principle:"Zeer sterke bieren zijn deelbieren voor speciale, rustige gelegenheden." },
+        { wine:"Bij oude kaas als afsluiter", note:"intens bij intens", verdict:"good", why:"Zoetige mout en alcohol kunnen zout en rijping dragen, al blijft dosering belangrijk.", principle:"Match zeer intense bieren met even intense smaken." },
+        { wine:"Voor een ad-fundumwedstrijd", note:"snelheid boven smaak", verdict:"bad", why:"Dat is gevaarlijk en verspilt een bier dat juist bedoeld is om traag te proeven.", principle:"Hoge alcohol vraagt kleine hoeveelheden en langzaam drinken." }
+      ]},
+      { id:"rauchbier-winterbbq", difficulty:3, category:"Rauchbier", style:"Rokerig & moutig", customer:"Een Bambergse Rauchbier die ruikt naar kampvuur, spek en broodkorst. Waar durf je ze schenken?", options:[
+        { wine:"Bij een winterbarbecue met gerookte worst", note:"rook ontmoet rook", verdict:"perfect", why:"De rokerige aroma's spiegelen gegrild en gerookt vlees, terwijl mout het hartige karakter draagt.", principle:"Een uitgesproken aroma werkt goed wanneer het bewust wordt gespiegeld in het eten en moment." },
+        { wine:"Tijdens een gespecialiseerde bierproeverij", note:"uitdagend en leerzaam", verdict:"good", why:"De stijl is bijzonder genoeg om te vergelijken en bespreken, zelfs zonder eten.", principle:"Polariserende stijlen verdienen een aandachtige proefcontext." },
+        { wine:"Bij een delicate aardbeientaart op babyborrel", note:"zacht, fruitig en feestelijk", verdict:"bad", why:"Rook en spekassociaties maken de taart log en vreemd; het bier domineert de gelegenheid.", principle:"Vermijd een enorme intensiteits- en aromabotsing." }
+      ]},
+      { id:"gose-strand", difficulty:2, category:"Gose", style:"Zout & zuur", customer:"Een lichte gose met citroenzuur, koriander en een subtiel zilt randje. Waar is ze onweerstaanbaar?", options:[
+        { wine:"Op een warme stranddag bij lichte zeevruchten", note:"zilt, fris en laag in alcohol", verdict:"perfect", why:"Zuur, zout en lage alcohol verfrissen in de hitte en sluiten aan bij smaken uit zee.", principle:"Lichte zure bieren passen bij warmte, zout en frisse gerechten." },
+        { wine:"Als aperitief met olijven", note:"zout ontmoet zout", verdict:"good", why:"De ziltigheid en zuren stimuleren de eetlust, al kan het samen behoorlijk zout worden.", principle:"Zout en zuur kunnen eetlust opwekken, maar bewaak de balans." },
+        { wine:"Bij een zware chocoladetruffelproeverij", note:"donker en zoet", verdict:"bad", why:"Het scherpe zuur en zout botsen hard met romige, zoete chocolade.", principle:"Zoutzuur bier vraagt frisse of hartige partners, geen zware zoetigheid." }
+      ]},
+      { id:"brown-ale-spelavond", difficulty:2, category:"Brown Ale", style:"Notig & zacht", customer:"Een Engelse brown ale met noten, biscuit en zachte karamel. Wanneer voelt die helemaal juist?", options:[
+        { wine:"Een rustige bordspelavond met hartige snacks", note:"gezellig, mild en lang drinkbaar", verdict:"perfect", why:"De zachte moutigheid is smaakvol zonder aandacht op te eisen en past bij noten, kaas en zoute snacks.", principle:"Gebalanceerde, matige bieren zijn ideaal voor lange sociale avonden." },
+        { wine:"Bij geroosterde kip", note:"mout en bruining", verdict:"good", why:"Notige mout sluit aan bij gebruinde korst en het bier blijft zacht genoeg voor kip.", principle:"Moutige bruining harmonieert met geroosterde gerechten." },
+        { wine:"Tijdens een extreme chiliwedstrijd", note:"hitte en competitie", verdict:"bad", why:"Hoewel zacht, mist het bier voldoende zoetheid en frisheid; alcohol en mout kunnen de hitte log maken.", principle:"Bij extreme chili werken lage alcohol, frisheid en wat restzoet beter." }
+      ]}
+    ];
+
     const state = {
       screen: "start",
+      characterKey: "lars",
       difficultyKey: "normal",
       config: DIFFICULTIES.normal,
       score: 0,
@@ -1485,6 +1668,11 @@
       gameScreen: $("#game-screen"),
       resultScreen: $("#result-screen"),
       startButton: $("#start-button"),
+      menuCharacterImage: $("#menu-character-image"),
+      menuFallback: $("#menu-fallback"),
+      menuEyebrow: $("#menu-eyebrow"),
+      menuSubtitle: $("#menu-subtitle"),
+      expertTipName: $("#expert-tip-name"),
       highScoreLine: $("#high-score-line"),
       pauseButton: $("#pause-button"),
       muteButton: $("#mute-button"),
@@ -1608,6 +1796,27 @@
       }
     };
 
+
+    function getCharacter() { return CHARACTER_CONFIG[state.characterKey]; }
+    function getDatabase() { return state.characterKey === "tibo" ? beerDatabase : wineDatabase; }
+    function getReactions() { return state.characterKey === "tibo" ? TIBO_REACTIONS : LARS_REACTIONS; }
+    function getEndReactions() { return state.characterKey === "tibo" ? TIBO_END_REACTIONS : LARS_END_REACTIONS; }
+    function getSelectedCharacter() { return $("input[name='character']:checked")?.value || "lars"; }
+
+    function updateCharacterPreview() {
+      const key = getSelectedCharacter();
+      const config = CHARACTER_CONFIG[key];
+      elements.menuCharacterImage.src = config.images.idle;
+      elements.menuCharacterImage.alt = `${config.name}, drankenexpert`;
+      elements.menuFallback.textContent = config.icon;
+      elements.menuEyebrow.textContent = config.eyebrow;
+      elements.menuSubtitle.textContent = config.subtitle;
+      elements.startButton.textContent = key === "tibo" ? "🍺 START DE BIERTOER" : "🍾 START DE WIJNSHIFT";
+      document.getElementById("app").classList.toggle("beer-mode", key === "tibo");
+      const score = Number(localStorage.getItem(config.highScoreKey) || 0);
+      elements.highScoreLine.textContent = `Persoonlijk record met ${config.name}: ${score} punten`;
+    }
+
     function fisherYates(items) {
       const array = [...items];
       for (let i = array.length - 1; i > 0; i -= 1) {
@@ -1634,12 +1843,12 @@
     }
 
     function imageState(kind) {
-      elements.larsImage.src = IMAGE_PATHS[kind];
+      elements.larsImage.src = getCharacter().images[kind];
       elements.larsPhoto.className = `lars-photo ${kind === "idle" ? "idle" : kind === "happy" ? "happy" : "fail"} image-shell`;
     }
 
     function preloadImages() {
-      Object.values(IMAGE_PATHS).forEach(src => {
+      Object.values(CHARACTER_CONFIG).flatMap(character => Object.values(character.images)).forEach(src => {
         const image = new Image();
         image.src = src;
       });
@@ -1657,7 +1866,7 @@
     }
 
     function buildDeck(config) {
-      const eligible = wineDatabase.filter(question => question.difficulty <= config.maxQuestionDifficulty);
+      const eligible = getDatabase().filter(question => question.difficulty <= config.maxQuestionDifficulty);
       const grouped = new Map();
       eligible.forEach(question => {
         if (!grouped.has(question.category)) grouped.set(question.category, []);
@@ -1690,6 +1899,11 @@
       AudioEngine.init();
       AudioEngine.click();
 
+      state.characterKey = getSelectedCharacter();
+      const character = getCharacter();
+      document.getElementById("app").classList.toggle("beer-mode", character.mode === "beer");
+      elements.expertTipName.textContent = character.name.toUpperCase();
+      elements.larsImage.alt = `Reactie van ${character.name}`;
       state.difficultyKey = getSelectedDifficulty();
       state.config = DIFFICULTIES[state.difficultyKey];
       state.score = 0;
@@ -1722,7 +1936,9 @@
       const round = state.deck[state.index];
       const customerType = randomItem(CUSTOMER_TYPES);
       const table = randomItem(TABLES);
-      elements.customerLabel.textContent = `${customerType.toUpperCase()} · TAFEL ${table}`;
+      elements.customerLabel.textContent = state.characterKey === "tibo"
+        ? `TIBO'S BIERPROEF · RONDE ${state.index + 1}`
+        : `${customerType.toUpperCase()} · TAFEL ${table}`;
       elements.customerQuote.textContent = `“${round.customer}”`;
       elements.categoryRow.innerHTML = `<span class="tag">${round.category}</span><span class="tag">${round.style}</span><span class="tag">niveau ${round.difficulty}</span>`;
 
@@ -1780,7 +1996,7 @@
       resolveAnswer({
         verdict: "bad",
         wine: "Geen keuze",
-        why: `Je liet de klant wachten. De sterkste match was ${perfect.wine}: ${perfect.why}`,
+        why: `Je liet te lang wachten. De sterkste match was ${perfect.wine}: ${perfect.why}`,
         principle: perfect.principle
       }, null, true);
     }
@@ -1848,7 +2064,7 @@
       reactionType = timedOut ? "timeout" : reactionType;
       elements.feedbackBadge.className = `feedback-badge ${option.verdict}`;
       elements.feedbackBadge.textContent = badgeText;
-      elements.feedbackReaction.textContent = randomItem(REACTIONS[reactionType]);
+      elements.feedbackReaction.textContent = randomItem(getReactions()[reactionType]);
       elements.feedbackKnowledge.innerHTML = `<strong>Waarom?</strong> ${option.why}<br><br><strong>Onthoud:</strong> ${option.principle}`;
       elements.feedbackScore.textContent = option.verdict === "perfect" && state.streak > 1
         ? `Combo x${state.streak}: je kreeg extra bonuspunten.`
@@ -1916,7 +2132,9 @@
       target.setAttribute("aria-hidden", "true");
       state.hints -= 1;
       updateUI();
-      showToast("Lars mompelt: ‘Die fles zou ik zelfs niet gebruiken om te koken.’");
+      showToast(state.characterKey === "tibo"
+        ? "Tibo mompelt: ‘Die gelegenheid is zelfs na vijf pinten geen goed idee.’"
+        : "Lars mompelt: ‘Die fles zou ik zelfs niet gebruiken om te koken.’");
       const firstRemaining = $(".option-button:not(.eliminated)", elements.optionsBox);
       firstRemaining?.focus();
     }
@@ -1948,6 +2166,7 @@
       elements.pauseOverlay.classList.remove("show");
       elements.feedbackOverlay.classList.remove("show");
       switchScreen("start");
+      updateCharacterPreview();
       updateHighScoreLine();
       elements.startButton.focus({ preventScroll: true });
     }
@@ -1959,8 +2178,9 @@
 
       const reputation = calculateReputation();
       const perfectCount = state.outcomes.filter(outcome => outcome.verdict === "perfect").length;
-      const highScore = Number(localStorage.getItem("sommelierLarsHighScore") || 0);
-      if (state.score > highScore) localStorage.setItem("sommelierLarsHighScore", String(state.score));
+      const character = getCharacter();
+      const highScore = Number(localStorage.getItem(character.highScoreKey) || 0);
+      if (state.score > highScore) localStorage.setItem(character.highScoreKey, String(state.score));
 
       let tier = "average";
       if (state.lives <= 0 || reputation < 45) tier = "fail";
@@ -1970,26 +2190,31 @@
         fail: {
           title: "ONTSLAGEN!",
           badge: "🍇 KURKENTREKKER-STAGIAIR",
-          image: IMAGE_PATHS.angry,
+          image: character.images.angry,
           color: "var(--red)",
           shadow: "4px 4px 0 var(--red)"
         },
         average: {
           title: "SHIFT KLAAR",
           badge: "🍷 WIJNLIEFHEBBER",
-          image: IMAGE_PATHS.congrats,
+          image: character.images.congrats,
           color: "var(--amber)",
           shadow: "4px 4px 0 var(--amber)"
         },
         great: {
           title: "LEGENDE!",
           badge: "⭐ KELDERMEESTER",
-          image: IMAGE_PATHS.congrats,
+          image: character.images.congrats,
           color: "var(--green)",
           shadow: "4px 4px 0 var(--green)"
         }
       }[tier];
 
+      if (state.characterKey === "tibo") {
+        if (tier === "fail") settings.badge = "🍺 SCHUIMKRAAG-STAGIAIR";
+        if (tier === "average") settings.badge = "🍻 CAFÉKENNER";
+        if (tier === "great") settings.badge = "⭐ BIERMEESTER";
+      }
       elements.resultTitle.textContent = settings.title;
       elements.resultTitle.style.textShadow = settings.shadow;
       elements.levelBadge.textContent = settings.badge;
@@ -1999,13 +2224,13 @@
       elements.resultPerfect.textContent = perfectCount;
       elements.resultAccuracy.textContent = `${reputation}%`;
       elements.resultBestStreak.textContent = state.bestStreak;
-      elements.resultMessage.textContent = `“${randomItem(END_REACTIONS[tier])}”`;
+      elements.resultMessage.textContent = `“${randomItem(getEndReactions()[tier])}”`;
 
       if (state.mistakes.length) {
         const lesson = randomItem(state.mistakes);
         elements.learningSummary.innerHTML = `<strong>Één ding voor je volgende shift:</strong> ${lesson.lesson}`;
       } else {
-        elements.learningSummary.innerHTML = `<strong>Geen grote misstappen.</strong> Lars controleert voor de zekerheid toch nog de inventaris.`;
+        elements.learningSummary.innerHTML = `<strong>Geen grote misstappen.</strong> ${character.name} controleert voor de zekerheid toch nog de inventaris.`;
       }
 
       switchScreen("result");
@@ -2015,8 +2240,10 @@
     }
 
     function updateHighScoreLine() {
-      const highScore = Number(localStorage.getItem("sommelierLarsHighScore") || 0);
-      elements.highScoreLine.textContent = `Persoonlijk record: ${highScore} punten`;
+      const key = state.screen === "start" ? getSelectedCharacter() : state.characterKey;
+      const character = CHARACTER_CONFIG[key];
+      const highScore = Number(localStorage.getItem(character.highScoreKey) || 0);
+      elements.highScoreLine.textContent = `Persoonlijk record met ${character.name}: ${highScore} punten`;
     }
 
     function handleKeyboard(event) {
@@ -2041,6 +2268,7 @@
 
     function setupEvents() {
       elements.startButton.addEventListener("click", startGame);
+      $$("input[name='character']").forEach(input => input.addEventListener("change", updateCharacterPreview));
       elements.pauseButton.addEventListener("click", pauseGame);
       elements.muteButton.addEventListener("click", () => AudioEngine.toggle());
       elements.hintButton.addEventListener("click", useHint);
@@ -2082,6 +2310,7 @@
         document.addEventListener(type, unlockAudio, { once: true, passive: true })
       );
 
+      updateCharacterPreview();
       updateHighScoreLine();
     }
 
