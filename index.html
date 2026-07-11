@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
     <title>Lars de Sommelier</title>
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 
         :root {
-            /* Sfeervolle bordeauxrode retro palet */
-            --bg-dark: #1a0a0c;
-            --panel-bg: rgba(242, 237, 228, 0.96);
-            --panel-border: #8c2531;
-            --text-main: #2b2521;
+            /* Diep bordeauxrode en warme houten retro-tinten */
+            --bg-dark: #1e090b;
+            --panel-bg: rgba(245, 240, 230, 0.96);
+            --text-dark: #2c221e;
+            --highlight: #8c2531;
             --success: #2e7d32;
-            --warning: #e65100;
+            --warning: #f57f17;
             --danger: #c62828;
-            --btn-hover: #e0d8c8;
+            --shadow-color: rgba(43, 17, 20, 0.5);
         }
 
         * { 
@@ -30,9 +30,9 @@
 
         body {
             font-family: 'VT323', monospace;
-            /* Diepe sfeervolle wijnrode radial gradient */
-            background: radial-gradient(circle, #300f13 0%, #100305 100%);
-            color: var(--text-main);
+            /* Sfeervolle bordeauxrode radial gradient die diepte geeft */
+            background: radial-gradient(circle, #3d1419 0%, #100305 100%);
+            color: var(--text-dark);
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -41,31 +41,33 @@
             position: relative;
         }
 
-        /* Subtiel CRT Scanline effect voor echte arcade sfeer */
+        /* Subtiel scanline effect voor die echte arcade feeling */
         body::before {
             content: " ";
             display: block;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
             z-index: 99;
-            background-size: 100% 4px, 6px 100%;
+            background-size: 100% 4px;
             pointer-events: none;
         }
 
-        /* --- LAYOUT & CONTAINERS --- */
-        #app-container {
+        /* --- HOOFD CONTAINER --- */
+        #game-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 480px;
             height: 100vh;
             position: relative;
-            background: rgba(26, 10, 12, 0.85); /* Donkere sfeervolle overlay over de background */
+            background: rgba(25, 6, 8, 0.85);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            border-left: 2px solid rgba(255,255,255,0.05);
+            border-right: 2px solid rgba(255,255,255,0.05);
         }
 
+        /* --- SCHERMEN --- */
         .screen {
             display: none;
             flex-direction: column;
@@ -73,164 +75,165 @@
             height: 100%;
             padding: 20px;
             align-items: center;
-            justify-content: flex-start;
             overflow-y: auto;
-            animation: fadeIn 0.3s ease-in-out;
         }
         .screen.active { display: flex; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h1 { 
-            font-family: 'Press Start 2P', cursive; 
-            font-size: 22px; 
-            color: var(--panel-border); 
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
-            margin-bottom: 10px; 
-            line-height: 1.4;
-            text-align: center;
-        }
-
-        .btn {
-            font-family: 'Press Start 2P', cursive;
-            background: var(--panel-border); 
-            color: white;
-            border: 4px solid #58111A; 
-            padding: 15px 20px; 
-            font-size: 14px;
-            border-radius: 8px; 
-            cursor: pointer;
-            box-shadow: 0 6px 0px #3a080f;
-            transition: all 0.1s;
-            width: 100%;
-            text-align: center;
-            margin-top: 15px;
-        }
-        .btn:active:not(:disabled) { 
-            transform: translateY(6px); 
-            box-shadow: 0 0px 0px #3a080f; 
-        }
-
-        /* --- START PANEL --- */
+        /* --- START & GAME OVER MENU PANEL --- */
         .menu-panel {
             background: var(--panel-bg);
-            border: 4px solid var(--panel-border);
+            border: 4px solid var(--highlight);
             border-radius: 12px;
             padding: 30px 20px;
             width: 100%;
             text-align: center;
             margin: auto;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 20px var(--shadow-color);
+            max-width: 92%;
         }
-
-        .profile-pic {
-            width: 120px;
-            height: 120px;
+        
+        h1 { 
+            font-family: 'Press Start 2P', cursive; 
+            font-size: 22px; 
+            color: var(--highlight); 
+            margin-bottom: 15px; 
+            line-height: 1.4; 
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+        }
+        
+        .profile-container {
+            width: 110px;
+            height: 110px;
             margin: 15px auto;
-            border: 4px solid var(--panel-border);
+            border: 4px solid var(--highlight);
             border-radius: 12px;
-            background-color: #e0d8c8;
-            /* Aangepast naar jouw images folder op GitHub! */
+            background-color: #ebdcb9;
+            /* Direct gekoppeld aan de images map in GitHub */
             background-image: url('images/Lars_idle.png'); 
             background-size: cover;
             background-position: center;
-            image-rendering: pixelated;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-            transition: transform 0.2s ease-in-out;
+            image-rendering: pixelated; /* Behoudt die vlijmscherpe pixels */
+            box-shadow: 0 6px 12px var(--shadow-color);
         }
 
-        .rules-box {
-            background: rgba(0,0,0,0.05);
-            border-radius: 8px;
-            padding: 15px;
-            text-align: left;
-            font-size: 18px;
-            line-height: 1.5;
+        .btn {
+            font-family: 'Press Start 2P', cursive;
+            background: var(--highlight); 
+            color: white;
+            border: 3px solid #58111A; 
+            padding: 14px 20px; 
+            font-size: 11px;
+            border-radius: 8px; 
+            cursor: pointer;
+            box-shadow: 0 5px 0px #3d080f;
+            transition: all 0.05s ease-in-out;
+            width: 100%;
+            text-align: center;
             margin-top: 15px;
         }
+        .btn:active { 
+            transform: translateY(5px); 
+            box-shadow: 0 0px 0px #3d080f; 
+        }
 
+        .rules-card {
+            background: rgba(0,0,0,0.05);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 18px;
+            line-height: 1.5;
+            text-align: left;
+            margin: 15px 0;
+            border-left: 3px solid var(--highlight);
+        }
+
+        /* --- STREAMING_CHUNK: Styling the game interface elements... --- */
         /* --- GAMEPLAY UI --- */
-        .header-bar {
+        .top-bar {
             width: 100%; 
             display: flex; 
             justify-content: space-between;
-            padding: 12px 20px; 
+            align-items: center;
+            padding: 12px 18px; 
             background: var(--panel-bg);
-            border-bottom: 4px solid var(--panel-border);
+            border-bottom: 4px solid var(--highlight);
             font-size: 26px; 
             font-weight: bold;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             z-index: 5;
         }
 
-        .stage-container {
+        .mute-btn {
+            cursor: pointer;
+            font-size: 24px;
+            transition: transform 0.1s;
+            padding: 0 8px;
+        }
+        .mute-btn:active {
+            transform: scale(0.9);
+        }
+
+        .stage-box {
             flex: 1; 
             display: flex; 
             justify-content: center; 
             align-items: center;
             width: 100%;
             padding: 15px;
-            min-height: 220px;
+            min-height: 200px;
         }
 
-        /* Lars display frame */
-        .lars-frame {
-            width: 100%;
-            max-width: 280px;
-            height: 100%;
-            max-height: 280px;
+        /* Geoptimaliseerde Lars box (geen verspringing meer!) */
+        .lars-character {
+            width: 220px;
+            height: 220px;
             background-color: #2b1114;
-            border: 4px solid var(--panel-border);
+            border: 4px solid var(--highlight);
             border-radius: 12px;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center bottom;
-            image-rendering: pixelated; /* Mooie scherpe retro pixels */
+            image-rendering: pixelated;
             box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-            transition: transform 0.2s, background-image 0.2s ease-in-out;
-        }
-        
-        /* Subtiele retro adem-animatie */
-        @keyframes subtleBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        .lars-frame.idle {
-            /* Gelinkt naar de images folder op GitHub! */
-            background-image: url('images/Lars_idle.png');
-            animation: subtleBounce 2s infinite ease-in-out;
-        }
-        .lars-frame.fail {
-            /* Gelinkt naar de images folder op GitHub! */
-            background-image: url('images/Lars_fail.png');
-            animation: none;
-            transform: scale(0.98);
+            transition: background-image 0.1s ease-in-out;
         }
 
-        .customer-card {
+        /* Rustige op-en-neer verende ademhaling */
+        @keyframes gentleBreath {
+            0%, 100% { transform: translateY(0) scaleY(1); }
+            50% { transform: translateY(-3px) scaleY(1.02); }
+        }
+        .lars-character.idle {
+            background-image: url('images/Lars_idle.png');
+            animation: gentleBreath 2.2s infinite ease-in-out;
+        }
+        .lars-character.fail {
+            background-image: url('images/Lars_fail.png');
+            animation: none;
+            transform: scale(0.97);
+        }
+
+        .question-bubble {
             background: var(--panel-bg); 
             padding: 15px; 
             border-radius: 12px;
-            border: 4px solid var(--panel-border); 
-            font-size: 22px; 
+            border: 3px solid var(--highlight); 
+            font-size: 21px; 
             text-align: center;
-            margin-bottom: 15px; 
+            margin-bottom: 12px; 
             width: 100%;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
             position: relative;
         }
-        .customer-card::before {
-            content: "Klant zegt:";
+        .question-bubble::before {
+            content: "Klant vraagt:";
             position: absolute;
-            top: -12px;
+            top: -11px;
             left: 15px;
-            background: var(--panel-border);
+            background: var(--highlight);
             color: white;
-            font-size: 14px;
-            padding: 2px 8px;
+            font-size: 11px;
+            padding: 1px 8px;
             border-radius: 4px;
             font-family: 'Press Start 2P', cursive;
         }
@@ -238,12 +241,12 @@
         .options-grid { 
             display: flex; 
             flex-direction: column; 
-            gap: 10px; 
+            gap: 8px; 
             width: 100%; 
-            padding-bottom: 20px; 
+            padding-bottom: 15px; 
         }
 
-        .wine-btn {
+        .option-button {
             font-family: 'VT323', monospace; 
             background: var(--panel-bg);
             border: 3px solid #888; 
@@ -257,13 +260,17 @@
             align-items: center;
             box-shadow: 0 4px 0px #888;
         }
-        .wine-btn:active {
+        .option-button:active {
             transform: translateY(4px);
             box-shadow: 0 0px 0px #888;
         }
-        .wine-btn:hover { border-color: var(--panel-border); background: var(--btn-hover); }
+        .option-button:hover { 
+            border-color: var(--highlight); 
+            background: #ebdcb9; 
+        }
 
-        /* --- FEEDBACK MODAL --- */
+        /* --- STREAMING_CHUNK: Styling feedback overlay and score bar... --- */
+        /* --- FEEDBACK DIALOGUE OVERLAY --- */
         #feedback-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.6);
@@ -273,39 +280,39 @@
         }
         #feedback-overlay.show { opacity: 1; pointer-events: auto; }
 
-        .feedback-panel {
+        .feedback-board {
             background: var(--panel-bg); 
-            border-top: 6px solid var(--panel-border);
+            border-top: 6px solid var(--highlight);
             width: 100%; padding: 25px 20px;
             border-radius: 16px 16px 0 0;
             transform: translateY(100%);
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
             text-align: center;
         }
-        #feedback-overlay.show .feedback-panel { transform: translateY(0); }
+        #feedback-overlay.show .feedback-board { transform: translateY(0); }
 
-        .status-badge {
+        .feedback-badge {
             font-family: 'Press Start 2P', cursive; 
-            font-size: 14px; 
+            font-size: 13px; 
             margin-bottom: 12px; 
             display: inline-block;
-            padding: 5px 10px;
+            padding: 5px 12px;
             border-radius: 4px;
             color: white;
         }
-        #feedback-desc { font-size: 22px; margin-bottom: 20px; }
+        #feedback-text { font-size: 21px; margin-bottom: 20px; line-height: 1.4; }
 
-        /* --- PROGRESS BAR & RANKS (Game Over) --- */
-        .progress-bar-container {
+        /* --- PROGRESS BAR & RANKS (Game Over Screen) --- */
+        .progress-bar {
             width: 100%;
-            height: 26px;
-            background: #e0d8c8;
-            border: 4px solid var(--panel-border);
+            height: 24px;
+            background: #e0d5c1;
+            border: 3px solid var(--highlight);
             border-radius: 6px;
             overflow: hidden;
             position: relative;
             margin: 15px 0;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
         .progress-bar-fill {
             width: 0%;
@@ -313,94 +320,94 @@
             background: var(--success);
             transition: width 1.2s cubic-bezier(0.1, 0.8, 0.2, 1);
         }
-        .progress-bar-text {
+        .progress-bar-label {
             position: absolute;
             width: 100%;
             text-align: center;
-            top: 2px; left: 0;
+            top: 1px; left: 0;
             font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
+            font-size: 9px;
             color: #111;
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.7);
         }
-        .rank-badge {
+        .level-badge {
             font-family: 'Press Start 2P', cursive;
-            font-size: 16px;
-            padding: 10px 15px;
-            border-radius: 8px;
+            font-size: 15px;
+            padding: 8px 15px;
+            border-radius: 6px;
             color: white;
             display: inline-block;
-            margin: 15px 0;
-            box-shadow: 0 4px 0px rgba(0,0,0,0.2);
+            margin: 10px 0;
+            box-shadow: 0 4px 0px rgba(0,0,0,0.15);
             text-transform: uppercase;
         }
     </style>
-    <!-- Tone.js for high-fidelity browser-synthesized audio effects -->
+    <!-- Tone.js for high-fidelity audio synthesis -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 </head>
 <body>
 
-<div id="app-container">
+<div id="game-container">
     
-    <!-- MENU SCHERM -->
-    <div id="start-screen" class="screen menu-screen active">
+    <!-- START SCHERM -->
+    <div id="start-screen" class="screen active">
         <div class="menu-panel">
             <h1>SOMMELIER<br>LARS</h1>
-            <div id="start-profile" class="profile-pic"></div>
+            <div class="profile-container"></div>
             <p style="font-size: 22px; font-weight: bold;">De Enige Echte Expert</p>
             
-            <div class="rules-box">
+            <div class="rules-card">
                 🍷 <b>Perfecte Match:</b> +100 pt<br>
                 😐 <b>Prima Match:</b> +50 pt<br>
                 🤢 <b>Foute Match:</b> -1 leven
             </div>
             
-            <button class="btn" id="start-btn" onclick="startGame()">START SHIFT</button>
+            <button class="btn" onclick="startGame()">START SHIFT</button>
         </div>
     </div>
 
-    <!-- SPEL SCHERM -->
+    <!-- GAME SCHERM -->
     <div id="game-screen" class="screen">
-        <div class="header-bar">
-            <div>⭐ <span id="score">0</span></div>
-            <div id="lives">❤️❤️❤️</div>
+        <div class="top-bar">
+            <div>⭐ <span id="score-val">0</span></div>
+            <div class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</div>
+            <div id="lives-indicator">❤️❤️❤️</div>
         </div>
 
-        <div class="stage-container">
-            <div id="lars-sprite" class="lars-frame idle"></div>
+        <div class="stage-box">
+            <div id="lars-sprite" class="lars-character idle"></div>
         </div>
 
-        <div class="customer-card">
+        <div class="question-bubble">
             "<span id="customer-quote"></span>"
         </div>
 
-        <div class="options-grid" id="options"></div>
+        <div class="options-grid" id="options-box"></div>
     </div>
 
-    <!-- FEEDBACK OVERLAY -->
+    <!-- FEEDBACK DIALOGUE OVERLAY -->
     <div id="feedback-overlay">
-        <div class="feedback-panel">
-            <div id="status-badge" class="status-badge">RESULTAAT</div>
-            <div id="feedback-desc">Uitleg over de wijn.</div>
-            <button class="btn" id="feedback-next-btn" onclick="nextRound()">VOLGENDE KLANT</button>
+        <div class="feedback-board">
+            <div id="feedback-badge" class="feedback-badge">STATUS</div>
+            <div id="feedback-text">Uitleg over de wijn-keuze.</div>
+            <button class="btn" id="feedback-action-btn" onclick="nextRound()">VOLGENDE KLANT</button>
         </div>
     </div>
 
     <!-- GAME OVER SCHERM -->
     <div id="game-over-screen" class="screen">
-        <div class="menu-panel" style="margin: auto;">
+        <div class="menu-panel">
             <h1>EINDE SHIFT</h1>
             <p id="game-over-msg" style="font-size: 22px; margin-bottom: 10px; font-weight: bold;"></p>
             
-            <p style="font-size: 20px;">Jouw Score:</p>
-            <!-- Progress Bar of your score vs max score -->
-            <div class="progress-bar-container">
-                <div id="score-progress" class="progress-bar-fill"></div>
-                <div id="score-progress-text" class="progress-bar-text">0 / 0 PT</div>
+            <p style="font-size: 19px;">Behaalde Score:</p>
+            <div class="progress-bar">
+                <div id="score-bar" class="progress-bar-fill"></div>
+                <div id="score-bar-text" class="progress-bar-label">0 / 0 PT</div>
             </div>
 
-            <div id="rank-badge" class="rank-badge">NIVEAU</div>
-            <p id="rank-desc" style="font-size: 20px; line-height: 1.4; margin-bottom: 20px;"></p>
+            <div id="level-badge" class="level-badge">NIVEAU</div>
+            <p id="level-desc" style="font-size: 19px; line-height: 1.4; margin-bottom: 15px;"></p>
 
             <button class="btn" onclick="resetApp()">OPNIEUW SPELEN</button>
         </div>
@@ -409,111 +416,205 @@
 </div>
 
 <script>
-    // --- AUDIO ENGINE (Synthesized Retro FX) ---
-    const Audio = {
+    // --- AUDIO ENGINE (Synthesized Sound Design & Background Music) ---
+    const AudioEngine = {
+        isMuted: false,
         synth: null,
+        popSynth: null,
+        squeakSynth: null,
+        melodySynth: null,
+        bassSynth: null,
+        isPlayingMusic: false,
+        musicInterval: null,
+        step: 0,
+
+        // French-Accordion style waltz sequence in 3/4
+        melody: [
+            "C5", "E5", "G5", "B4", "D5", "G5", "A4", "C5", "E5", "G4", "B4", "D5",
+            "F4", "A4", "C5", "E4", "G4", "C5", "D4", "F4", "B4", "C4", null, null
+        ],
+        bass: [
+            "C3", "E3", "E3", "G2", "B2", "B2", "A2", "C3", "C3", "E2", "G2", "G2",
+            "F2", "A2", "A2", "C2", "E2", "E2", "G2", "B2", "B2", "C3", null, null
+        ],
+
         init: function() {
-            if (!this.synth) this.synth = new Tone.PolySynth(Tone.Synth).toDestination();
+            if (this.synth) return;
+
+            // General SFX synth
+            this.synth = new Tone.PolySynth(Tone.Synth).toDestination();
+            this.synth.volume.value = -6;
+
+            // Uncork Pop Sound Design
+            this.popSynth = new Tone.MembraneSynth({
+                pitchDecay: 0.05,
+                octaves: 3,
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.001, decay: 0.08, sustain: 0, release: 0.08 }
+            }).toDestination();
+            this.popSynth.volume.value = 4; // pop is naturally soft
+
+            this.squeakSynth = new Tone.MonoSynth({
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.02, decay: 0.05, sustain: 0, release: 0.05 }
+            }).toDestination();
+            this.squeakSynth.volume.value = -14;
+
+            // Background Music Accordion/Triangle wave synths
+            this.melodySynth = new Tone.Synth({
+                oscillator: { type: "triangle" },
+                envelope: { attack: 0.05, decay: 0.15, sustain: 0.3, release: 0.2 }
+            }).toDestination();
+            this.melodySynth.volume.value = -18; // soft atmosphere
+
+            this.bassSynth = new Tone.Synth({
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.08, decay: 0.2, sustain: 0.1, release: 0.15 }
+            }).toDestination();
+            this.bassSynth.volume.value = -15;
         },
+
         playClick: function() {
-            if (!this.synth) return;
-            this.synth.triggerAttackRelease("C6", "32n", undefined, 0.15);
+            if (this.isMuted || !this.synth) return;
+            this.synth.triggerAttackRelease("C6", "32n", undefined, 0.1);
         },
-        playSelect: function() {
-            if (!this.synth) return;
-            this.synth.triggerAttackRelease("G5", "16n", undefined, 0.3);
+
+        // --- STREAMING_CHUNK: Synthesizing the uncork sound effect... ---
+        playUncork: function() {
+            if (this.isMuted || !this.popSynth) return;
+            const now = Tone.now();
+            
+            // 1. Twist/Squeak of the cork pulling out of the glass neck
+            this.squeakSynth.triggerAttackRelease("E5", "16n", now);
+            this.squeakSynth.frequency.setValueAtTime("E5", now);
+            this.squeakSynth.frequency.exponentialRampToValueAtTime("B5", now + 0.06);
+
+            // 2. The suction "POP!" from the pressure release
+            setTimeout(() => {
+                if (!this.isMuted) {
+                    this.popSynth.triggerAttackRelease("G2", "16n");
+                }
+            }, 60);
         },
+
         playSuccess: function() {
-            if (!this.synth) return;
+            if (this.isMuted || !this.synth) return;
             const now = Tone.now();
-            this.synth.triggerAttackRelease(["C5", "E5", "G5"], "8n", now, 0.4);
-            this.synth.triggerAttackRelease(["E5", "G5", "C6"], "4n", now + 0.12, 0.4);
+            this.synth.triggerAttackRelease(["C5", "E5", "G5"], "8n", now);
+            this.synth.triggerAttackRelease(["E5", "G5", "C6"], "4n", now + 0.12);
         },
+
         playOk: function() {
-            if (!this.synth) return;
+            if (this.isMuted || !this.synth) return;
             const now = Tone.now();
-            this.synth.triggerAttackRelease("C5", "8n", now, 0.3);
-            this.synth.triggerAttackRelease("E5", "4n", now + 0.12, 0.3);
+            this.synth.triggerAttackRelease("C5", "8n", now);
+            this.synth.triggerAttackRelease("E5", "4n", now + 0.12);
         },
+
         playFail: function() {
-            if (!this.synth) return;
+            if (this.isMuted || !this.synth) return;
             const now = Tone.now();
-            this.synth.triggerAttackRelease("D3", "4n", now, 0.5);
-            this.synth.triggerAttackRelease("A2", "2n", now + 0.25, 0.5);
+            this.synth.triggerAttackRelease("D3", "4n", now);
+            this.synth.triggerAttackRelease("A2", "2n", now + 0.25);
+        },
+
+        startMusic: function() {
+            if (this.isPlayingMusic) return;
+            this.isPlayingMusic = true;
+            this.step = 0;
+
+            const beatTime = 420; // Waltz tempo (~140 BPM)
+            this.musicInterval = setInterval(() => {
+                if (this.isMuted || !this.isPlayingMusic) return;
+                const now = Tone.now();
+                
+                const mNote = this.melody[this.step % this.melody.length];
+                const bNote = this.bass[this.step % this.bass.length];
+
+                if (mNote) this.melodySynth.triggerAttackRelease(mNote, "4n", now);
+                if (bNote) this.bassSynth.triggerAttackRelease(bNote, "4n", now);
+
+                this.step++;
+            }, beatTime);
+        },
+
+        stopMusic: function() {
+            this.isPlayingMusic = false;
+            clearInterval(this.musicInterval);
         }
     };
 
-    // --- DATASET (De 12 hoogwaardig onderzochte Franse wijnmatches) ---
-    const wineDB = [
+    // --- GAME DATASET (Expert French Wine Pairings) ---
+    const wineDatabase = [
         { customer: "Ik bestel een zware, gegrilde ribeye steak met pepersaus.", options: [
-            { wine: "Bordeaux (Cabernet Sauvignon)", type: "perfect", desc: "Perfect! De stevige tannines breken prachtig door het vette vlees." },
-            { wine: "Bourgogne (Pinot Noir)", type: "ok", desc: "Prima, rood bij rood vlees, maar eigenlijk wat te licht voor zware pepersaus." },
-            { wine: "Zoete Sauternes", type: "bad", desc: "Vreselijk! Zoete dessertwijn bij een vette pepersteak is een ware misdaad." }]
+            { wine: "Bordeaux (Cabernet Sauvignon)", type: "perfect", desc: "Perfect! De stevige tannines in deze legendarische rode wijn snijden prachtig door het vette vlees van de ribeye." },
+            { wine: "Bourgogne (Pinot Noir)", type: "ok", desc: "Prima, rood bij rood vlees is een oké basisregel, maar de Bourgogne is eigenlijk veel te verfijnd en licht voor de zware pepersaus." },
+            { wine: "Zoete Sauternes", type: "bad", desc: "Vreselijk! Zoete, stroperige dessertwijn bij een hartige pepersteak is een ware aanslag op de smaakpapillen." }]
         },
         { customer: "We delen een dozijn verse, zoute oesters.", options: [
-            { wine: "Chablis (Strakke Chardonnay)", type: "perfect", desc: "Geniaal. De kalkachtige mineraliteit past perfect bij ziltige oesters." },
-            { wine: "Champagne Brut", type: "ok", desc: "Lekker feestelijk, de bubbels snijden er ook prima doorheen." },
-            { wine: "Zware Shiraz (Rood)", type: "bad", desc: "Nee! Rode wijn bij oesters geeft een ranzige metaalachtige smaak." }]
+            { wine: "Chablis (Strakke Chardonnay)", type: "perfect", desc: "Geniaal! De droge, kalkachtige mineraliteit van de Chablis past subliem bij het zilte karakter van verse oesters." },
+            { wine: "Champagne Brut", type: "ok", desc: "Absoluut feestelijk en de frisse bubbels wassen de zoutheid soepel weg, maar haalt het niet bij de kalkmatches." },
+            { wine: "Zware Shiraz (Rood)", type: "bad", desc: "Nee! Rode wijn bij oesters geeft een ranzige, metaalachtige bloedsmaak in je mond. Lars huilt zachtjes." }]
         },
         { customer: "Ik eet een super pittige Thaise groene curry.", options: [
-            { wine: "Gewürztraminer (Licht zoet)", type: "perfect", desc: "Spot on! Een beetje restzoet in de Elzas-wijn blust de pittigheid af." },
-            { wine: "Droge Sauvignon Blanc", type: "ok", desc: "Lekker fris, maar blust de intense hitte van de curry niet optimaal." },
-            { wine: "Houtgelagerde Chardonnay", type: "bad", desc: "Oef! Alcohol en eikenhout maken het eten alleen maar brandender." }]
+            { wine: "Gewürztraminer (Licht zoet)", type: "perfect", desc: "Spot on! Een vleugje natuurlijk restzoet in deze Elzasser wijn tempert en blust de intense hitte van de curry prachtig." },
+            { wine: "Droge Sauvignon Blanc", type: "ok", desc: "Lekker fris, maar de droge, grasachtige zuren blussen de brandende pepers niet optimaal af." },
+            { wine: "Houtgelagerde Chardonnay", type: "bad", desc: "Oef! De combinatie van veel alcohol en eikenhout maakt het eten in je mond alleen maar heter en brandender." }]
         },
         { customer: "Voor mij de rijke, romige truffelrisotto.", options: [
-            { wine: "Barolo (Nebbiolo)", type: "perfect", desc: "Klassiek! De aardse, herfstige tonen matchen fantastisch met truffel." },
-            { wine: "Meursault (Vol wit)", type: "ok", desc: "Lekker romig wit past goed bij de vettige textuur van de risotto." },
-            { wine: "Lichte Provence Rosé", type: "bad", desc: "Te waterig voor zo'n zwaar, intens warm winters gerecht." }]
+            { wine: "Barolo (Nebbiolo)", type: "perfect", desc: "Klassieker! De aardse, herfstige tonen van de Barolo smelten fantastisch samen met de intense geur van verse truffel." },
+            { wine: "Meursault (Vol wit)", type: "ok", desc: "Een rijke, romige witte wijn sluit redelijk goed aan bij de romige textuur van de risotto, maar mist de aardse complexiteit." },
+            { wine: "Lichte Provence Rosé", type: "bad", desc: "Veel te licht en zomers. Deze roze terraswijn wordt compleet overlopen door het zware en rijke truffelgerecht." }]
         },
         { customer: "Een plankje met sterke, blauwe schimmelkaas (Roquefort).", options: [
-            { wine: "Sauternes", type: "perfect", desc: "De koninklijke match! Het zoete balanceert het extreme zout van de kaas." },
-            { wine: "Ruby Port", type: "ok", desc: "Sterk en zoet, past eigenlijk altijd wel bij blauwe kazen." },
-            { wine: "Droge Champagne", type: "bad", desc: "De hoge zuren vloeken totaal met de bittere schimmelkaas." }]
+            { wine: "Sauternes", type: "perfect", desc: "De koninklijke combinatie! De weelderige honingzoetheid balanceert het scherpe en extreem zoute karakter van de schimmelkaas feilloos." },
+            { wine: "Ruby Port", type: "ok", desc: "Sterk en klassiek zoet. Een veilige partner die eigenlijk altijd wel werkt bij een dessertplankje met blauwe kazen." },
+            { wine: "Droge Champagne", type: "bad", desc: "Oei, de felle zuren en koolzuur vloeken verschrikkelijk met de bittere en vettige schimmelculturen van de Roquefort." }]
         },
-        { customer: "Gebraden eendenborst met een zachte bessensaus.", options: [
-            { wine: "Bourgogne (Pinot Noir)", type: "perfect", desc: "Prachtig! Aardse en fruitige tonen van Pinot Noir zijn gemaakt voor eend." },
-            { wine: "Beaujolais", type: "ok", desc: "Lekker sappig en fruitig, past redelijk goed bij de bessensaus." },
-            { wine: "Zware Cabernet Sauvignon", type: "bad", desc: "Te lomp. De stroeve tannines vernietigen de verfijnde smaak van de eend." }]
+        { customer: "Gebraden eendenborst met een zachte, zoetige bessensaus.", options: [
+            { wine: "Bourgogne (Pinot Noir)", type: "perfect", desc: "Prachtig! De elegante, soepele fruitaroma's en fijne zuren van Pinot Noir zijn historisch gezien dé ultieme match voor eend." },
+            { wine: "Beaujolais", type: "ok", desc: "Heerlijk sappig en barstensvol rood fruit. Matcht oké met de bessen, maar mist net de nodige diepgang." },
+            { wine: "Zware Cabernet Sauvignon", type: "bad", desc: "Veel te lomp. De stroeve tannines walsen over de subtiele, malse smaak van de eendenborst heen." }]
         },
-        { customer: "Klassieke pasta Carbonara met veel spek en kaas.", options: [
-            { wine: "Frascati of Soave", type: "perfect", desc: "Heerlijk fris Italiaans wit snijdt perfect door het vette spek heen." },
-            { wine: "Lichte Pinot Noir", type: "ok", desc: "Rood kan, mits licht gekoeld en met weinig tannine geserveerd." },
-            { wine: "Zware, eikenhouten Malbec", type: "bad", desc: "Veel te zwaar en stroef, overheerst de romige pasta volledig." }]
+        { customer: "Klassieke pasta Carbonara met lekker veel spek en pecorino.", options: [
+            { wine: "Frascati of Soave", type: "perfect", desc: "Heerlijk! Deze frisse en opwekkende Italiaanse witte wijnen snijden soepel door de romige, vettige laag van spek en kaas." },
+            { wine: "Lichte Pinot Noir", type: "ok", desc: "Rood kan zeker, mits hij heel licht van stijl is, weinig tannines heeft en eventueel licht gekoeld geserveerd wordt." },
+            { wine: "Zware, eikenhouten Malbec", type: "bad", desc: "Veel te stroef en overrompelend. Deze wijn vermoordt de romige harmonie van de pasta volledig." }]
         },
-        { customer: "Een frisse salade met geitenkaas en honing.", options: [
-            { wine: "Sancerre (Sauvignon Blanc)", type: "perfect", desc: "What grows together goes together. Sancerre snijdt soepel door de vette geitenkaas." },
-            { wine: "Droge Rosé", type: "ok", desc: "Een veilige, frisse en zomers lichte keuze voor bij een salade." },
-            { wine: "Zware, warme Shiraz", type: "bad", desc: "Rode, zware alcoholische wijn bij deze salade is echt niet oké." }]
+        { customer: "Een frisse zomersalade met geitenkaas en honing.", options: [
+            { wine: "Sancerre (Sauvignon Blanc)", type: "perfect", desc: "Mooie 'go-to' match! De gras- en citrusachtige aroma's van Sancerre snijden perfect door de frisse vettigheid van de kaas." },
+            { wine: "Droge Rosé", type: "ok", desc: "Licht, zomers en fris. Een veilige en aangename optie die prima standhoudt bij een salade." },
+            { wine: "Zware, alcoholische Shiraz", type: "bad", desc: "Absoluut niet doen. Een hete, zware rode wijn is veel te krachtig en bitter voor zo'n frisse geitenkaassalade." }]
         },
-        { customer: "Gegrilde zalmmoot met dille-kruidenboter.", options: [
-            { wine: "Pouilly-Fuissé (Chardonnay)", type: "perfect", desc: "Uitstekend! De vettige zalm en romige boter vragen om rijpe Bourgogne Chardonnay." },
-            { wine: "Chablis", type: "ok", desc: "Lekker fris, maar mist een beetje de body om de zalmboter te dragen." },
-            { wine: "Stroeve Nebbiolo", type: "bad", desc: "Vreselijk! De combinatie van visvet en harde tannines smaakt metaalachtig." }]
+        { customer: "Gegrilde zalmmoot met een romige dille-kruidenboter.", options: [
+            { wine: "Pouilly-Fuissé (Chardonnay)", type: "perfect", desc: "Uitstekend! De vettige zalm en romige boter verlangen naar de rijpe, licht romige structuur van een Bourgogne Chardonnay." },
+            { wine: "Chablis", type: "ok", desc: "Fris en opwekkend, maar mist net een beetje body en 'boter' om de zware dille-kruidenboter comfortabel te dragen." },
+            { wine: "Stroeve Nebbiolo (Rood)", type: "bad", desc: "Rampzalig. Het visvet botst wild met de harde tannines, wat resulteert in een vieze, metaalachtige nasmaak." }]
         },
-        { customer: "Huisgemaakte lasagne met kruidig gehakt en bechamelsaus.", options: [
-            { wine: "Chianti Classico (Sangiovese)", type: "perfect", desc: "Bellissimo! De zuren in de Sangiovese matchen de tomaat perfect." },
-            { wine: "Primitivo", type: "ok", desc: "Lekker fruitig en sappig, een makkelijke partner voor pasta." },
-            { wine: "Kurkdroge, strakke Riesling", type: "bad", desc: "Slaat de plank volledig mis. De scherpe zuren verpesten de bechamelsaus." }]
+        { customer: "Huisgemaakte lasagne met gekruid gehakt en bechamelsaus.", options: [
+            { wine: "Chianti Classico (Sangiovese)", type: "perfect", desc: "Bellissimo! De frisse zuren in deze rode Sangiovese-wijn matchen de tomatensaus en de kruiden van het gehakt perfect." },
+            { wine: "Primitivo", type: "ok", desc: "Sappig, warm en vol bessenfruit. Een makkelijke allemansvriend voor bij de meeste pastagerechten." },
+            { wine: "Kurkdroge, strakke Riesling", type: "bad", desc: "Slaat de plank volledig mis. De messcherpe zuren verpesten de romige bechamelsaus volledig." }]
         },
-        { customer: "Verse sushi met rauwe tonijn en sojasaus.", options: [
-            { wine: "Droge Elzas Riesling", type: "perfect", desc: "Uitstekend! Zeer zuiver, strak en droog genoeg voor de rauwe vis." },
-            { wine: "Mousserende Cava", type: "ok", desc: "De bubbels verfrissen je mond na elk hapje sushi." },
-            { wine: "Châteauneuf-du-Pape", type: "bad", desc: "Echt een ramp. De zware alcohol brandt de delicate sushi helemaal weg." }]
+        { customer: "Verse sushi met rauwe tonijn, zalm en een beetje sojasaus.", options: [
+            { wine: "Droge Elzas Riesling", type: "perfect", desc: "Fantastisch! Zeer zuiver, strak en droog genoeg om de verfijnde smaak van de rauwe vis te ondersteunen." },
+            { wine: "Mousserende Cava", type: "ok", desc: "De frisse bubbels verfrissen en reinigen je mond na elk vettig hapje vis en gember." },
+            { wine: "Châteauneuf-du-Pape (Rood)", type: "bad", desc: "Een drama. De zware alcohol en specerijen branden de delicate smaken van de sushi in één klap weg." }]
         },
-        { customer: "Zacht gegaarde varkenshaas met champignonsaus.", options: [
-            { wine: "Côtes du Rhône (Grenache blend)", type: "perfect", desc: "Heerlijk soepel en kruidig rood dat perfect bij champignons aansluit." },
-            { wine: "Houtgelagerde Chardonnay", type: "ok", desc: "Romig wit past prima bij de romige champignonsaus." },
-            { wine: "Superzoete port", type: "bad", desc: "Veel te zoet en dominant bij varkenshaas met hartige saus." }]
+        { customer: "Zacht gegaarde varkenshaas met een romige champignonsaus.", options: [
+            { wine: "Côtes du Rhône (Grenache blend)", type: "perfect", desc: "Heerlijk soepel en zacht kruidig rood dat perfect aansluit bij het malse vlees en de aardse champignons." },
+            { wine: "Houtgelagerde Chardonnay", type: "ok", desc: "De romigheid van de wijn past prima bij de romige champignonsaus, mits de wijn niet té dominant houtig is." },
+            { wine: "Superzoete Ruby Port", type: "bad", desc: "Veel te zoet en dominant bij varkenshaas met een hartige dichte saus." }]
         }
     ];
 
-    // --- GAME STATE ---
-    let state = {
+    // --- GAME ENGINE STATE ---
+    let gameState = {
         score: 0,
         lives: 3,
-        questions: [],
+        deck: [],
         currentIndex: 0,
-        locked: false
+        isAnswerLocked: false
     };
 
     function shuffle(arr) {
@@ -525,93 +626,99 @@
         document.getElementById(id).classList.add('active');
     }
 
+    // --- STREAMING_CHUNK: Managing screen interactions and initial states... ---
     async function startGame() {
-        // Init browser audio after user gesture
+        // Initialize browser audio nodes
         await Tone.start();
-        Audio.init();
-        Audio.playClick();
+        AudioEngine.init();
+        AudioEngine.playClick();
+        AudioEngine.startMusic();
 
-        state.score = 0;
-        state.lives = 3;
-        state.questions = shuffle([...wineDB]);
-        state.currentIndex = 0;
+        gameState.score = 0;
+        gameState.lives = 3;
+        gameState.deck = shuffle([...wineDatabase]);
+        gameState.currentIndex = 0;
         
-        updateHeader();
+        updateHeaderUI();
         switchScreen('game-screen');
-        loadQuestion();
+        loadNextCustomer();
     }
 
-    function updateHeader() {
-        document.getElementById('score').innerText = state.score;
+    function updateHeaderUI() {
+        document.getElementById('score-val').innerText = gameState.score;
         let hearts = '';
-        for(let i=0; i<3; i++) hearts += (i < state.lives) ? '❤️' : '🖤';
-        document.getElementById('lives').innerText = hearts;
+        for (let i = 0; i < 3; i++) {
+            hearts += (i < gameState.lives) ? '❤️' : '🖤';
+        }
+        document.getElementById('lives-indicator').innerText = hearts;
     }
 
-    function loadQuestion() {
-        state.locked = false;
+    function loadNextCustomer() {
+        gameState.isAnswerLocked = false;
         document.getElementById('feedback-overlay').classList.remove('show');
         
-        const larsSprite = document.getElementById('lars-sprite');
-        larsSprite.className = 'lars-frame idle';
+        // Reset Lars to calm breathing
+        const lars = document.getElementById('lars-sprite');
+        lars.className = 'lars-character idle';
 
-        const q = state.questions[state.currentIndex];
-        document.getElementById('customer-quote').innerText = q.customer;
+        const roundData = gameState.deck[gameState.currentIndex];
+        document.getElementById('customer-quote').innerText = roundData.customer;
 
-        const optionsBox = document.getElementById('options');
+        const optionsBox = document.getElementById('options-box');
         optionsBox.innerHTML = '';
         
         // Shuffle current options
-        const choices = shuffle([...q.options]);
-        choices.forEach(opt => {
+        const shuffledChoices = shuffle([...roundData.options]);
+        shuffledChoices.forEach(opt => {
             const btn = document.createElement('button');
-            btn.className = 'wine-btn';
+            btn.className = 'option-button';
             btn.innerHTML = `🍷 &nbsp; ${opt.wine}`;
-            btn.onclick = () => handleChoice(opt);
+            btn.onclick = () => selectWine(opt);
             optionsBox.appendChild(btn);
         });
     }
 
-    // --- STREAMING_CHUNK: Processing user choices and adjusting UI states... ---
-    function handleChoice(option) {
-        if (state.locked) return;
-        state.locked = true;
-        Audio.playSelect();
+    // --- STREAMING_CHUNK: Processing user selected wine and playing feedback sounds... ---
+    function selectWine(option) {
+        if (gameState.isAnswerLocked) return;
+        gameState.isAnswerLocked = true;
+        
+        // Trigger satisfying wine bottle pop sound
+        AudioEngine.playUncork();
 
-        const badge = document.getElementById('status-badge');
-        document.getElementById('feedback-desc').innerText = option.desc;
-        const sprite = document.getElementById('lars-sprite');
+        const badge = document.getElementById('feedback-badge');
+        document.getElementById('feedback-text').innerText = option.desc;
+        const lars = document.getElementById('lars-sprite');
 
         setTimeout(() => {
             if (option.type === 'perfect') {
-                state.score += 100;
+                gameState.score += 100;
                 badge.innerText = "⭐ PERFECT! (+100)";
                 badge.style.backgroundColor = "var(--success)";
-                sprite.className = 'lars-frame idle';
-                Audio.playSuccess();
+                lars.className = 'lars-character idle';
+                AudioEngine.playSuccess();
             } else if (option.type === 'ok') {
-                state.score += 50;
+                gameState.score += 50;
                 badge.innerText = "✔️ PRIMA KEUZE (+50)";
                 badge.style.backgroundColor = "var(--warning)";
-                sprite.className = 'lars-frame idle';
-                Audio.playOk();
+                lars.className = 'lars-character idle';
+                AudioEngine.playOk();
             } else {
-                state.score -= 50;
-                state.lives -= 1;
+                gameState.score -= 50;
+                gameState.lives -= 1;
                 badge.innerText = "❌ VRESELIJK! (-1 leven)";
                 badge.style.backgroundColor = "var(--danger)";
-                sprite.className = 'lars-frame fail';
-                Audio.playFail();
+                lars.className = 'lars-character fail';
+                AudioEngine.playFail();
             }
 
-            updateHeader();
+            updateHeaderUI();
 
-            // Als je levens op zijn, of als dit de allerlaatste klant was:
-            const nextBtn = document.getElementById('feedback-next-btn');
-            if (state.lives <= 0 || state.currentIndex >= state.questions.length - 1) {
-                nextBtn.innerText = "BEKIJK RESULTAAT";
+            const actionBtn = document.getElementById('feedback-action-btn');
+            if (gameState.lives <= 0 || gameState.currentIndex >= gameState.deck.length - 1) {
+                actionBtn.innerText = "BEKIJK RESULTAAT";
             } else {
-                nextBtn.innerText = "VOLGENDE KLANT";
+                actionBtn.innerText = "VOLGENDE KLANT";
             }
 
             document.getElementById('feedback-overlay').classList.add('show');
@@ -619,51 +726,50 @@
     }
 
     function nextRound() {
-        Audio.playClick();
+        AudioEngine.playClick();
         
-        // Check OF we moeten stoppen
-        if (state.lives <= 0) {
-            return showGameOver("Je bent ontslagen! Te veel klanten ontevreden.");
+        if (gameState.lives <= 0) {
+            return triggerGameOver("Je bent ontslagen! Te veel klanten waren ontevreden.");
         }
         
-        state.currentIndex++;
+        gameState.currentIndex++;
         
-        if (state.currentIndex >= state.questions.length) {
-            return showGameOver("Gefeliciteerd! Je hebt de shift overleefd.");
+        if (gameState.currentIndex >= gameState.deck.length) {
+            return triggerGameOver("Gefeliciteerd! Je hebt de shift overleefd.");
         }
 
-        loadQuestion();
+        loadNextCustomer();
     }
 
-    // --- STREAMING_CHUNK: Calculating ranks and building final progress bar... ---
-    function showGameOver(msg) {
+    // --- STREAMING_CHUNK: Processing game statistics and ranks... ---
+    function triggerGameOver(msg) {
+        AudioEngine.stopMusic();
         document.getElementById('feedback-overlay').classList.remove('show');
         document.getElementById('game-over-msg').innerText = msg;
 
-        const maxScore = state.questions.length * 100;
-        const finalScore = state.score;
+        const maxPossibleScore = gameState.deck.length * 100;
+        const currentScore = gameState.score;
 
-        // Update progress bar
-        const pct = Math.max(0, Math.min(100, (finalScore / maxScore) * 100));
-        document.getElementById('score-progress').style.width = pct + '%';
-        document.getElementById('score-progress-text').innerText = `${finalScore} / ${maxScore} PT`;
+        // Calculate progress bar fill percentage
+        const fillPercentage = Math.max(0, Math.min(100, (currentScore / maxPossibleScore) * 100));
+        document.getElementById('score-bar').style.width = fillPercentage + '%';
+        document.getElementById('score-bar-text').innerText = `${currentScore} / ${maxPossibleScore} PT`;
 
-        // Ranks bepalen en sfeervol tonen
-        const badge = document.getElementById('rank-badge');
-        const desc = document.getElementById('rank-desc');
+        const badge = document.getElementById('level-badge');
+        const desc = document.getElementById('level-desc');
 
-        if (state.lives <= 0) {
+        if (gameState.lives <= 0) {
             badge.innerText = "🤢 PRUTSER";
             badge.style.backgroundColor = "var(--danger)";
-            desc.innerText = "Lars schudt droevig zijn hoofd. Je hebt alle levens verloren en liet klanten met een vieze smaak achter. Weet je wel het verschil tussen azijn en een dure Bourgogne?";
-        } else if (pct < 45) {
+            desc.innerText = "Lars schudt droevig zijn hoofd. Je hebt alle levens verloren en liet klanten achter met een vreselijke smaak in hun mond. Weet je wel het verschil tussen azijn en een verfijnde Bourgogne?";
+        } else if (fillPercentage < 45) {
             badge.innerText = "🤢 PRUTSER";
             badge.style.backgroundColor = "var(--danger)";
-            desc.innerText = "Oei... Je hebt de shift overleefd, maar je kent er eigenlijk nog niks van. Gelukkig kan Lars je nog een hoop leren!";
-        } else if (pct < 80) {
+            desc.innerText = "Oei... Je hebt de shift overleefd, maar je kent er eigenlijk nog maar weinig van. Gelukkig kan Lars je de kneepjes van het vak nog leren!";
+        } else if (fillPercentage < 80) {
             badge.innerText = "😐 WIJNLIEFHEBBER";
             badge.style.backgroundColor = "var(--warning)";
-            desc.innerText = "Niet slecht! Je hebt al enig idee wat wijn is en weet de basisregels aardig te hanteren. Lars knikt goedkeurend.";
+            desc.innerText = "Niet slecht! Je hebt al een heel aardig idee wat wijn is en weet de basisregels prima te hanteren. Lars knikt voorzichtig goedkeurend.";
         } else {
             badge.innerText = "⭐ RECHTE EXPERT";
             badge.style.backgroundColor = "var(--success)";
@@ -673,8 +779,22 @@
         switchScreen('game-over-screen');
     }
 
+    function toggleMute() {
+        AudioEngine.isMuted = !AudioEngine.isMuted;
+        const muteBtn = document.getElementById('mute-btn');
+        if (AudioEngine.isMuted) {
+            muteBtn.innerText = "🔇";
+        } else {
+            muteBtn.innerText = "🔊";
+            // Restart audio context just in case browser suspended it
+            if (Tone.context.state !== 'running') {
+                Tone.start();
+            }
+        }
+    }
+
     function resetApp() {
-        Audio.playClick();
+        AudioEngine.playClick();
         switchScreen('start-screen');
     }
 </script>
